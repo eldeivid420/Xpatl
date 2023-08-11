@@ -14,10 +14,12 @@ cors = CORS(application)
 def hello_there():
     return "General Kenobi", 200
 
+# Registro de blueprints
 
-'''# Blueprints 
-from Global.Routes.Incoming import GLOBAL_STORE_BLUEPRINT
-application.register_blueprint(GLOBAL_STORE_BLUEPRINT, url_prefix='/incoming')'''
+
+from Global.Routes.Venta import GLOBAL_VENTA_BLUEPRINT
+
+application.register_blueprint(GLOBAL_VENTA_BLUEPRINT, url_prefix='/venta')
 
 if __name__ == "__main__":
     application.run(host="0.0.0.0", debug=True, port=os.environ.get('FLASK_PORT'))

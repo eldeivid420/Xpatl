@@ -1,0 +1,59 @@
+create type tipo as enum('efectivo','debito','credito','credito proveedor');
+create type estatus as enum('pendiente', 'pagado');
+create type rol as enum('admin', 'vendedor', 'cobrador', 'entregador');
+
+CREATE TABLE public.venta
+(
+    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    sub_id INT NOT NULL,
+    tipo tipo NOT NULL,
+    estatus estatus NOT NULL,
+    proveedor varchar(50),
+    descuento float,
+    subtotal float,
+    total float,
+    fecha TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_compra PRIMARY KEY(id)
+);
+
+CREATE TABLE public.producto
+(
+    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    precio INT NOT NULL,
+    precio_esp INT NOT NULL,
+    disponibles INT NOT NULL,
+    sku varchar(50) NOT NULL UNIQUE,
+    CONSTRAINT pk_producto PRIMARY KEY(sku)
+);
+
+CREATE TABLE public.producto_venta
+(
+    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    producto VARCHAR(50) NOT NULL,
+    venta INT NOT NULL,
+    CONSTRAINT fk_producto FOREIGN KEY (producto) REFERENCES public.producto(sku),
+    CONSTRAINT fk_venta FOREIGN KEY (venta) REFERENCES public.venta(id)
+
+);
+
+CREATE TABLE public.usuario
+(
+   id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+   username VARCHAR(40) NOT NULL,
+   pass VARCHAR(40) NOT NULL,
+   estatus BOOL NOT NULL,
+   rol rol NOT NULL
+   CONSTRAINT pk_usuario PRIMARY KEY(username)
+);
+
+CREATE TABLE public.comisiones
+(
+    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    username VARCHAR(40) NOT NULL,
+    monto float NOT NULL,
+    estatus estatus NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_comision PRIMARY KEY(id),
+    CONSTRAINT fk_usuario FOREIGN KEY(username) REFERENCES public.usuario(username)
+);
