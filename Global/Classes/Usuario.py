@@ -1,6 +1,8 @@
 from Global.Utils.db import post, get
 import hashlib
 
+# TODO: Documentar
+
 
 class Usuario:
     def __init__(self, params, load=True):

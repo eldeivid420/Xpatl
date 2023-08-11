@@ -1,5 +1,7 @@
 from Global.Utils.db import post, get
 
+# TODO: Documentar
+
 
 class Venta:
 

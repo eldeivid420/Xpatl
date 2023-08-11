@@ -18,8 +18,10 @@ def hello_there():
 
 
 from Global.Routes.Venta import GLOBAL_VENTA_BLUEPRINT
+from Global.Routes.Producto import GLOBAL_PRODUCTO_BLUEPRINT
 
 application.register_blueprint(GLOBAL_VENTA_BLUEPRINT, url_prefix='/venta')
+application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto')
 
 if __name__ == "__main__":
     application.run(host="0.0.0.0", debug=True, port=os.environ.get('FLASK_PORT'))

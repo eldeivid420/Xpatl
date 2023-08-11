@@ -1,6 +1,7 @@
 from flask import request
 from Global.Classes.Venta import Venta
 
+# TODO: Documentar
 
 def crear_venta():
     try:
