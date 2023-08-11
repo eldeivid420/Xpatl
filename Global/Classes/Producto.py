@@ -53,9 +53,10 @@ class Producto:
 
     @classmethod
     def obtener_productos(cls):
+        # Buscar forma de obtener todos sin usar el ID
         productos = {}
         registros = get('''SELECT COUNT(id) FROM producto''', (), False)[0]
-        for i in range(registros):
+        for i in range(1, registros+1):
             producto = get('''SELECT * FROM producto WHERE id = %s''', (i,), False)
             print(f'PRODUCTO {producto}')
             productos[i] = producto
