@@ -56,11 +56,9 @@ class Producto:
         # Buscar forma de obtener todos sin usar el ID
         productos = {}
         registros = get('''SELECT COUNT(id) FROM producto''', (), False)[0]
-        print(f'REGISTROS {registros}')
         todos = get('''SELECT * FROM producto''', (), True)
         for i in range(len(todos)):
             productos[i] = todos[i]
-        print(productos)
         return productos
 
 
