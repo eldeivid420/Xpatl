@@ -48,7 +48,7 @@ class Producto:
         self.precio = params['precio']
         self.precio_esp = params['precio_esp']
         self.disponibles = params['disponibles']
-        post('''UPDATE nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
+        post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
              (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
 
     @classmethod
