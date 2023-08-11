@@ -56,7 +56,7 @@ class Producto:
         productos = {}
         registros = get('''SELECT COUNT(id) FROM producto''', (), False)[0]
         for i in range(registros):
-            producto = get('''SELECT * FROM producto''', (), False)
+            producto = get('''SELECT * FROM producto WHERE id = %s''', (i,), False)
             print(f'PRODUCTO {producto}')
             productos[i] = producto
         print(productos)
