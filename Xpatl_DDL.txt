@@ -7,7 +7,7 @@ CREATE TABLE public.usuario
    username VARCHAR(40) NOT NULL,
    pass VARCHAR(40) NOT NULL,
    estatus BOOL NOT NULL,
-   rol rol NOT NULL
+   rol rol NOT NULL,
    CONSTRAINT pk_usuario PRIMARY KEY(username)
 );
 
@@ -23,7 +23,7 @@ CREATE TABLE public.venta
     subtotal float,
     total float,
     fecha TIMESTAMP NOT NULL DEFAULT NOW(),
-    CONSTRAINT pk_compra PRIMARY KEY(id)
+    CONSTRAINT pk_compra PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
 );
 
