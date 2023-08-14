@@ -7,7 +7,7 @@ from Global.Controllers import Producto as p
 GLOBAL_PRODUCTO_BLUEPRINT = Blueprint('GLOBAL_PRODUCTO_BLUEPRINT', __name__)
 
 
-@GLOBAL_PRODUCTO_BLUEPRINT.route('/agregar', methods=['GET'])
+@GLOBAL_PRODUCTO_BLUEPRINT.route('/agregar', methods=['POST'])
 def agregar_producto():
     return p.agregar_producto()
 
