@@ -10,12 +10,13 @@ class Producto:
         self.precio_esp = None
         self.disponibles = None
         self.sku = None
+        self.estatus = None
         self.load(params) if load else self.create(params)
 
     def create(self, params):
 
         self.sku = params['sku']
-        exist = get('''SELECT * FROM producto WHERE sku = %s''', (self.sku,))
+        exist = self.exist()
 
         if exist:
             self.actualizar_producto(params)
@@ -36,26 +37,39 @@ class Producto:
     def load(self, params):
         self.sku = params['sku']
         try:
-            self.nombre, self.precio, self.precio_esp, self.disponibles = get(
-                '''SELECT id, nombre, precio, precio_esp, disponibles FROM producto WHERE sku = %s''',
+            self.id, self.nombre, self.precio, self.precio_esp, self.disponibles, self.estatus = get(
+                '''SELECT id, nombre, precio, precio_esp, disponibles, estatus FROM producto WHERE sku = %s''',
                 (self.sku,), False
             )
         except Exception as e:
             return e, 400
 
+    def exist(self):
+        exist = get('''SELECT * FROM producto WHERE sku = %s''', (self.sku,))
+        return exist
+
     def actualizar_producto(self, params):
-        self.nombre = params['nombre']
-        self.precio = params['precio']
-        self.precio_esp = params['precio_esp']
-        self.disponibles = params['disponibles']
-        post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
-             (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
+        exist = self.exist()
+        if exist:
+            self.nombre = params['nombre']
+            self.precio = params['precio']
+            self.precio_esp = params['precio_esp']
+            self.disponibles = params['disponibles']
+            post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
+                 (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
+            return f'Producto actualizado correctamente'
+        else:
+            return f'No existe el producto'
+
+    @classmethod
+    def eliminar_producto(cls, params):
+        sku = params['sku']
+        post('''UPDATE producto SET estatus = False WHERE sku = %s''', (sku,), False)
+        return f'Producto eliminado exitosamente'
 
     @classmethod
     def obtener_productos(cls):
-        # Buscar forma de obtener todos sin usar el ID
         productos = {}
-        registros = get('''SELECT COUNT(id) FROM producto''', (), False)[0]
         todos = get('''SELECT * FROM producto''', (), True)
         for i in range(len(todos)):
             productos[i] = todos[i]

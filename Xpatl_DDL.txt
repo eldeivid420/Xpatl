@@ -37,6 +37,7 @@ CREATE TABLE public.producto
     precio_esp float NOT NULL,
     disponibles INT NOT NULL,
     sku varchar NOT NULL UNIQUE,
+    estatus BOOL NOT NULL DEFAULT True,
     CONSTRAINT pk_producto PRIMARY KEY(sku)
 );
 
