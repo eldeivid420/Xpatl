@@ -1,3 +1,10 @@
+"""
+    Clase que describe un producto
+    Authors: David Rodriguez Fragoso
+    Created: 11/08/2023
+    Last update: 14/08/2023
+"""
+
 from Global.Utils.db import post, get
 
 
@@ -15,11 +22,26 @@ class Producto:
 
     def create(self, params):
 
+        """
+        Método que registra o sobreescribe un producto en la base de datos
+
+        Parameters:
+        * nombre: el nombre del producto
+        * precio: el precio normal del producto
+        * precio_esp: el precio especial del producto
+        * disponibles: cantidad de productos disponibles
+        * sku: el sku del producto
+
+        Returns:
+
+        """
+
         self.sku = params['sku']
         exist = self.exist()
 
         if exist:
             self.actualizar_producto(params)
+            post('''UPDATE producto SET estatus = True WHERE sku = %s''', (self.sku,), False)
             return 'Producto actualizado correctamente'
         else:
             try:
@@ -35,20 +57,59 @@ class Producto:
                 return str(e), 400
 
     def load(self, params):
+
+        """
+        Método que carga un producto desde la base de datos
+
+        Parameters:
+        * sku: el sku del producto
+
+        Returns:
+
+        Un JSON con la información del producto
+        """
+
         self.sku = params['sku']
-        try:
-            self.id, self.nombre, self.precio, self.precio_esp, self.disponibles, self.estatus = get(
-                '''SELECT id, nombre, precio, precio_esp, disponibles, estatus FROM producto WHERE sku = %s''',
-                (self.sku,), False
-            )
-        except Exception as e:
-            return e, 400
+        if self.exist():
+            try:
+                self.id, self.nombre, self.precio, self.precio_esp, self.disponibles, self.estatus = get(
+                    '''SELECT id, nombre, precio, precio_esp, disponibles, estatus FROM producto WHERE sku = %s''',
+                    (self.sku,), False
+                )
+            except Exception as e:
+                return e, 400
+        else:
+            return f'El producto no existe', 400
 
     def exist(self):
+
+        """
+        Método que verifica si un producto existe
+
+        Parameters:
+        * sku: el sku del producto
+
+        Returns:
+
+        True si el producto existe
+        """
+
         exist = get('''SELECT * FROM producto WHERE sku = %s''', (self.sku,))
         return exist
 
     def actualizar_producto(self, params):
+
+        """
+        Método que actualiza la información de un producto
+
+        Parameters:
+        * sku: el sku del producto
+
+        Returns:
+
+        Un string que confirma o rechaza la operación
+        """
+
         exist = self.exist()
         if exist:
             self.nombre = params['nombre']
@@ -63,12 +124,37 @@ class Producto:
 
     @classmethod
     def eliminar_producto(cls, params):
+
+        """
+        Método de clase que cambia el estatus de un producto a False
+
+        Parameters:
+        * sku: el sku del producto
+
+        Returns:
+
+        Un string que confirma la operación
+
+        """
+
         sku = params['sku']
         post('''UPDATE producto SET estatus = False WHERE sku = %s''', (sku,), False)
         return f'Producto eliminado exitosamente'
 
     @classmethod
     def obtener_productos(cls):
+
+        """
+        Método de clase que obtiene todos los productos en la base de datos
+
+        Parameters:
+
+        Returns:
+
+        Un diccionario con los productos
+
+        """
+
         productos = {}
         todos = get('''SELECT * FROM producto''', (), True)
         for i in range(len(todos)):
