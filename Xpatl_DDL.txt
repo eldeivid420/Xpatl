@@ -31,8 +31,8 @@ CREATE TABLE public.producto
 (
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
     nombre VARCHAR(50) NOT NULL,
-    precio INT NOT NULL,
-    precio_esp INT NOT NULL,
+    precio FLOAT NOT NULL,
+    precio_esp FLOAT NOT NULL,
     disponibles INT NOT NULL,
     sku varchar(50) NOT NULL UNIQUE,
     CONSTRAINT pk_producto PRIMARY KEY(sku)
