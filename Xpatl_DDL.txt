@@ -21,6 +21,7 @@ CREATE TABLE public.venta
     tipo tipo NOT NULL,
     estatus estatus NOT NULL,
     proveedor varchar(50),
+    proveedor_notas varchar,
     descuento float,
     subtotal float,
     total float,
