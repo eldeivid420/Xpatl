@@ -1,5 +1,5 @@
 create type tipo as enum('efectivo','debito','credito','credito proveedor');
-create type estatus as enum('pendiente', 'pagado');
+create type estatus as enum('creado', 'pagado', 'entregado', 'cancelado');
 create type rol as enum('admin', 'vendedor', 'cobrador', 'entregador');
 CREATE TABLE public.usuario
 (
