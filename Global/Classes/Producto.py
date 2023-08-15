@@ -156,7 +156,7 @@ class Producto:
         """
 
         productos = {}
-        todos = get('''SELECT * FROM producto''', (), True)
+        todos = get('''SELECT * FROM producto where estatus = False''', (), True)
         for i in range(len(todos)):
             productos[i] = todos[i]
         return productos
