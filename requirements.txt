@@ -1,3 +1,5 @@
 python-dotenv
 flask
 psycopg2
+pyjwt
+flask_cors

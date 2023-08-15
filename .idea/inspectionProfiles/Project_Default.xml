@@ -4,10 +4,9 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="3">
-            <item index="0" class="java.lang.String" itemvalue="boto3" />
-            <item index="1" class="java.lang.String" itemvalue="opencv-python" />
-            <item index="2" class="java.lang.String" itemvalue="psycopg2" />
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="flask_login" />
+            <item index="1" class="java.lang.String" itemvalue="pickle" />
           </list>
         </value>
       </option>
@@ -16,6 +15,15 @@
       <option name="ignoredErrors">
         <list>
           <option value="N802" />
+          <option value="N811" />
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="config.ADD_MESSAGE" />
         </list>
       </option>
     </inspection_tool>
