@@ -1,14 +1,13 @@
 create type tipo as enum('efectivo','debito','credito','credito proveedor');
 create type estatus as enum('creado', 'pagado', 'entregado', 'cancelado');
 create type rol as enum('admin', 'vendedor', 'cobrador', 'entregador');
-create type comision as enum ('pendiente', 'pagado');
 CREATE TABLE public.usuario
 (
    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
    username VARCHAR(45) NOT NULL,
    nombre varchar NOT NULL,
    pass VARCHAR NOT NULL,
-   estatus BOOL NOT NULL,
+   activo BOOL NOT NULL,
    rol rol NOT NULL,
    CONSTRAINT pk_usuario PRIMARY KEY(username)
 );
@@ -59,9 +58,10 @@ CREATE TABLE public.comisiones
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
     vendedor VARCHAR NOT NULL,
     monto float NOT NULL,
-    estatus comision NOT NULL,
+    pagado bool NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT NOW(),
 	pagado_en TIMESTAMP,
     CONSTRAINT pk_comision PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
 );
+
