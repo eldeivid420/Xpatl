@@ -64,3 +64,4 @@ CREATE TABLE public.comisiones
     CONSTRAINT pk_comision PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
 );
+
