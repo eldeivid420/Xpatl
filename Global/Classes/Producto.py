@@ -161,6 +161,28 @@ class Producto:
             productos[i] = todos[i]
         return productos
 
+    @classmethod
+    def filtrar_productos(cls, params):
+
+        productos = {}
+
+        if params['orden'] == 'alfabetico' and params['invertido'] == True:
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre desc''', (), True)
+
+        elif params['orden'] == 'precio' and params['invertido'] == True:
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio desc''', (), True)
+
+        elif params['orden'] == 'alfabetico':
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre''', (), True)
+
+        elif params['orden'] == 'precio':
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio''', (), True)
+
+        for i in range(len(todos)):
+            productos[i] = todos[i]
+
+        return productos
+
 
 
 

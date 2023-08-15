@@ -1,7 +1,10 @@
+import json
+
 from flask import request
 from Global.Classes.Venta import Venta
 
 # TODO: Documentar
+
 
 def crear_venta():
     try:
@@ -26,6 +29,31 @@ def buscar_venta():
         params = {
             'id': request.json.get('id')
         }
-        return Venta.load(params)
+        venta = Venta(params)
+        detalles = {
+            "id": venta.id,
+            "vendedor": venta.vendedor,
+            "sub_id": venta.sub_id,
+            "tipo": venta.tipo,
+            "estatus": venta.estatus,
+            "proveedor": venta.proveedor,
+            "proveedor_notas": venta.proveedor_notas,
+            "descuento": venta.descuento,
+            "subtotal": venta.subtotal,
+            "total": venta.total,
+            "productos": venta.productos,
+            "fecha": venta.fecha
+        }
+        return json.dumps(detalles)
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+
+def cancelar_venta():
+    try:
+        params ={
+            'id': request.json.get('id')
+        }
+        return Venta.cancelar_venta(params)
     except Exception as e:
         return {'error': str(e)}, 400

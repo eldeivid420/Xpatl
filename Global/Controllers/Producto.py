@@ -66,3 +66,14 @@ def editar_producto():
         return producto.actualizar_producto(params)
     except Exception as e:
         return {"error": str(e)}
+
+
+def filtrar_productos():
+    try:
+        params = {
+            'orden': request.json.get('orden'),
+            'invertido': request.json.get('invertido')
+        }
+        return Producto.filtrar_productos(params)
+    except Exception as e:
+        return {"error": str(e)}

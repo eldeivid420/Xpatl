@@ -18,6 +18,7 @@ class Venta:
         self.subtotal = None
         self.total = None
         self.productos = None
+        self.fecha = None
         self.load(params) if load else self.create(params)
 
     def create(self, params):
@@ -76,8 +77,15 @@ class Venta:
         self.id = params['id']
         if self.exist() is None:
             raise Exception('No hay venta con el id proporcionado')
-        self.sub_id, self.tipo, self.estatus, self.proveedor, self.descuento, self.subtotal, self.total = get(
+        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
+        self.fecha = self.fecha.strftime("%m/%d/%Y %H:%M:%S")
+
+    @classmethod
+    def cancelar_venta(cls, params):
+        id = params['id']
+        post('''UPDATE venta SET estatus = 'cancelado' WHERE id = %s''', (id,), False)
+        return f'Venta cancelada exitosamente'
 
     def calcular_subtotal(self):
 

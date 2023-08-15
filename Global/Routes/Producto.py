@@ -31,3 +31,7 @@ def buscar_producto():
 def obtener_productos():
     return p.obtener_productos()
 
+
+@GLOBAL_PRODUCTO_BLUEPRINT.route('/filtrar', methods=['GET'])
+def filtrar_productos():
+    return p.filtrar_productos()
