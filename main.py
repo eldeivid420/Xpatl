@@ -24,7 +24,8 @@ from Global.Routes.Usuario import GLOBAL_USUARIO_BLUEPRINT
 application.register_blueprint(GLOBAL_VENTA_BLUEPRINT, url_prefix='/venta')
 application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto')
 application.register_blueprint(GLOBAL_USUARIO_BLUEPRINT, url_prefix ='/usuario')
-
+print('La aplicación está funcionando... \n\nNO cierre esta ventana.')
 if __name__ == "__main__":
     application.run(host="0.0.0.0", debug=True, port=os.environ.get('FLASK_PORT'))
 # print(message.sid)
+
