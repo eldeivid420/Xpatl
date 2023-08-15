@@ -6,10 +6,12 @@ from Global.Classes.Venta import Venta
 def crear_venta():
     try:
         params = {
+            'vendedor': request.json.get('vendedor'),
             'sub_id': request.json.get('sub_id'),
             'tipo': request.json.get('tipo'),
             'estatus': request.json.get('estatus'),
             'proveedor': request.json.get('proveedor'),
+            'proveedor_notas': request.json.get('proveedor_notas'),
             'descuento': request.json.get('descuento'),
             'productos': request.json.get('productos')
         }
