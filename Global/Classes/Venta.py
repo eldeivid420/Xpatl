@@ -2,7 +2,7 @@ from Global.Utils.db import post, get
 
 
 # TODO: Documentar
-primera_venta = False
+primera_venta = 1
 
 
 class Venta:
@@ -25,39 +25,39 @@ class Venta:
     def create(self, params):
 
         # TODO: implementar funcion que genere sub_id usando el timestamp de la base de datos
-        try:
-            self.vendedor = params['vendedor']
-            self.sub_id = self.obtener_subid()
-            self.tipo = params['tipo']
-            self.estatus = params['estatus']
-            self.proveedor = params['proveedor']
-            self.proveedor_notas = params['proveedor_notas']
-            self.descuento = params['descuento']
-            self.productos = params['productos']
 
-            self.subtotal = self.calcular_subtotal()
-            self.total = self.calcular_total()
+        self.vendedor = params['vendedor']
+        self.sub_id = self.obtener_subid()
+        self.tipo = params['tipo']
+        self.estatus = params['estatus']
+        self.proveedor = params['proveedor']
+        self.proveedor_notas = params['proveedor_notas']
+        self.descuento = params['descuento']
+        self.productos = params['productos']
 
-            # Verificamos si es una venta para un proveedor
-            if self.proveedor and self.descuento:
+        self.subtotal = self.calcular_subtotal()
+        self.total = self.calcular_total()
+        if len(self.productos) == 0:
+            raise Exception('No puedes generar una venta vacía')
+        # Verificamos si es una venta para un proveedor
+        if self.proveedor and self.descuento:
 
-                self.id = post(
-                    '''INSERT INTO venta(vendedor,sub_id,tipo,estatus,proveedor,proveedor_notas,descuento,subtotal,total) VALUES(%s,
-                    %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id '''
-                    , (self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas,
-                       self.descuento, self.subtotal, self.total), True)[0]
-            # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
-            else:
-                self.id = post(
-                    '''INSERT INTO venta(sub_id,tipo,estatus,subtotal,total) VALUES(%s,%s,%s,%s,%s) RETURNING id'''
-                    , (self.sub_id, self.tipo, self.estatus, self.subtotal, self.total)
-                    , True
-                )[0]
-            for producto in self.productos:
-                post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto, self.id), False)
-        except Exception as e:
-            return str(e), 400
+            self.id = post(
+                '''INSERT INTO venta(vendedor,sub_id,tipo,estatus,proveedor,proveedor_notas,descuento,subtotal,total) VALUES(%s,
+                %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id '''
+                , (self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas,
+                   self.descuento, self.subtotal, self.total), True)[0]
+        # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
+        else:
+            self.id = post(
+                '''INSERT INTO venta(vendedor, sub_id,tipo,estatus,subtotal,total) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id'''
+                , (self.vendedor,self.sub_id, self.tipo, self.estatus, self.subtotal, self.total)
+                , True
+            )[0]
+        for producto in self.productos:
+            post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto, self.id), False)
 
+        self.obtener_subid(True)
     def exist(self):
 
         """
@@ -104,10 +104,10 @@ class Venta:
         else:
             return self.subtotal
 
-    def obtener_subid(self):
-        if primera_venta:
-            self.sub_id = 1
-        else:
-            id_anterior = get('''SELECT sub_id FROM venta ORDER BY fecha desc limit 1''', (), False)[0]
-            self.sub_id = id_anterior+1
-        return self.sub_id
+
+    def obtener_subid(self, add = False):
+        global primera_venta
+        anterior = primera_venta
+        if add:
+            primera_venta += 1
+        return primera_venta

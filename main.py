@@ -28,13 +28,20 @@ application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto'
 application.register_blueprint(GLOBAL_USUARIO_BLUEPRINT, url_prefix ='/usuario')
 print('La aplicación está funcionando... \n\nNO cierre esta ventana.')
 
-dia_anterior = get('''SELECT fecha FROM venta ORDER BY fecha DESC LIMIT 1''', (), False)[0]
-dia_hoy = datetime.datetime.now()
-dia_hoy = f'{dia_hoy.day}/{dia_hoy.month}/{dia_hoy.year}'
-dia_anterior = dia_anterior.strftime("%d/%m/%Y")
+try:
+    dia_anterior = get('''SELECT fecha FROM venta ORDER BY fecha DESC LIMIT 1''', (), False)[0]
+    dia_hoy = datetime.datetime.now()
+    #dia_hoy = f'{dia_hoy.day}/{dia_hoy.month}/{dia_hoy.year}'
+    dia_hoy = dia_hoy.strftime("%d/%m/%Y")
+    dia_anterior = dia_anterior.strftime("%d/%m/%Y")
+    if dia_hoy == dia_anterior:
+        d_anterior = get('''SELECT sub_id FROM venta ORDER BY fecha desc limit 1''', (), False)[0]
+        v.primera_venta = d_anterior + 1
+    else:
+        v.primera_venta = 1
+except:
+    v.primera_venta = 1
 
-if dia_hoy > dia_anterior:
-    v.primera_venta = True
 
 if __name__ == "__main__":
     application.run(host="0.0.0.0", debug=True, port=os.environ.get('FLASK_PORT'))

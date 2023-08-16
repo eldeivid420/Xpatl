@@ -10,7 +10,6 @@ def crear_venta():
     try:
         params = {
             'vendedor': request.json.get('vendedor'),
-            'sub_id': request.json.get('sub_id'),
             'tipo': request.json.get('tipo'),
             'estatus': request.json.get('estatus'),
             'proveedor': request.json.get('proveedor'),
@@ -18,13 +17,26 @@ def crear_venta():
             'descuento': request.json.get('descuento'),
             'productos': request.json.get('productos')
         }
-        venta = Venta(params, False)
+        try:
+            venta = Venta(params, False)
+        except Exception as e:
+            return {'error': str(e)}, 400
         return f'Venta registrada con el id {venta.id}', 200
     except Exception as e:
         return {'error': str(e)}, 400
 
 
 def buscar_venta():
+    # TODO regresar una lista de los nombres de los productos,
+    # su sku, la cantidad, y el total de dinero que equivalen a esos producto
+    # ["deividcilina", "SKU", 3, "$500"]
+    ejemplo = {
+        "vendedor": "deivid",
+        "id": 1,
+        "tipo": "efectivo",
+        "productos": [{"nombre":"devidcilina", "sku": "2312A", "cantidad": 3, "precio": "$898"}],
+        "total": "$10392"
+    }
     try:
         params = {
             'id': request.json.get('id')
