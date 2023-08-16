@@ -2,6 +2,7 @@ from Global.Utils.db import post, get
 
 
 # TODO: Documentar
+primera_venta = False
 
 
 class Venta:
@@ -26,7 +27,7 @@ class Venta:
         # TODO: implementar funcion que genere sub_id usando el timestamp de la base de datos
         try:
             self.vendedor = params['vendedor']
-            self.sub_id = params['sub_id']
+            self.sub_id = self.obtener_subid()
             self.tipo = params['tipo']
             self.estatus = params['estatus']
             self.proveedor = params['proveedor']
@@ -104,4 +105,9 @@ class Venta:
             return self.subtotal
 
     def obtener_subid(self):
-        pass
+        if primera_venta:
+            self.sub_id = 1
+        else:
+            id_anterior = get('''SELECT sub_id FROM venta ORDER BY fecha desc limit 1''', (), False)[0]
+            self.sub_id = id_anterior+1
+        return self.sub_id

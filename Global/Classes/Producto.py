@@ -164,6 +164,18 @@ class Producto:
     @classmethod
     def filtrar_productos(cls, params):
 
+        """
+        Método de clase que obtiene todos los productos filtrados desde la base de datos
+
+        Parameters:
+        * orden: alfabetico o numerico
+        * invertido: true o false
+        Returns:
+
+        Un diccionario con los productos ordenados
+
+        """
+
         productos = {}
 
         if params['orden'] == 'alfabetico' and params['invertido'] == True:

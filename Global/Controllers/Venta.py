@@ -33,7 +33,6 @@ def buscar_venta():
         detalles = {
             "id": venta.id,
             "vendedor": venta.vendedor,
-            "sub_id": venta.sub_id,
             "tipo": venta.tipo,
             "estatus": venta.estatus,
             "proveedor": venta.proveedor,
