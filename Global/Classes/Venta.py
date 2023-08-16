@@ -19,6 +19,7 @@ class Venta:
         self.subtotal = None
         self.total = None
         self.productos = None
+        self.detalles_productos = []
         self.fecha = None
         self.load(params) if load else self.create(params)
 
@@ -51,7 +52,7 @@ class Venta:
         else:
             self.id = post(
                 '''INSERT INTO venta(vendedor, sub_id,tipo,estatus,subtotal,total) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id'''
-                , (self.vendedor,self.sub_id, self.tipo, self.estatus, self.subtotal, self.total)
+                , (self.vendedor, self.sub_id, self.tipo, self.estatus, self.subtotal, self.total)
                 , True
             )[0]
         for producto in self.productos:
@@ -72,15 +73,27 @@ class Venta:
         """
 
         exist = get('''SELECT * FROM venta WHERE id = %s''', (self.id,))
+
         return exist
 
     def load(self, params):
         self.id = params['id']
-        if self.exist() is None:
+        if not self.exist():
             raise Exception('No hay venta con el id proporcionado')
         self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
-        self.fecha = self.fecha.strftime("%m/%d/%Y %H:%M:%S")
+
+        self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
+
+        self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
+
+        for i in range(len(self.productos)):
+            sku = self.productos[i][0]
+            nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
+            cantidad = get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id), False)[0]
+            self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad, 'total_producto': cantidad*precio})
+
+
 
     @classmethod
     def cancelar_venta(cls, params):
@@ -99,7 +112,7 @@ class Venta:
 
     def calcular_total(self):
         if self.proveedor:
-            total = self.subtotal * self.descuento
+            total = self.subtotal * (self.descuento/100)
             return round(total, 2)
         else:
             return self.subtotal

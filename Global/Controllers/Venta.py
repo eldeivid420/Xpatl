@@ -10,8 +10,6 @@ def crear_venta():
     try:
         params = {
             'vendedor': request.json.get('vendedor'),
-            'tipo': request.json.get('tipo'),
-            'estatus': request.json.get('estatus'),
             'proveedor': request.json.get('proveedor'),
             'proveedor_notas': request.json.get('proveedor_notas'),
             'descuento': request.json.get('descuento'),
@@ -52,7 +50,7 @@ def buscar_venta():
             "descuento": venta.descuento,
             "subtotal": venta.subtotal,
             "total": venta.total,
-            "productos": venta.productos,
+            "productos": venta.detalles_productos,
             "fecha": venta.fecha
         }
         return json.dumps(detalles)
