@@ -77,8 +77,11 @@ def entregar_venta():
         }
         Venta.entregar_venta(params)
         venta = Venta(params)
+        info = []
+        for i in range(len(venta.detalles_productos)):
+            info.append({'nombre': venta.detalles_productos[i]["nombre"], "cantidad": venta.detalles_productos[i]["cantidad"]})
         detalles = {
-            "productos": venta.detalles_productos
+            "productos": info
         }
         return json.dumps(detalles)
     except Exception as e:

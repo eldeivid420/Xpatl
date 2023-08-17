@@ -128,8 +128,11 @@ class Venta:
         tipos = ['efectivo', 'debito', 'credito', 'credito proveedor']
         id = params['id']
         tipo = params['tipo']
+        pagado = get('''SELECT estatus FROM venta WHERE id = %s''', (id,), False)[0]
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
+        elif pagado == 'pagado':
+            raise Exception('La venta ya había sido pagada')
         elif tipo not in tipos:
             raise Exception('Ingrese una forma de pago válida')
         post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
@@ -137,7 +140,10 @@ class Venta:
     @classmethod
     def entregar_venta(cls, params):
         id = params['id']
+        entregado = get('''SELECT estatus FROM venta WHERE id = %s''', (id,), False)[0]
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
+        elif entregado == 'entregado':
+            raise Exception('La venta ya había sido entregada')
         post('''UPDATE venta SET estatus = 'entregado' WHERE id = %s''', (id,), False)
 
