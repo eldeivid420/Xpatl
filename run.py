@@ -9,4 +9,4 @@ os.chdir(this_files_dir)
 
 # `url_prefix` is optional, but useful if you are serving app on a sub-dir
 # behind a reverse-proxy.
-serve(application, host='127.0.0.1', port=8080, url_prefix='/test')
+serve(application, host='0.0.0.0', port=8080, url_prefix='/test')
