@@ -29,7 +29,7 @@ class Usuario:
                 self.estatus = True
                 self.rol = params['rol']
                 self.id = post(
-                    '''INSERT INTO usuario (username, pass, estatus, rol, nombre) values (%s,%s,%s,%s, %s) returning id''',
+                    '''INSERT INTO usuario (username, pass, activo, rol, nombre) values (%s,%s,%s,%s, %s) returning id''',
                     (self.username, self.password, self.estatus, self.rol, self.nombre), True
                 )
                 self.id = self.id[0]
