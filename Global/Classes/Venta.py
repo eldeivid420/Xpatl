@@ -29,37 +29,34 @@ class Venta:
 
         self.vendedor = params['vendedor']
         self.sub_id = self.obtener_subid()
-        self.tipo = params['tipo']
-        self.estatus = params['estatus']
         self.proveedor = params['proveedor']
         self.proveedor_notas = params['proveedor_notas']
         self.descuento = params['descuento']
         self.productos = params['productos']
-
         self.subtotal = self.calcular_subtotal()
         self.total = self.calcular_total()
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
         # Verificamos si es una venta para un proveedor
         if self.proveedor and self.descuento:
-
             self.id = post(
-                '''INSERT INTO venta(vendedor,sub_id,tipo,estatus,proveedor,proveedor_notas,descuento,subtotal,total) VALUES(%s,
-                %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id '''
-                , (self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas,
+                '''INSERT INTO venta(vendedor,sub_id,proveedor,proveedor_notas,descuento,subtotal,total) VALUES(%s,
+                %s,%s,%s,%s,%s,%s) RETURNING id '''
+                , (self.vendedor, self.sub_id, self.proveedor, self.proveedor_notas,
                    self.descuento, self.subtotal, self.total), True)[0]
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor, sub_id,tipo,estatus,subtotal,total) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id'''
-                , (self.vendedor, self.sub_id, self.tipo, self.estatus, self.subtotal, self.total)
+                '''INSERT INTO venta(vendedor, sub_id,subtotal,total) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id'''
+                , (self.vendedor, self.sub_id, self.subtotal, self.total)
                 , True
             )[0]
         for producto in self.productos:
             post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto, self.id), False)
 
         self.obtener_subid(True)
-    def exist(self):
+    @classmethod
+    def exist(cls, id):
 
         """
         Método que verifica si una venta existe
@@ -71,14 +68,13 @@ class Venta:
 
         True si el la venta existe
         """
-
-        exist = get('''SELECT * FROM venta WHERE id = %s''', (self.id,))
+        exist = get('''SELECT * FROM venta WHERE id = %s''', (id,))
 
         return exist
 
     def load(self, params):
         self.id = params['id']
-        if not self.exist():
+        if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
         self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
@@ -98,6 +94,8 @@ class Venta:
     @classmethod
     def cancelar_venta(cls, params):
         id = params['id']
+        if not cls.exist(id):
+            raise Exception('No hay venta con el id proporcionado')
         post('''UPDATE venta SET estatus = 'cancelado' WHERE id = %s''', (id,), False)
         return f'Venta cancelada exitosamente'
 
@@ -124,3 +122,22 @@ class Venta:
         if add:
             primera_venta += 1
         return primera_venta
+
+    @classmethod
+    def pagar_venta(cls, params):
+        tipos = ['efectivo', 'debito', 'credito', 'credito proveedor']
+        id = params['id']
+        tipo = params['tipo']
+        if not cls.exist(id):
+            raise Exception('No hay venta con el id proporcionado')
+        elif tipo not in tipos:
+            raise Exception('Ingrese una forma de pago válida')
+        post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
+
+    @classmethod
+    def entregar_venta(cls, params):
+        id = params['id']
+        if not cls.exist(id):
+            raise Exception('No hay venta con el id proporcionado')
+        post('''UPDATE venta SET estatus = 'entregado' WHERE id = %s''', (id,), False)
+

@@ -17,6 +17,15 @@ def cancelar_venta():
     return v.cancelar_venta()
 
 
+@GLOBAL_VENTA_BLUEPRINT.route('/pagar', methods=['POST'])
+def pagar_venta():
+    return v.pagar_venta()
+
+@GLOBAL_VENTA_BLUEPRINT.route('/entregar', methods=['POST'])
+def entregar_venta():
+    return v.entregar_venta()
+
+
 @GLOBAL_VENTA_BLUEPRINT.route('/buscar', methods=['GET'])
 def buscar_venta():
     return v.buscar_venta()
