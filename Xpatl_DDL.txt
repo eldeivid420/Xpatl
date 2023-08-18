@@ -24,6 +24,7 @@ CREATE TABLE public.venta
     descuento float,
     subtotal float,
     total float,
+    comision float NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT pk_compra PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)

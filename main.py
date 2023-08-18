@@ -22,10 +22,12 @@ def hello_there():
 from Global.Routes.Venta import GLOBAL_VENTA_BLUEPRINT
 from Global.Routes.Producto import GLOBAL_PRODUCTO_BLUEPRINT
 from Global.Routes.Usuario import GLOBAL_USUARIO_BLUEPRINT
+from Global.Routes.Comision import GLOBAL_COMISION_BLUEPRINT
 
 application.register_blueprint(GLOBAL_VENTA_BLUEPRINT, url_prefix='/venta')
 application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto')
 application.register_blueprint(GLOBAL_USUARIO_BLUEPRINT, url_prefix ='/usuario')
+application.register_blueprint(GLOBAL_COMISION_BLUEPRINT, url_prefix ='/comision')
 print('La aplicación está funcionando... \n\nNO cierre esta ventana.')
 
 try:

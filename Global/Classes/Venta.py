@@ -1,5 +1,5 @@
 from Global.Utils.db import post, get
-
+import datetime
 
 # TODO: Documentar
 primera_venta = 1
@@ -18,6 +18,7 @@ class Venta:
         self.descuento = None
         self.subtotal = None
         self.total = None
+        self.comision = None
         self.productos = None
         self.detalles_productos = []
         self.fecha = None
@@ -35,26 +36,36 @@ class Venta:
         self.productos = params['productos']
         self.subtotal = self.calcular_subtotal()
         self.total = self.calcular_total()
+        self.comision = (self.total*0.8)*0.1
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
         # Verificamos si es una venta para un proveedor
         if self.proveedor and self.descuento:
             self.id = post(
-                '''INSERT INTO venta(vendedor,sub_id,proveedor,proveedor_notas,descuento,subtotal,total) VALUES(%s,
-                %s,%s,%s,%s,%s,%s) RETURNING id '''
+                '''INSERT INTO venta(vendedor,sub_id,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
+                VALUES(%s, %s,%s,%s,%s,%s,%s,%s) RETURNING id'''
                 , (self.vendedor, self.sub_id, self.proveedor, self.proveedor_notas,
-                   self.descuento, self.subtotal, self.total), True)[0]
+                   self.descuento, self.subtotal, self.total,self.comision), True)[0]
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor, sub_id,subtotal,total) VALUES(%s,%s,%s,%s,%s,%s) RETURNING id'''
-                , (self.vendedor, self.sub_id, self.subtotal, self.total)
+                '''INSERT INTO venta(vendedor, sub_id,subtotal,total,comision) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING 
+                id'''
+                , (self.vendedor, self.sub_id, self.subtotal, self.total, self.comision)
                 , True
             )[0]
         for producto in self.productos:
             post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto, self.id), False)
 
+        hoy = datetime.datetime.now()
+        hoy = hoy.strftime("%d/%m/%Y")
+        existe_registro = post(('''UPDATE comisiones SET monto = monto+%s WHERE vendedor = %s and TO_CHAR(fecha,
+        'DD/MM/YYYY') = %s RETURNING id'''),(self.comision, self.vendedor, hoy), True)
+        if not existe_registro:
+            post('''insert into comisiones(vendedor,monto,pagado) values (%s,%s,false)''', (self.vendedor, self.comision), False)
+
         self.obtener_subid(True)
+
     @classmethod
     def exist(cls, id):
 
