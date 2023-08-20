@@ -1,1 +1,5 @@
 idea
+*.pyc
+*.xml
+*.pyc
+Global/Classes/__pycache__/Venta.cpython-39.pyc
