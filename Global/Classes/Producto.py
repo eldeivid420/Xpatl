@@ -176,8 +176,8 @@ class Producto:
 
         """
 
-        productos = {}
-
+        #productos = {}
+        todos = None
         if params['orden'] == 'alfabetico' and params['invertido'] == True:
             todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre desc''', (), True)
 
@@ -189,11 +189,12 @@ class Producto:
 
         elif params['orden'] == 'precio':
             todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio''', (), True)
+        if (todos == None or len(todos)<=0):
+            raise Exception('No hay productos')
+        #for i in range(len(todos)):
+         #   productos[i] = todos[i]
 
-        for i in range(len(todos)):
-            productos[i] = todos[i]
-
-        return productos
+        return todos
 
 
 
