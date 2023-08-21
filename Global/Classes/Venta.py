@@ -158,3 +158,18 @@ class Venta:
             raise Exception('La venta ya había sido entregada')
         post('''UPDATE venta SET estatus = 'entregado' WHERE id = %s''', (id,), False)
 
+    '''    @classmethod
+    def registros_dia(cls, params):
+        fecha = params['fecha']
+        registros = '''
+
+    @classmethod
+    def fechas_venta(cls):
+        fechas = []
+        registros = get('''SELECT TO_CHAR(fecha, 'DD/MM/YYYY') FROM comisiones GROUP BY TO_CHAR(fecha, 'DD/MM/YYYY')''', (), True)
+        if not registros:
+            raise Exception('No hay ventas registradas en la base de datos')
+        for i in range(len(registros)):
+            fechas.append(registros[i][0])
+        return fechas
+

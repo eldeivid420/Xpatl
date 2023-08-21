@@ -86,3 +86,20 @@ def entregar_venta():
         return json.dumps(detalles)
     except Exception as e:
         return {'error': str(e)}, 400
+
+'''def registros_dia():
+    try:
+        params = {
+            'fecha': request.json.get('fecha')
+        }
+        registros = []
+        registros.append(Venta.registros_dia())
+    except Exception as e:
+        return {'error': str(e)}, 400'''
+
+
+def fechas_venta():
+    try:
+        return json.dumps(Venta.fechas_venta())
+    except Exception as e:
+        return {'error': str(e)}, 400
