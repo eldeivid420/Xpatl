@@ -74,6 +74,6 @@ def filtrar_productos():
             'orden': request.json.get('orden'),
             'invertido': request.json.get('invertido')
         }
-        return json.dumps(Producto.filtrar_productos(params))
+        return Producto.filtrar_productos(params)
     except Exception as e:
         return {"error": str(e)}
