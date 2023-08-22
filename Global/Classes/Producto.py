@@ -193,7 +193,14 @@ class Producto:
         #for i in range(len(todos)):
          #   productos[i] = todos[i]
         for i in range(len(todos)):
-            lista.append({'id': todos[i][0], 'nombre': todos[i][1], 'precio': todos[i][2], 'precio_esp': todos[i][3], 'disponibles': todos[i][4], 'sku': todos[i][4], 'estatus': todos[i][5]})
+            lista.append({
+                'id': todos[i][0],
+                'nombre': todos[i][1],
+                'precio': todos[i][2],
+                'precio_esp': todos[i][3],
+                'disponibles': todos[i][4],
+                'sku': todos[i][5],
+                'estatus': todos[i][6]})
 
         return lista
 
