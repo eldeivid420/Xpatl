@@ -27,3 +27,13 @@ def buscar_comisiones():
         return json.dumps(comision)
     except Exception as e:
         return {'error': str(e)}
+
+
+def registros_dia():
+    try:
+        params = {
+            'fecha': request.json.get('fecha')
+        }
+        return Comision.registros_dia(params)
+    except Exception as e:
+        return {'error': str(e)}, 400

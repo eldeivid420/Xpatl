@@ -58,4 +58,14 @@ class Comision:
             comisiones.append({'id': id, 'monto': monto, 'fecha': fecha.strftime("%d/%m/%Y"), 'pagado': pagado, 'pagado_en': pagado_en})
         return comisiones
 
-
+    @classmethod
+    def registros_dia(cls, params):
+        registros = get('''SELECT * FROM comisiones WHERE TO_CHAR(fecha, 'DD/MM/YYYY') = %s''', (params['fecha'],), True)
+        if not registros:
+            raise Exception('No hay ventas registradas para la fecha seleccionada')
+        comisiones = []
+        for i in range(len(registros)):
+            comisiones.append(
+                {'id': registros[i][0], 'vendedor': registros[i][1], 'monto': registros[i][2],
+                 'pagado': registros[i][3], 'fecha': registros[i][4].strftime("%d/%m/%Y"), 'pagado_en': registros[i][5]})
+        return comisiones
