@@ -116,7 +116,7 @@ class Venta:
         suma = 0
         for producto in self.productos:
             precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
-            suma += precio
+            suma += precio*producto['cantidad']
 
         return round(suma, 2)
 
@@ -174,3 +174,7 @@ class Venta:
             fechas.append(registros[i][0])
         return fechas
 
+    @classmethod
+    def registgros_dia(cls, params):
+        ventas = []
+        pass

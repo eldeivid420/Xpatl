@@ -100,6 +100,16 @@ def entregar_venta():
 
 def fechas_venta():
     try:
-        return json.dumps(Venta.fechas_venta())
+        return Venta.fechas_venta()
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+
+def registros_dia():
+    try:
+        params = {
+            'fecha': request.json.get('fecha')
+        }
+        return Venta.registgros_dia(params)
     except Exception as e:
         return {'error': str(e)}, 400
