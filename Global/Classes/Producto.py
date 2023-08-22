@@ -175,8 +175,7 @@ class Producto:
         Un diccionario con los productos ordenados
 
         """
-
-        #productos = {}
+        lista = []
         todos = None
         if params['orden'] == 'alfabetico' and params['invertido'] == True:
             todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre desc''', (), True)
@@ -193,8 +192,10 @@ class Producto:
             raise Exception('No hay productos')
         #for i in range(len(todos)):
          #   productos[i] = todos[i]
+        for i in range(len(todos)):
+            lista.append({'id': todos[i][0], 'nombre': todos[i][1], 'precio': todos[i][2], 'precio_esp': todos[i][3], 'disponibles': todos[i][4], 'sku': todos[i][4], 'estatus': todos[i][5]})
 
-        return todos
+        return lista
 
 
 

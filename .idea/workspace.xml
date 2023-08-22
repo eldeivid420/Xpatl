@@ -6,12 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="70b12a39-bfb3-45b2-9766-3bd8d67705db" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Xpatl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Xpatl.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Classes/Comision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Comision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Classes/Producto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Producto.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Global/Classes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Venta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Controllers/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Controllers/Venta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Routes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Routes/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Controllers/Comision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Controllers/Comision.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Routes/Comision.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Routes/Comision.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -88,7 +88,7 @@ class Venta:
         self.id = params['id']
         if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
-        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.fecha = get(
+        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
 
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
@@ -159,10 +159,6 @@ class Venta:
             raise Exception('La venta ya había sido entregada')
         post('''UPDATE venta SET estatus = 'entregado' WHERE id = %s''', (id,), False)
 
-    '''    @classmethod
-    def registros_dia(cls, params):
-        fecha = params['fecha']
-        registros = '''
 
     @classmethod
     def fechas_venta(cls):
@@ -176,5 +172,16 @@ class Venta:
 
     @classmethod
     def registgros_dia(cls, params):
+        registros = get('''SELECT * FROM venta WHERE TO_CHAR(fecha, 'DD/MM/YYYY') = %s''', (params['fecha'],), True)
+        if not registros:
+            raise Exception('No hay ventas registradas para la fecha seleccionada')
         ventas = []
-        pass
+        for i in range(len(registros)):
+            ventas.append(
+                {'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2], 'tipo': registros[i][3],
+                 'estatus': registros[i][4], 'proveedor': registros[i][5], 'proveedor_notas': registros[i][6],
+                 'descuento': registros[i][7], 'subtotal': registros[i][8], 'total': registros[i][9],
+                 'comision': registros[i][10], 'fecha': registros[i][11].strftime("%d/%m/%Y")})
+        return ventas
+
+
