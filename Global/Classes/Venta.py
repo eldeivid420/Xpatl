@@ -55,7 +55,8 @@ class Venta:
                 , True
             )[0]
         for producto in self.productos:
-            post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto, self.id), False)
+            for i in range(producto['cantidad']):
+                post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto['sku'], self.id), False)
 
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
@@ -114,7 +115,7 @@ class Venta:
 
         suma = 0
         for producto in self.productos:
-            precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto,), False)[0]
+            precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
             suma += precio
 
         return round(suma, 2)
