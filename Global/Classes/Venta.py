@@ -107,6 +107,11 @@ class Venta:
             raise Exception('No hay venta con el id proporcionado')
         self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
+        if self.proveedor:
+            self.comprador = self.proveedor
+            self.proveedor = True
+        else:
+            self.proveedor = False
 
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
@@ -165,6 +170,7 @@ class Venta:
             raise Exception('Ingrese una forma de pago válida')
         post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
 
+
     @classmethod
     def entregar_venta(cls, params):
         id = params['id']
@@ -192,47 +198,57 @@ class Venta:
         if not registros:
             raise Exception('No hay ventas registradas para la fecha seleccionada')
         ventas = []
+
         for i in range(len(registros)):
+            if registros[i][6]:
+                comprador = registros[i][6]
+                proveedor = True
+            else:
+                proveedor = False
+                comprador = registros[i][5]
             ventas.append(
                 {'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2], 'tipo': registros[i][3],
-                 'estatus': registros[i][4],'comprador': registros[i][5], 'proveedor': registros[i][6], 'proveedor_notas': registros[i][7],
+                 'estatus': registros[i][4],'comprador': comprador, 'proveedor': proveedor, 'proveedor_notas': registros[i][7],
                  'descuento': registros[i][8], 'subtotal': registros[i][9], 'total': registros[i][10],
                  'comision': registros[i][11], 'fecha': registros[i][12].strftime("%d/%m/%Y")})
         return ventas
 
     def generar_pdf(self):
-        elements = [
-            {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
-            {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
-             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
-             'multiline': False},
-            {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
-             'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
-             'multiline': False},
-            {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
-             'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
-             'multiline': False},
-            {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
-             'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD', 'priority': 2,
-             'multiline': False},
-            {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0, 'font': 'helvetica',
-             'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'CANTIDAD', 'priority': 2,
-             'multiline': False},
-            {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
-             'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
-             'multiline': False}
-        ]
-        # here we instantiate the template
-        f = Template(format="letter", elements=elements,
-                     title="Sample Invoice")
-        f.add_page()
+        if len(self.detalles_productos) < 7:
+            elements = [
+                {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
+                {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
+                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
+                 'multiline': False},
+                {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
+                 'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
+                 'multiline': False},
+                {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
+                 'multiline': False},
+                {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD', 'priority': 2,
+                 'multiline': False},
+                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'CANTIDAD', 'priority': 2,
+                 'multiline': False},
+                {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
+                 'multiline': False}
+            ]
+            # here we instantiate the template
+            f = Template(format="letter", elements=elements,
+                         title="Sample Invoice")
+            f.add_page()
 
-        # we FILL some of the fields of the template with the information we want
-        # note we access the elements treating the template instance as a "dict"
-        f["title"] = "RESUMEN DE TU COMPRA"
-        f["company_logo"] = "tutorial/logo.png"
+            # we FILL some of the fields of the template with the information we want
+            # note we access the elements treating the template instance as a "dict"
+            f["title"] = "RESUMEN DE TU COMPRA"
+            f["company_logo"] = "tutorial/logo.png"
 
-        # and now we render the page
-        f.render("./template.pdf")
+            # and now we render the page
+            f.render("./template.pdf")
+        elif len(self.detalles_productos) > 7:
+            pass
 
 

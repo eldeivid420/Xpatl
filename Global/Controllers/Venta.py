@@ -68,6 +68,8 @@ def pagar_venta():
             'tipo': request.json.get('tipo')
         }
         Venta.pagar_venta(params)
+        venta = Venta(params)
+        venta.generar_pdf()
         return f'Pago realizado exitosamente'
     except Exception as e:
         return {'error': str(e)}, 400
