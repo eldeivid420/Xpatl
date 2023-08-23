@@ -41,7 +41,7 @@ class Venta:
         self.productos = params['productos']
         self.subtotal = self.calcular_subtotal()
         self.total = self.calcular_total()
-        self.comision = (self.total*0.8)*0.1
+        self.comision = (self.subtotal*0.8)*0.1
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
         # Verificamos si es una venta para un proveedor
