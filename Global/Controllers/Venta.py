@@ -19,7 +19,8 @@ def crear_venta():
         try:
             venta = Venta(params, False)
         except Exception as e:
-            return {'error': str(e)}, 400
+            diccionario = json.loads(str(e))
+            return {'error': diccionario}, 400
         return f'Venta registrada con el id {venta.id}', 200
     except Exception as e:
         return {'error': str(e)}, 400
