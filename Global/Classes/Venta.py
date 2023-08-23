@@ -13,6 +13,7 @@ class Venta:
         self.sub_id = None
         self.tipo = None
         self.estatus = None
+        self.comprador = None
         self.proveedor = None
         self.proveedor_notas = None
         self.descuento = None
@@ -30,6 +31,7 @@ class Venta:
 
         self.vendedor = params['vendedor']
         self.sub_id = self.obtener_subid()
+        self.comprador = params['comprador']
         self.proveedor = params['proveedor']
         self.proveedor_notas = params['proveedor_notas']
         self.descuento = params['descuento']
@@ -42,22 +44,21 @@ class Venta:
         # Verificamos si es una venta para un proveedor
         if self.proveedor and self.descuento:
             self.id = post(
-                '''INSERT INTO venta(vendedor,sub_id,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
-                VALUES(%s, %s,%s,%s,%s,%s,%s,%s) RETURNING id'''
-                , (self.vendedor, self.sub_id, self.proveedor, self.proveedor_notas,
+                '''INSERT INTO venta(vendedor,sub_id,comprador,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
+                VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id'''
+                , (self.vendedor, self.sub_id,self.comprador, self.proveedor, self.proveedor_notas,
                    self.descuento, self.subtotal, self.total,self.comision), True)[0]
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor, sub_id,subtotal,total,comision) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING 
+                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision) VALUES(%s,%s,%s,%s,%s,%s) RETURNING 
                 id'''
-                , (self.vendedor, self.sub_id, self.subtotal, self.total, self.comision)
+                , (self.vendedor,self.comprador, self.sub_id, self.subtotal, self.total, self.comision)
                 , True
             )[0]
         for producto in self.productos:
             for i in range(producto['cantidad']):
                 post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto['sku'], self.id), False)
-
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
         existe_registro = post(('''UPDATE comisiones SET monto = monto+%s WHERE vendedor = %s and TO_CHAR(fecha,
@@ -88,7 +89,7 @@ class Venta:
         self.id = params['id']
         if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
-        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha = get(
+        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
 
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
@@ -179,9 +180,9 @@ class Venta:
         for i in range(len(registros)):
             ventas.append(
                 {'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2], 'tipo': registros[i][3],
-                 'estatus': registros[i][4], 'proveedor': registros[i][5], 'proveedor_notas': registros[i][6],
-                 'descuento': registros[i][7], 'subtotal': registros[i][8], 'total': registros[i][9],
-                 'comision': registros[i][10], 'fecha': registros[i][11].strftime("%d/%m/%Y")})
+                 'estatus': registros[i][4],'comprador': registros[i][5], 'proveedor': registros[i][6], 'proveedor_notas': registros[i][7],
+                 'descuento': registros[i][8], 'subtotal': registros[i][9], 'total': registros[i][10],
+                 'comision': registros[i][11], 'fecha': registros[i][12].strftime("%d/%m/%Y")})
         return ventas
 
 

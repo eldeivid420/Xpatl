@@ -19,6 +19,7 @@ CREATE TABLE public.venta
     sub_id INT NOT NULL,
     tipo tipo DEFAULT NULL,
     estatus estatus DEFAULT 'creado',
+    comprador varchar(50),
     proveedor varchar(50),
     proveedor_notas varchar,
     descuento float,
