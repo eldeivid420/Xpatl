@@ -3,3 +3,4 @@ flask
 psycopg2
 pyjwt
 flask_cors
+fpdf2
