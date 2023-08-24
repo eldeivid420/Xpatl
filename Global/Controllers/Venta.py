@@ -118,3 +118,10 @@ def registros_dia():
         return Venta.registgros_dia(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def cobrador_pedidos():
+    try:
+        return Venta.cobrador_pedidos()
+    except Exception as e:
+        return {'error': str(e)}, 400

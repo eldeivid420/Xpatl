@@ -227,14 +227,38 @@ class Venta:
                  'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
                  'multiline': False},
                 {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD', 'priority': 2,
-                 'multiline': False},
-                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'CANTIDAD', 'priority': 2,
-                 'multiline': False},
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD',
+                 'priority': 2, 'multiline': False},
+                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'CANTIDAD', 'priority': 2, 'multiline': False},
                 {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
                  'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
-                 'multiline': False}
+                 'multiline': False},
+                {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
+                 'multiline': False},
+                {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '300000.00$', 'priority': 2, 'multiline': False},
+                {'name': 'descuento', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'DESCUENTO:', 'priority': 2, 'multiline': False},
+                {'name': 'monto_descuento', 'type': 'T', 'x1': 65.0, 'y1': 245.0, 'x2': 105.0, 'y2': 245.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '300000.00$', 'priority': 2, 'multiline': False},
+                {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
+                 'multiline': False},
+                {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '300000.00$', 'priority': 2, 'multiline': False},
+                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
+                 'priority': 2, 'multiline': False},
+                {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}
             ]
             # here we instantiate the template
             f = Template(format="letter", elements=elements,
@@ -251,4 +275,22 @@ class Venta:
         elif len(self.detalles_productos) > 7:
             pass
 
+    @classmethod
+    def cobrador_pedidos(cls):
+        pedidos = []
+        registros = get("""SELECT id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""",(),True)
+        if not registros:
+            raise Exception('No hay pagos pendientes')
+
+        for i in range(len(registros)):
+            if registros[i][2]:
+                comprador = registros[i][2]
+                proveedor = True
+            else:
+                proveedor = False
+                comprador = registros[i][1]
+            pedidos.append({'id': registros[i][0],'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][3],
+                            'descuento': registros[i][4], 'total': registros[i][5]})
+
+        return pedidos
 

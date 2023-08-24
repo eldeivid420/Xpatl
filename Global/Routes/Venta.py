@@ -38,6 +38,10 @@ def fechas_venta():
 def registros_dia():
     return v.registros_dia()
 
+@GLOBAL_VENTA_BLUEPRINT.route('/cobrador-pedidos', methods=['GET'])
+def cobrador_pedidos():
+    return v.cobrador_pedidos()
+
 
 
 
