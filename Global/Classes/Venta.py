@@ -7,6 +7,51 @@ from fpdf import Template
 # TODO: Documentar
 primera_venta = 1
 
+template1 = [
+                {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
+                {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
+                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
+                 'multiline': False},
+                {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
+                 'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
+                 'multiline': False},
+                {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
+                 'multiline': False},
+                {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD',
+                 'priority': 2, 'multiline': False},
+                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'CANTIDAD', 'priority': 2, 'multiline': False},
+                {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
+                 'multiline': False},
+                {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
+                 'multiline': False},
+                {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '', 'priority': 2, 'multiline': False},
+                {'name': 'descuento', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'DESCUENTO:', 'priority': 2, 'multiline': False},
+                {'name': 'monto_descuento', 'type': 'T', 'x1': 65.0, 'y1': 245.0, 'x2': 105.0, 'y2': 245.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '', 'priority': 2, 'multiline': False},
+                {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
+                 'multiline': False},
+                {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': '', 'priority': 2, 'multiline': False},
+                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
+                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
+                 'priority': 2, 'multiline': False},
+                {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
+                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}
+            ]
 
 class Venta:
 
@@ -117,8 +162,9 @@ class Venta:
 
         self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
 
-        for i in range(len(self.productos)):
-            sku = self.productos[i][0]
+        diferentes = get('''SELECT producto FROM producto_venta WHERE venta = %s GROUP BY producto''', (self.id,), True)
+        for i in range(len(diferentes)):
+            sku = diferentes[i][0]
             nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
             cantidad = get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id), False)[0]
             self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad, 'total_producto': cantidad*precio})
@@ -213,68 +259,6 @@ class Venta:
                  'comision': registros[i][11], 'fecha': registros[i][12].strftime("%d/%m/%Y")})
         return ventas
 
-    def generar_pdf(self):
-        if len(self.detalles_productos) < 7:
-            elements = [
-                {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
-                {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
-                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
-                 'multiline': False},
-                {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
-                 'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
-                 'multiline': False},
-                {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
-                 'multiline': False},
-                {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD',
-                 'priority': 2, 'multiline': False},
-                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'CANTIDAD', 'priority': 2, 'multiline': False},
-                {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
-                 'multiline': False},
-                {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
-                 'multiline': False},
-                {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '300000.00$', 'priority': 2, 'multiline': False},
-                {'name': 'descuento', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'DESCUENTO:', 'priority': 2, 'multiline': False},
-                {'name': 'monto_descuento', 'type': 'T', 'x1': 65.0, 'y1': 245.0, 'x2': 105.0, 'y2': 245.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '300000.00$', 'priority': 2, 'multiline': False},
-                {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
-                 'multiline': False},
-                {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '300000.00$', 'priority': 2, 'multiline': False},
-                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
-                 'priority': 2, 'multiline': False},
-                {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}
-            ]
-            # here we instantiate the template
-            f = Template(format="letter", elements=elements,
-                         title="Sample Invoice")
-            f.add_page()
-
-            # we FILL some of the fields of the template with the information we want
-            # note we access the elements treating the template instance as a "dict"
-            f["title"] = "RESUMEN DE TU COMPRA"
-            f["company_logo"] = "tutorial/logo.png"
-
-            # and now we render the page
-            f.render("./template.pdf")
-        elif len(self.detalles_productos) > 7:
-            pass
-
     @classmethod
     def cobrador_pedidos(cls):
         pedidos = []
@@ -293,4 +277,55 @@ class Venta:
                             'descuento': registros[i][4], 'total': registros[i][5]})
 
         return pedidos
+
+    def generar_pdf(self):
+        elements = template1
+        y1y2 = 70.0
+        nproductos = len(self.detalles_productos)
+
+        if nproductos < 14:
+            for i in range(nproductos):
+                elements.append(
+                    {'name': f'producto{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2, 'x2': 95.0, 'y2': y1y2,
+                     'font': 'helvetica', 'size': 10, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                     'text': self.detalles_productos[i]["nombre"], 'priority': 2, 'multiline': True})
+                elements.append(
+                    {'name': f'sku{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2 + 3.0, 'x2': 50.0, 'y2': y1y2 + 5.0,
+                     'font': 'helvetica',
+                     'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                     'text': self.detalles_productos[i]["sku"],
+                     'priority': 2, 'multiline': False})
+                elements.append(
+                    {'name': f'precio{i}', 'type': 'T', 'x1': 95.0, 'y1': y1y2, 'x2': 120.0, 'y2': y1y2,
+                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                     'text': str(f'{self.detalles_productos[i]["precio"]}$'), 'priority': 2, 'multiline': False})
+                elements.append(
+                    {'name': f'cantidad{i}', 'type': 'T', 'x1': 144.0, 'y1': y1y2, 'x2': 165.0, 'y2': y1y2,
+                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                     'text': str(self.detalles_productos[i]["cantidad"]), 'priority': 2, 'multiline': False})
+                elements.append(
+                    {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
+                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                     'text': str(self.detalles_productos[i]["total_producto"]), 'priority': 2, 'multiline': False})
+                y1y2 += 10.0
+        # here we instantiate the template
+        f = Template(format="letter", elements=elements,
+                     title="Sample Invoice")
+        f.add_page()
+
+        f["title"] = "RESUMEN DE TU COMPRA"
+        f["company_logo"] = "Global/Utils/logo.png"
+        f["monto_subtotal"] = str(f'{self.subtotal}$')
+
+        if self.descuento:
+            f["monto_descuento"] = str(f'{self.descuento}$')
+        else:
+            f["descuento"] = ""
+
+        f["monto_total"] = str(f'{self.total}$')
+        f["metodo_texto"] = self.tipo
+
+        f.render("./template.pdf")
+
+
 
