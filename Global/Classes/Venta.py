@@ -3,6 +3,7 @@ import json
 from Global.Utils.db import post, get
 import datetime
 from fpdf import FPDF, FlexTemplate
+import os
 
 # TODO: Documentar
 primera_venta = 1
@@ -332,17 +333,17 @@ class Venta:
             lista.append(
                 {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'${productos[i]["total_producto"]}'), 'priority': 2, 'multiline': False})
+                 'text': str(f'${round(productos[i]["total_producto"],2)}'), 'priority': 2, 'multiline': False})
 
         def subtemplate_override(f):
-            f["monto_subtotal"] = str(f'${self.subtotal}')
+            f["monto_subtotal"] = str(f'${round(self.subtotal,2)}')
 
             if self.descuento:
-                f["monto_descuento"] = str(f'${float(self.subtotal * (self.descuento / 100.00))}')
+                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)),2)}')
             else:
                 f["descuento"] = ""
 
-            f["monto_total"] = str(f'${self.total}')
+            f["monto_total"] = str(f'${round(self.total,2)}')
             f["id_valor"] = str(f'#{self.id}')
             if self.tipo == 'credito':
                 tipo = 'Tarjeta de crédito'
@@ -351,17 +352,18 @@ class Venta:
             elif self.tipo == 'credito proveedor':
                 tipo = 'A crédito de distribuidor'
             else:
-                tipo = self.tipo
+                tipo = 'Efectivo'
             f["metodo_texto"] = tipo
 
         pdf = FPDF(format='letter')
         y1y2 = 70.0
 
+
         if nproductos < 17:
-            elements = template
+
+            elements = template.copy()
             pdf.add_page()
             for i in range(nproductos):
-                print(i)
                 escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
             temp1 = FlexTemplate(pdf, elements=elements)
@@ -373,7 +375,7 @@ class Venta:
             temp2.render()
             pdf.output("./template.pdf")
         elif 16 < nproductos < 34:
-            elements = template
+            elements = template.copy()
             pdf.add_page()
             for i in range(16):
                 escribir(i, productos, y1y2, elements)
@@ -398,7 +400,7 @@ class Venta:
             temp3.render()
             pdf.output("./template.pdf")
         elif 33 < nproductos < 50:
-            elements = template
+            elements = template.copy()
             pdf.add_page()
             for i in range(16):
                 escribir(i, productos, y1y2, elements)
@@ -431,4 +433,5 @@ class Venta:
             subtemplate_override(temp4)
             temp3.render()
             temp4.render()
+            #os.remove("./template.pdf")
             pdf.output("./template.pdf")
