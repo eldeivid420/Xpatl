@@ -273,20 +273,28 @@ class Venta:
     def cobrador_pedidos(cls):
         pedidos = []
         registros = get(
-            """SELECT id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (), True)
+            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (), True)
         if not registros:
             raise Exception('No hay pagos pendientes')
 
         for i in range(len(registros)):
-            if registros[i][2]:
-                comprador = registros[i][2]
+            if registros[i][3]:
+                comprador = registros[i][3]
                 proveedor = True
             else:
                 proveedor = False
-                comprador = registros[i][1]
+                comprador = registros[i][2]
+            venta = Venta({'id':registros[i][0]})
+
+            productos = []
+            for i in range(len(venta.detalles_productos)):
+                productos.append({'nombre': venta.detalles_productos[i]['nombre'],
+                                  'cantidad': venta.detalles_productos[i]['cantidad'],
+                                  'total_producto': venta.detalles_productos[i]['total_producto']})
             pedidos.append(
-                {'id': registros[i][0], 'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][3],
-                 'descuento': registros[i][4], 'total': registros[i][5]})
+                {'id': registros[i][0],'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][4],
+                 'descuento': registros[i][5], 'total': registros[i][6], 'productos': productos})
+
 
         return pedidos
 
@@ -351,7 +359,6 @@ class Venta:
             pdf.output("./template.pdf")
         elif 16 < nproductos < 34:
             elements = template
-            print(len(elements),len(template))
             pdf.add_page()
             for i in range(16):
                 escribir(i, productos, y1y2, elements)
@@ -375,6 +382,42 @@ class Venta:
             temp2.render()
             temp3.render()
             pdf.output("./template.pdf")
+        elif 33 < nproductos < 50:
+            elements = template
+            pdf.add_page()
+            for i in range(16):
+                escribir(i, productos, y1y2, elements)
+                y1y2 += 10.0
+            temp1 = FlexTemplate(pdf, elements=elements)
+            temp1["title"] = "RESUMEN DE TU COMPRA"
+            temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1.render()
+            pdf.add_page()
+            elements2 = elements[:7]
+            y1y2 = 70.0
+            for i in range(33):
+                escribir(i, productos, y1y2, elements2)
+                y1y2 += 10.0
+
+            temp2 = FlexTemplate(pdf, elements=elements2)
+            temp2["title"] = "RESUMEN DE TU COMPRA"
+            temp2["company_logo"] = "Global/Utils/logo.png"
+            temp2.render()
+            pdf.add_page()
+            elements3 = elements[:7]
+            y1y2 = 70.0
+            for i in range(33, nproductos):
+                escribir(i, productos, y1y2, elements2)
+                y1y2 += 10.0
+            temp3 = FlexTemplate(pdf, elements=elements3)
+            temp4 = FlexTemplate(pdf, elements=subtemplate)
+            temp3["title"] = "RESUMEN DE TU COMPRA"
+            temp3["company_logo"] = "Global/Utils/logo.png"
+            subtemplate_override(temp4)
+            temp3.render()
+            temp4.render()
+            pdf.output("./template.pdf")
+
 
 
 
