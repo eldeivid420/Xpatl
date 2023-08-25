@@ -344,7 +344,15 @@ class Venta:
 
             f["monto_total"] = str(f'${self.total}')
             f["id_valor"] = str(f'#{self.id}')
-            f["metodo_texto"] = self.tipo
+            if self.tipo == 'credito':
+                tipo = 'Tarjeta de crédito'
+            elif self.tipo == 'debito':
+                tipo = 'Tarjeta de débito'
+            elif self.tipo == 'credito proveedor':
+                tipo = 'A crédito de distribuidor'
+            else:
+                tipo = self.tipo
+            f["metodo_texto"] = tipo
 
         pdf = FPDF(format='letter')
         y1y2 = 70.0
