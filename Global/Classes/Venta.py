@@ -46,18 +46,23 @@ subtemplate = [{'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 
                {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
                 'multiline': False},
-
                {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+
+               {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0,
+                'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': 'NÚMERO DE PEDIDO:', 'priority': 2, 'multiline': False},
+               {'name': 'id_valor', 'type': 'T', 'x1': 150.0, 'y1': 245.0, 'x2': 160.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
                 'priority': 2, 'multiline': False},
-
                {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}]
+                'text': '', 'priority': 2, 'multiline': False}]
 
 
 class Venta:
@@ -273,7 +278,8 @@ class Venta:
     def cobrador_pedidos(cls):
         pedidos = []
         registros = get(
-            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (), True)
+            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (),
+            True)
         if not registros:
             raise Exception('No hay pagos pendientes')
 
@@ -284,7 +290,7 @@ class Venta:
             else:
                 proveedor = False
                 comprador = registros[i][2]
-            venta = Venta({'id':registros[i][0]})
+            venta = Venta({'id': registros[i][0]})
 
             productos = []
             for i in range(len(venta.detalles_productos)):
@@ -292,9 +298,9 @@ class Venta:
                                   'cantidad': venta.detalles_productos[i]['cantidad'],
                                   'total_producto': venta.detalles_productos[i]['total_producto']})
             pedidos.append(
-                {'id': registros[i][0],'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][4],
+                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor,
+                 'subtotal': registros[i][4],
                  'descuento': registros[i][5], 'total': registros[i][6], 'productos': productos})
-
 
         return pedidos
 
@@ -318,7 +324,7 @@ class Venta:
             lista.append(
                 {'name': f'precio{i}', 'type': 'T', 'x1': 95.0, 'y1': y1y2, 'x2': 120.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'{productos[i]["precio"]}$'), 'priority': 2, 'multiline': False})
+                 'text': str(f'${productos[i]["precio"]}'), 'priority': 2, 'multiline': False})
             lista.append(
                 {'name': f'cantidad{i}', 'type': 'T', 'x1': 144.0, 'y1': y1y2, 'x2': 165.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
@@ -326,17 +332,18 @@ class Venta:
             lista.append(
                 {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'{productos[i]["total_producto"]}$ '), 'priority': 2, 'multiline': False})
+                 'text': str(f'${productos[i]["total_producto"]}'), 'priority': 2, 'multiline': False})
 
         def subtemplate_override(f):
-            f["monto_subtotal"] = str(f'{self.subtotal}$')
+            f["monto_subtotal"] = str(f'${self.subtotal}')
 
             if self.descuento:
-                f["monto_descuento"] = str(f'{float(self.subtotal * (self.descuento / 100.00))}$')
+                f["monto_descuento"] = str(f'${float(self.subtotal * (self.descuento / 100.00))}')
             else:
                 f["descuento"] = ""
 
-            f["monto_total"] = str(f'{self.total}$')
+            f["monto_total"] = str(f'${self.total}')
+            f["id_valor"] = str(f'#{self.id}')
             f["metodo_texto"] = self.tipo
 
         pdf = FPDF(format='letter')
@@ -417,8 +424,3 @@ class Venta:
             temp3.render()
             temp4.render()
             pdf.output("./template.pdf")
-
-
-
-
-
