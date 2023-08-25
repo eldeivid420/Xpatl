@@ -2,56 +2,63 @@ import json
 
 from Global.Utils.db import post, get
 import datetime
-from fpdf import Template
+from fpdf import FPDF, FlexTemplate
 
 # TODO: Documentar
 primera_venta = 1
 
-template1 = [
-                {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
-                {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
-                 'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
-                 'multiline': False},
-                {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
-                 'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
-                 'multiline': False},
-                {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
-                 'multiline': False},
-                {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD',
-                 'priority': 2, 'multiline': False},
-                {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'CANTIDAD', 'priority': 2, 'multiline': False},
-                {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
-                 'multiline': False},
-                {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
-                 'multiline': False},
-                {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '', 'priority': 2, 'multiline': False},
-                {'name': 'descuento', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'DESCUENTO:', 'priority': 2, 'multiline': False},
-                {'name': 'monto_descuento', 'type': 'T', 'x1': 65.0, 'y1': 245.0, 'x2': 105.0, 'y2': 245.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '', 'priority': 2, 'multiline': False},
-                {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
-                 'multiline': False},
-                {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': '', 'priority': 2, 'multiline': False},
-                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
-                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
-                 'priority': 2, 'multiline': False},
-                {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
-                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}
-            ]
+template = [
+    {'name': 'border', 'type': 'B', 'x1': 10.0, 'y1': 10., 'x2': 205.9, 'y2': 269.4},
+    {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
+     'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
+     'multiline': False},
+    {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
+     'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
+     'multiline': False},
+    {'name': 'productos', 'type': 'T', 'x1': 20.0, 'y1': 60.0, 'x2': 50.0, 'y2': 65.0, 'font': 'helvetica',
+     'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRODUCTOS', 'priority': 2,
+     'multiline': False},
+    {'name': 'precios', 'type': 'T', 'x1': 85.0, 'y1': 60.0, 'x2': 130.0, 'y2': 65.0, 'font': 'helvetica',
+     'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'PRECIO X UNIDAD',
+     'priority': 2, 'multiline': False},
+    {'name': 'cantidades', 'type': 'T', 'x1': 135.0, 'y1': 60.0, 'x2': 165.0, 'y2': 65.0,
+     'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+     'text': 'CANTIDAD', 'priority': 2, 'multiline': False},
+    {'name': 'totales', 'type': 'T', 'x1': 175.0, 'y1': 60.0, 'x2': 195.0, 'y2': 65.0, 'font': 'helvetica',
+     'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL', 'priority': 2,
+     'multiline': False}
+
+]
+
+subtemplate = [{'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
+                'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
+                'multiline': False},
+               {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'descuento', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0,
+                'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': 'DESCUENTO:', 'priority': 2, 'multiline': False},
+               {'name': 'monto_descuento', 'type': 'T', 'x1': 65.0, 'y1': 245.0, 'x2': 105.0, 'y2': 245.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+
+               {'name': 'total', 'type': 'T', 'x1': 20.0, 'y1': 255.0, 'x2': 65.0, 'y2': 255.0, 'font': 'helvetica',
+                'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'TOTAL:', 'priority': 2,
+                'multiline': False},
+
+               {'name': 'monto_total', 'type': 'T', 'x1': 65.0, 'y1': 255.0, 'x2': 105.0, 'y2': 255.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+
+               {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
+                'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
+                'priority': 2, 'multiline': False},
+
+               {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': 'CRÉDITO PROVEEDORRR', 'priority': 2, 'multiline': False}]
+
 
 class Venta:
 
@@ -86,7 +93,7 @@ class Venta:
         self.productos = params['productos']
         self.subtotal = self.calcular_subtotal()
         self.total = self.calcular_total()
-        self.comision = (self.subtotal*0.8)*0.1
+        self.comision = (self.subtotal * 0.8) * 0.1
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
         # Verificamos si es una venta para un proveedor
@@ -95,21 +102,22 @@ class Venta:
             self.id = post(
                 '''INSERT INTO venta(vendedor,sub_id,comprador,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
                 VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id'''
-                , (self.vendedor, self.sub_id,self.comprador, self.proveedor, self.proveedor_notas,
-                   self.descuento, self.subtotal, self.total,self.comision), True)[0]
+                , (self.vendedor, self.sub_id, self.comprador, self.proveedor, self.proveedor_notas,
+                   self.descuento, self.subtotal, self.total, self.comision), True)[0]
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
                 '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision) VALUES(%s,%s,%s,%s,%s,%s) RETURNING 
                 id'''
-                , (self.vendedor,self.comprador, self.sub_id, self.subtotal, self.total, self.comision)
+                , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision)
                 , True
             )[0]
         for producto in self.productos:
-            disponible, nombre = get('''SELECT disponibles, nombre FROM producto WHERE sku = %s''', (producto['sku'],),False)
+            disponible, nombre = get('''SELECT disponibles, nombre FROM producto WHERE sku = %s''', (producto['sku'],),
+                                     False)
             if disponible < producto['cantidad']:
                 productos_agotados = []
-                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1''',(),True)
+                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1''', (), True)
                 for i in range(len(registros_agotados)):
                     productos_agotados.append(registros_agotados[i][0])
                 info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
@@ -118,7 +126,8 @@ class Venta:
             for i in range(producto['cantidad']):
                 post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto['sku'], self.id),
                      False)
-            post('''UPDATE producto SET disponibles = disponibles-%s WHERE sku = %s''', (producto['cantidad'], producto['sku']), False)
+            post('''UPDATE producto SET disponibles = disponibles-%s WHERE sku = %s''',
+                 (producto['cantidad'], producto['sku']), False)
 
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
@@ -166,10 +175,11 @@ class Venta:
         for i in range(len(diferentes)):
             sku = diferentes[i][0]
             nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
-            cantidad = get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id), False)[0]
-            self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad, 'total_producto': cantidad*precio})
-
-
+            cantidad = \
+                get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
+                    False)[0]
+            self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
+                                            'total_producto': cantidad * precio})
 
     @classmethod
     def cancelar_venta(cls, params):
@@ -184,18 +194,18 @@ class Venta:
         suma = 0
         for producto in self.productos:
             precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
-            suma += precio*producto['cantidad']
+            suma += precio * producto['cantidad']
 
         return round(suma, 2)
 
     def calcular_total(self):
         if self.proveedor:
-            total = self.subtotal * (self.descuento/100)
+            total = self.subtotal * (self.descuento / 100)
             return round(total, 2)
         else:
             return self.subtotal
 
-    def obtener_subid(self, add = False):
+    def obtener_subid(self, add=False):
         global primera_venta
         anterior = primera_venta
         if add:
@@ -216,7 +226,6 @@ class Venta:
             raise Exception('Ingrese una forma de pago válida')
         post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
 
-
     @classmethod
     def entregar_venta(cls, params):
         id = params['id']
@@ -227,11 +236,11 @@ class Venta:
             raise Exception('La venta ya había sido entregada')
         post('''UPDATE venta SET estatus = 'entregado' WHERE id = %s''', (id,), False)
 
-
     @classmethod
     def fechas_venta(cls):
         fechas = []
-        registros = get('''SELECT TO_CHAR(fecha, 'DD/MM/YYYY') FROM comisiones GROUP BY TO_CHAR(fecha, 'DD/MM/YYYY')''', (), True)
+        registros = get('''SELECT TO_CHAR(fecha, 'DD/MM/YYYY') FROM comisiones GROUP BY TO_CHAR(fecha, 'DD/MM/YYYY')''',
+                        (), True)
         if not registros:
             raise Exception('No hay ventas registradas en la base de datos')
         for i in range(len(registros)):
@@ -254,7 +263,8 @@ class Venta:
                 comprador = registros[i][5]
             ventas.append(
                 {'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2], 'tipo': registros[i][3],
-                 'estatus': registros[i][4],'comprador': comprador, 'proveedor': proveedor, 'proveedor_notas': registros[i][7],
+                 'estatus': registros[i][4], 'comprador': comprador, 'proveedor': proveedor,
+                 'proveedor_notas': registros[i][7],
                  'descuento': registros[i][8], 'subtotal': registros[i][9], 'total': registros[i][10],
                  'comision': registros[i][11], 'fecha': registros[i][12].strftime("%d/%m/%Y")})
         return ventas
@@ -262,7 +272,8 @@ class Venta:
     @classmethod
     def cobrador_pedidos(cls):
         pedidos = []
-        registros = get("""SELECT id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""",(),True)
+        registros = get(
+            """SELECT id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (), True)
         if not registros:
             raise Exception('No hay pagos pendientes')
 
@@ -273,59 +284,98 @@ class Venta:
             else:
                 proveedor = False
                 comprador = registros[i][1]
-            pedidos.append({'id': registros[i][0],'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][3],
-                            'descuento': registros[i][4], 'total': registros[i][5]})
+            pedidos.append(
+                {'id': registros[i][0], 'comprador': comprador, 'proveedor': proveedor, 'subtotal': registros[i][3],
+                 'descuento': registros[i][4], 'total': registros[i][5]})
 
         return pedidos
 
     def generar_pdf(self):
-        elements = template1
-        y1y2 = 70.0
+
         nproductos = len(self.detalles_productos)
+        productos = self.detalles_productos
 
-        if nproductos < 14:
+        def escribir(i, productos, y1y2, lista):
+
+            lista.append(
+                {'name': f'producto{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2, 'x2': 95.0, 'y2': y1y2,
+                 'font': 'helvetica', 'size': 10, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': productos[i]["nombre"], 'priority': 2, 'multiline': True})
+            lista.append(
+                {'name': f'sku{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2 + 3.0, 'x2': 50.0, 'y2': y1y2 + 5.0,
+                 'font': 'helvetica',
+                 'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': productos[i]["sku"],
+                 'priority': 2, 'multiline': False})
+            lista.append(
+                {'name': f'precio{i}', 'type': 'T', 'x1': 95.0, 'y1': y1y2, 'x2': 120.0, 'y2': y1y2,
+                 'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': str(f'{productos[i]["precio"]}$'), 'priority': 2, 'multiline': False})
+            lista.append(
+                {'name': f'cantidad{i}', 'type': 'T', 'x1': 144.0, 'y1': y1y2, 'x2': 165.0, 'y2': y1y2,
+                 'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': str(productos[i]["cantidad"]), 'priority': 2, 'multiline': False})
+            lista.append(
+                {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
+                 'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                 'text': str(f'{productos[i]["total_producto"]}$ '), 'priority': 2, 'multiline': False})
+
+        def subtemplate_override(f):
+            f["monto_subtotal"] = str(f'{self.subtotal}$')
+
+            if self.descuento:
+                f["monto_descuento"] = str(f'{float(self.subtotal * (self.descuento / 100.00))}$')
+            else:
+                f["descuento"] = ""
+
+            f["monto_total"] = str(f'{self.total}$')
+            f["metodo_texto"] = self.tipo
+
+        pdf = FPDF(format='letter')
+        y1y2 = 70.0
+
+        if nproductos < 17:
+            elements = template
+            pdf.add_page()
             for i in range(nproductos):
-                elements.append(
-                    {'name': f'producto{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2, 'x2': 95.0, 'y2': y1y2,
-                     'font': 'helvetica', 'size': 10, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                     'text': self.detalles_productos[i]["nombre"], 'priority': 2, 'multiline': True})
-                elements.append(
-                    {'name': f'sku{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2 + 3.0, 'x2': 50.0, 'y2': y1y2 + 5.0,
-                     'font': 'helvetica',
-                     'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                     'text': self.detalles_productos[i]["sku"],
-                     'priority': 2, 'multiline': False})
-                elements.append(
-                    {'name': f'precio{i}', 'type': 'T', 'x1': 95.0, 'y1': y1y2, 'x2': 120.0, 'y2': y1y2,
-                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                     'text': str(f'{self.detalles_productos[i]["precio"]}$'), 'priority': 2, 'multiline': False})
-                elements.append(
-                    {'name': f'cantidad{i}', 'type': 'T', 'x1': 144.0, 'y1': y1y2, 'x2': 165.0, 'y2': y1y2,
-                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                     'text': str(self.detalles_productos[i]["cantidad"]), 'priority': 2, 'multiline': False})
-                elements.append(
-                    {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
-                     'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                     'text': str(self.detalles_productos[i]["total_producto"]), 'priority': 2, 'multiline': False})
+                print(i)
+                escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
-        # here we instantiate the template
-        f = Template(format="letter", elements=elements,
-                     title="Sample Invoice")
-        f.add_page()
+            temp1 = FlexTemplate(pdf, elements=elements)
+            temp2 = FlexTemplate(pdf, elements=subtemplate)
+            temp1["title"] = "RESUMEN DE TU COMPRA"
+            temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1.render()
+            subtemplate_override(temp2)
+            temp2.render()
+            pdf.output("./template.pdf")
+        elif 16 < nproductos < 34:
+            elements = template
+            print(len(elements),len(template))
+            pdf.add_page()
+            for i in range(16):
+                escribir(i, productos, y1y2, elements)
+                y1y2 += 10.0
+            temp1 = FlexTemplate(pdf, elements=elements)
+            temp1["title"] = "RESUMEN DE TU COMPRA"
+            temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1.render()
+            pdf.add_page()
+            elements2 = elements[:7]
+            y1y2 = 70.0
+            for i in range(16, nproductos):
+                escribir(i, productos, y1y2, elements2)
+                y1y2 += 10.0
 
-        f["title"] = "RESUMEN DE TU COMPRA"
-        f["company_logo"] = "Global/Utils/logo.png"
-        f["monto_subtotal"] = str(f'{self.subtotal}$')
+            temp2 = FlexTemplate(pdf, elements=elements2)
+            temp3 = FlexTemplate(pdf, elements=subtemplate)
+            temp2["title"] = "RESUMEN DE TU COMPRA"
+            temp2["company_logo"] = "Global/Utils/logo.png"
+            subtemplate_override(temp3)
+            temp2.render()
+            temp3.render()
+            pdf.output("./template.pdf")
 
-        if self.descuento:
-            f["monto_descuento"] = str(f'{self.descuento}$')
-        else:
-            f["descuento"] = ""
-
-        f["monto_total"] = str(f'{self.total}$')
-        f["metodo_texto"] = self.tipo
-
-        f.render("./template.pdf")
 
 
 
