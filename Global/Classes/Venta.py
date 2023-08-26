@@ -51,12 +51,21 @@ subtemplate = [{'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
+               {'name': 'distribuidor', 'type': 'T', 'x1': 100.0, 'y1': 215.0, 'x2': 180.0, 'y2': 215.0,
+                'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'distribuidor_nombre', 'type': 'T', 'x1': 100.0, 'y1': 225.0, 'x2': 180.0, 'y2': 225.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': True},
+
+
                {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': 'NÚMERO DE PEDIDO:', 'priority': 2, 'multiline': False},
                {'name': 'id_valor', 'type': 'T', 'x1': 150.0, 'y1': 245.0, 'x2': 160.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
+
 
                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
@@ -199,8 +208,12 @@ class Venta:
 
         suma = 0
         for producto in self.productos:
-            precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
-            suma += precio * producto['cantidad']
+            if self.proveedor and self.descuento:
+                precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+                suma += precio * producto['cantidad']
+            else:
+                precio = get('''SELECT precio_esp FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+                suma += precio * producto['cantidad']
 
         return round(suma, 2)
 
@@ -344,6 +357,9 @@ class Venta:
                 f["descuento"] = ""
 
             f["monto_total"] = str(f'${round(self.total,2)}')
+            if self.proveedor:
+                f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
+                f["distribuidor_nombre"] = self.comprador
             f["id_valor"] = str(f'#{self.id}')
             if self.tipo == 'credito':
                 tipo = 'Tarjeta de crédito'
@@ -359,7 +375,7 @@ class Venta:
         y1y2 = 70.0
 
 
-        if nproductos < 17:
+        if nproductos < 16:
 
             elements = template.copy()
             pdf.add_page()
@@ -374,10 +390,10 @@ class Venta:
             subtemplate_override(temp2)
             temp2.render()
             pdf.output("./template.pdf")
-        elif 16 < nproductos < 34:
+        elif 15 < nproductos < 33:
             elements = template.copy()
             pdf.add_page()
-            for i in range(16):
+            for i in range(15):
                 escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
             temp1 = FlexTemplate(pdf, elements=elements)
@@ -387,7 +403,7 @@ class Venta:
             pdf.add_page()
             elements2 = elements[:7]
             y1y2 = 70.0
-            for i in range(16, nproductos):
+            for i in range(15, nproductos):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
 
@@ -399,10 +415,10 @@ class Venta:
             temp2.render()
             temp3.render()
             pdf.output("./template.pdf")
-        elif 33 < nproductos < 50:
+        elif 32 < nproductos < 49:
             elements = template.copy()
             pdf.add_page()
-            for i in range(16):
+            for i in range(15):
                 escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
             temp1 = FlexTemplate(pdf, elements=elements)
@@ -412,7 +428,7 @@ class Venta:
             pdf.add_page()
             elements2 = elements[:7]
             y1y2 = 70.0
-            for i in range(33):
+            for i in range(32):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
 
@@ -423,7 +439,7 @@ class Venta:
             pdf.add_page()
             elements3 = elements[:7]
             y1y2 = 70.0
-            for i in range(33, nproductos):
+            for i in range(32, nproductos):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
             temp3 = FlexTemplate(pdf, elements=elements3)
