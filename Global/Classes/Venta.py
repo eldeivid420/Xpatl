@@ -13,6 +13,9 @@ template = [
     {'name': 'company_logo', 'type': 'I', 'x1': 20.0, 'y1': 20.0, 'x2': 65.0, 'y2': 40.0, 'font': None,
      'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'logo', 'priority': 2,
      'multiline': False},
+    {'name': 'fecha', 'type': 'T', 'x1': 160.0, 'y1': 25.0, 'x2': 190.0, 'y2': 37.5, 'font': 'helvetica',
+     'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
+     'multiline': False},
     {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
      'size': 12.0, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
      'multiline': False},
@@ -31,7 +34,14 @@ template = [
 
 ]
 
-subtemplate = [{'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
+subtemplate = [{'name': 'distribuidor', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 195.0, 'y2': 215.0,
+                'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'distribuidor_nombre', 'type': 'T', 'x1': 85.0, 'y1': 230.0, 'x2': 180.0, 'y2': 225.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L','text': '',
+                'priority': 2, 'multiline': True},
+
+               {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'SUBTOTAL:', 'priority': 2,
                 'multiline': False},
                {'name': 'monto_subtotal', 'type': 'T', 'x1': 65.0, 'y1': 239.0, 'x2': 105.0, 'y2': 239.0,
@@ -51,21 +61,12 @@ subtemplate = [{'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
-               {'name': 'distribuidor', 'type': 'T', 'x1': 100.0, 'y1': 215.0, 'x2': 180.0, 'y2': 215.0,
-                'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
-                'text': '', 'priority': 2, 'multiline': False},
-               {'name': 'distribuidor_nombre', 'type': 'T', 'x1': 100.0, 'y1': 225.0, 'x2': 180.0, 'y2': 225.0,
-                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                'text': '', 'priority': 2, 'multiline': True},
-
-
                {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': 'NÚMERO DE PEDIDO:', 'priority': 2, 'multiline': False},
                {'name': 'id_valor', 'type': 'T', 'x1': 150.0, 'y1': 245.0, 'x2': 160.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
-
 
                {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
@@ -346,17 +347,17 @@ class Venta:
             lista.append(
                 {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'${round(productos[i]["total_producto"],2)}'), 'priority': 2, 'multiline': False})
+                 'text': str(f'${round(productos[i]["total_producto"], 2)}'), 'priority': 2, 'multiline': False})
 
         def subtemplate_override(f):
-            f["monto_subtotal"] = str(f'${round(self.subtotal,2)}')
+            f["monto_subtotal"] = str(f'${round(self.subtotal, 2)}')
 
             if self.descuento:
-                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)),2)}')
+                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
             else:
                 f["descuento"] = ""
 
-            f["monto_total"] = str(f'${round(self.total,2)}')
+            f["monto_total"] = str(f'${round(self.total, 2)}')
             if self.proveedor:
                 f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
                 f["distribuidor_nombre"] = self.comprador
@@ -374,7 +375,6 @@ class Venta:
         pdf = FPDF(format='letter')
         y1y2 = 70.0
 
-
         if nproductos < 16:
 
             elements = template.copy()
@@ -386,6 +386,7 @@ class Venta:
             temp2 = FlexTemplate(pdf, elements=subtemplate)
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1["fecha"] = self.fecha
             temp1.render()
             subtemplate_override(temp2)
             temp2.render()
@@ -399,6 +400,7 @@ class Venta:
             temp1 = FlexTemplate(pdf, elements=elements)
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1["fecha"] = self.fecha
             temp1.render()
             pdf.add_page()
             elements2 = elements[:7]
@@ -411,6 +413,7 @@ class Venta:
             temp3 = FlexTemplate(pdf, elements=subtemplate)
             temp2["title"] = "RESUMEN DE TU COMPRA"
             temp2["company_logo"] = "Global/Utils/logo.png"
+            temp2["fecha"] = temp1["fecha"]
             subtemplate_override(temp3)
             temp2.render()
             temp3.render()
@@ -424,6 +427,7 @@ class Venta:
             temp1 = FlexTemplate(pdf, elements=elements)
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
+            temp1["fecha"] = self.fecha
             temp1.render()
             pdf.add_page()
             elements2 = elements[:7]
@@ -435,6 +439,7 @@ class Venta:
             temp2 = FlexTemplate(pdf, elements=elements2)
             temp2["title"] = "RESUMEN DE TU COMPRA"
             temp2["company_logo"] = "Global/Utils/logo.png"
+            temp2["fecha"] = temp1["fecha"]
             temp2.render()
             pdf.add_page()
             elements3 = elements[:7]
@@ -446,8 +451,9 @@ class Venta:
             temp4 = FlexTemplate(pdf, elements=subtemplate)
             temp3["title"] = "RESUMEN DE TU COMPRA"
             temp3["company_logo"] = "Global/Utils/logo.png"
+            temp3["fecha"] = temp1["fecha"]
             subtemplate_override(temp4)
             temp3.render()
             temp4.render()
-            #os.remove("./template.pdf")
+            # os.remove("./template.pdf")
             pdf.output("./template.pdf")
