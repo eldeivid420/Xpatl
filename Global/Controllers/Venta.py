@@ -2,8 +2,6 @@ import json
 
 from flask import request
 from Global.Classes.Venta import Venta
-import os
-import subprocess
 import win32print
 import win32api
 # TODO: Documentar
@@ -22,7 +20,6 @@ def print_pdf():
         win32api.ShellExecute(0, "print", f, None, ".", 0)"""
 
     all_printers = [printer[2] for printer in win32print.EnumPrinters(2)]
-    #printer_num = int(input("Choose a printer:\n" + "\n".join([f"{n} {p}" for n, p in enumerate(all_printers)]) + "\n"))
     win32print.SetDefaultPrinter(all_printers[0])
     pdf_dir = "template.pdf"
     win32api.ShellExecute(0, "print", pdf_dir, None,  ".",  0)
