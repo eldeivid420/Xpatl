@@ -129,6 +129,7 @@ class Venta:
         # Verificamos si es una venta para un proveedor
 
         if self.proveedor and self.descuento:
+            self.comision = 0
             self.id = post(
                 '''INSERT INTO venta(vendedor,sub_id,comprador,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
                 VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id'''
@@ -216,6 +217,11 @@ class Venta:
         id = params['id']
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
+        pagado = get('''SELECT estatus FROM venta WHERE id = %s''',(id,), False)[0]
+        if pagado == 'pagado':
+            raise Exception('La venta ya había sido pagada')
+        elif pagado == 'cancelado':
+            raise Exception('La venta ya había sido cancelada')
         post('''UPDATE venta SET estatus = 'cancelado' WHERE id = %s''', (id,), False)
         return f'Venta cancelada exitosamente'
 
@@ -258,6 +264,8 @@ class Venta:
             raise Exception('La venta ya había sido pagada')
         elif tipo not in tipos:
             raise Exception('Ingrese una forma de pago válida')
+        elif pagado == 'cancelado':
+            raise Exception('La venta ya había sido cancelada')
         post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
 
     @classmethod
