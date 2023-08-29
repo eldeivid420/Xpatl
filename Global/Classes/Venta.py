@@ -3,7 +3,7 @@ import json
 from Global.Utils.db import post, get
 import datetime
 from fpdf import FPDF, FlexTemplate
-import os
+
 
 # TODO: Documentar
 primera_venta = 1
@@ -16,10 +16,10 @@ template = [
     {'name': 'fecha', 'type': 'T', 'x1': 160.0, 'y1': 25.0, 'x2': 190.0, 'y2': 37.5, 'font': 'helvetica',
      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
      'multiline': False},
-    {'name': 'subid', 'type': 'T', 'x1': 160.0, 'y1': 35.0, 'x2': 185.0, 'y2': 37.5, 'font': 'helvetica',
-     'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'C', 'text': 'Pedido #', 'priority': 2,
+    {'name': 'subid', 'type': 'T', 'x1': 160.0, 'y1': 35.0, 'x2': 183.0, 'y2': 37.5, 'font': 'helvetica',
+     'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'C', 'text': 'Pedido', 'priority': 2,
      'multiline': False},
-    {'name': 'subid_valor', 'type': 'T', 'x1': 180.0, 'y1': 35.0, 'x2': 190.0, 'y2': 37.5, 'font': 'helvetica',
+    {'name': 'subid_valor', 'type': 'T', 'x1': 175.0, 'y1': 35.0, 'x2': 190.0, 'y2': 37.5, 'font': 'helvetica',
      'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'C', 'text': '', 'priority': 2,
      'multiline': False},
     {'name': 'title', 'type': 'T', 'x1': 70.0, 'y1': 55.0, 'x2': 140.0, 'y2': 37.5, 'font': 'helvetica',
@@ -75,10 +75,10 @@ subtemplate = [{'name': 'distribuidor', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
-               {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 140.0, 'y2': 245.0,
+               {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 130.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': 'FOLIO:', 'priority': 2, 'multiline': False},
-               {'name': 'id_valor', 'type': 'T', 'x1': 115.0, 'y1': 245.0, 'x2': 160.0, 'y2': 245.0,
+               {'name': 'id_valor', 'type': 'T', 'x1': 115.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
@@ -379,7 +379,7 @@ class Venta:
             if self.proveedor:
                 f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
                 f["distribuidor_nombre"] = self.comprador
-            f["id_valor"] = str(f'{self.id}')
+            f["id_valor"] = str(f'#{self.id}')
             if self.tipo == 'credito':
                 tipo = 'Tarjeta de crédito'
             elif self.tipo == 'debito':
@@ -405,7 +405,7 @@ class Venta:
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
             temp1["fecha"] = self.fecha
-            temp1["subid_valor"] = str(self.sub_id)
+            temp1["subid_valor"] = str(f'#{self.sub_id}')
             temp1.render()
             subtemplate_override(temp2)
             temp2.render()
@@ -420,7 +420,7 @@ class Venta:
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
             temp1["fecha"] = self.fecha
-            temp1["subid"] = self.sub_id
+            temp1["subid"] = str(f'#{self.sub_id}')
             temp1.render()
             pdf.add_page()
             elements2 = elements[:7]
@@ -449,7 +449,7 @@ class Venta:
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
             temp1["fecha"] = self.fecha
-            temp1["subid"] = self.sub_id
+            temp1["subid"] = str(f'#{self.sub_id}')
             temp1.render()
             pdf.add_page()
             elements2 = elements[:7]
@@ -479,5 +479,5 @@ class Venta:
             subtemplate_override(temp4)
             temp3.render()
             temp4.render()
-            # os.remove("./template.pdf")
+
             pdf.output("./template.pdf")
