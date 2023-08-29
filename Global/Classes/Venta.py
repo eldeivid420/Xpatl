@@ -137,9 +137,9 @@ class Venta:
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision) VALUES(%s,%s,%s,%s,%s,%s) RETURNING 
+                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING 
                 id'''
-                , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision)
+                , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision, self.proveedor_notas)
                 , True
             )[0]
         for producto in self.productos:
