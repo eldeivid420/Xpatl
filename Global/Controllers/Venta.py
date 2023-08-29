@@ -90,10 +90,11 @@ def pagar_venta():
             'id': request.json.get('id'),
             'tipo': request.json.get('tipo')
         }
-        Venta.pagar_venta(params)
+
         venta = Venta(params)
         venta.generar_pdf()
         print_pdf(params)
+        Venta.pagar_venta(params)
         return f'Pago realizado exitosamente'
     except Exception as e:
         return {'error': str(e)}, 400

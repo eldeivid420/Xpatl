@@ -489,3 +489,5 @@ class Venta:
             temp4.render()
 
             pdf.output("./recibos/" + str(self.id)  + ".pdf")
+        else:
+            raise Exception('Esta venta tiene demasiados productos.')
