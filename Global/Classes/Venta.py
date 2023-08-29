@@ -322,10 +322,10 @@ class Venta:
             venta = Venta({'id': registros[i][0]})
 
             productos = []
-            for i in range(len(venta.detalles_productos)):
-                productos.append({'nombre': venta.detalles_productos[i]['nombre'],
-                                  'cantidad': venta.detalles_productos[i]['cantidad'],
-                                  'total_producto': venta.detalles_productos[i]['total_producto']})
+            for j in range(len(venta.detalles_productos)):
+                productos.append({'nombre': venta.detalles_productos[j]['nombre'],
+                                  'cantidad': venta.detalles_productos[j]['cantidad'],
+                                  'total_producto': venta.detalles_productos[j]['total_producto']})
             pedidos.append(
                 {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor,
                  'subtotal': registros[i][4],

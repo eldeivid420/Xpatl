@@ -4,4 +4,6 @@ psycopg2~=2.9.7
 pyjwt~=2.7.0
 flask_cors
 fpdf2
-pywin32~=306
+pywin32
+pypiwin32
+win32print
