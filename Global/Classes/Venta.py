@@ -307,7 +307,7 @@ class Venta:
     def cobrador_pedidos(cls):
         pedidos = []
         registros = get(
-            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado'""", (),
+            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado' order by id""", (),
             True)
         if not registros:
             raise Exception('No hay pagos pendientes')
@@ -409,7 +409,7 @@ class Venta:
             temp1.render()
             subtemplate_override(temp2)
             temp2.render()
-            pdf.output("./template.pdf")
+            pdf.output("./recibos/" + str(self.id) + ".pdf")
         elif 15 < nproductos < 33:
             elements = template.copy()
             pdf.add_page()
@@ -438,7 +438,7 @@ class Venta:
             subtemplate_override(temp3)
             temp2.render()
             temp3.render()
-            pdf.output("./template.pdf")
+            pdf.output("./recibos/" + str(self.id) + ".pdf")
         elif 32 < nproductos < 49:
             elements = template.copy()
             pdf.add_page()
@@ -480,4 +480,4 @@ class Venta:
             temp3.render()
             temp4.render()
 
-            pdf.output("./template.pdf")
+            pdf.output("./recibos/" + str(self.id)  + ".pdf")

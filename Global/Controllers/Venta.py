@@ -1,14 +1,15 @@
 import json
+import win32print
+import win32api
+import os
 
 from flask import request
 from Global.Classes.Venta import Venta
-import win32print
-import win32api
+
 # TODO: Documentar
 
 
-def print_pdf():
-
+def print_pdf(params):
     """ # A List containing the system printers
     all_printers = [printer[2] for printer in win32print.EnumPrinters(2)]
     # Ask the user to select a printer
@@ -21,8 +22,11 @@ def print_pdf():
 
     all_printers = [printer[2] for printer in win32print.EnumPrinters(2)]
     win32print.SetDefaultPrinter(all_printers[0])
-    pdf_dir = "template.pdf"
-    win32api.ShellExecute(0, "print", pdf_dir, None,  ".",  0)
+    pdf_dir = "./recibos/" + str(params['id']) + ".pdf"
+    pdf_dir = os.path.abspath(pdf_dir)
+    pdf_dir = pdf_dir.replace('\\', '/')
+    os.listdir('./recibos')
+    win32api.ShellExecute(0, "print", pdf_dir, None, ".", 0)
 
 
 def crear_venta():
@@ -89,7 +93,7 @@ def pagar_venta():
         Venta.pagar_venta(params)
         venta = Venta(params)
         venta.generar_pdf()
-        print_pdf()
+        print_pdf(params)
         return f'Pago realizado exitosamente'
     except Exception as e:
         return {'error': str(e)}, 400
