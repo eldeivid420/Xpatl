@@ -10,12 +10,12 @@ def registrar_usuario():
             'username': request.json.get('username'),
             'nombre': request.json.get('nombre'),
             'pass': request.json.get('pass'),
-            'estatus': request.json.get('estatus'),
+            'activo': request.json.get('activo'),
             'rol': request.json.get('rol')
         }
         usuario = Usuario(params, False)
         print(usuario)
-        return f'El usuario {usuario.username} para {usuario.nombre} fue registrado', 200
+        return f'El usuario: {usuario.username} para: {usuario.nombre} fue registrado', 200
     except Exception as e:
         return {'error': str(e)}, 400
 

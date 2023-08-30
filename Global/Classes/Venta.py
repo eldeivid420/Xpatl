@@ -126,8 +126,19 @@ class Venta:
         self.comision = (self.subtotal * 0.8) * 0.1
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
-        # Verificamos si es una venta para un proveedor
 
+        for producto in self.productos:
+            disponible, nombre = get('''SELECT disponibles, nombre FROM producto WHERE sku = %s''', (producto['sku'],),
+                                     False)
+            if disponible < producto['cantidad']:
+                productos_agotados = []
+                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1''', (), True)
+                for i in range(len(registros_agotados)):
+                    productos_agotados.append(registros_agotados[i][0])
+                info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
+                raise Exception(json.dumps(info))
+
+        # Verificamos si es una venta para un proveedor
         if self.proveedor and self.descuento:
             self.comision = 0
             self.id = post(
@@ -143,17 +154,8 @@ class Venta:
                 , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision, self.proveedor_notas)
                 , True
             )[0]
-        for producto in self.productos:
-            disponible, nombre = get('''SELECT disponibles, nombre FROM producto WHERE sku = %s''', (producto['sku'],),
-                                     False)
-            if disponible < producto['cantidad']:
-                productos_agotados = []
-                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1''', (), True)
-                for i in range(len(registros_agotados)):
-                    productos_agotados.append(registros_agotados[i][0])
-                info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
-                raise Exception(json.dumps(info))
 
+        for producto in self.productos:
             for i in range(producto['cantidad']):
                 post('''INSERT INTO producto_venta(producto, venta) VALUES (%s,%s)''', (producto['sku'], self.id),
                      False)
@@ -223,6 +225,17 @@ class Venta:
         elif pagado == 'cancelado':
             raise Exception('La venta ya había sido cancelada')
         post('''UPDATE venta SET estatus = 'cancelado' WHERE id = %s''', (id,), False)
+
+        # Agregamos los productos cancelados a los disponibles
+        registros = get('''SELECT producto, COUNT(producto) FROM producto_venta WHERE venta = %s GROUP BY (producto)''', (id,), True)
+        for i in range(len(registros)):
+            post('''DELETE FROM producto_venta WHERE producto = %s AND venta = %s ''',(registros[i][0], id), False)
+            post('''UPDATE producto SET disponibles = disponibles+%s WHERE sku = %s''', (registros[i][1], registros[i][0]), False)
+
+        # Restamos la comision generada por la venta cancelada
+        registros = get('''SELECT comision, vendedor FROM venta WHERE id = %s''', (id,), False)
+        post('''UPDATE comisiones SET monto = monto-%s WHERE vendedor = %s''', (registros[0], registros[1]), False)
+
         return f'Venta cancelada exitosamente'
 
     def calcular_subtotal(self):
@@ -421,7 +434,7 @@ class Venta:
         elif 15 < nproductos < 33:
             elements = template.copy()
             pdf.add_page()
-            for i in range(15):
+            for i in range(17):
                 escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
             temp1 = FlexTemplate(pdf, elements=elements)
@@ -433,7 +446,7 @@ class Venta:
             pdf.add_page()
             elements2 = elements[:7]
             y1y2 = 70.0
-            for i in range(15, nproductos):
+            for i in range(17, nproductos):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
 
@@ -447,10 +460,10 @@ class Venta:
             temp2.render()
             temp3.render()
             pdf.output("./recibos/" + str(self.id) + ".pdf")
-        elif 32 < nproductos < 49:
+        elif 32 < nproductos < 50:
             elements = template.copy()
             pdf.add_page()
-            for i in range(15):
+            for i in range(17):
                 escribir(i, productos, y1y2, elements)
                 y1y2 += 10.0
             temp1 = FlexTemplate(pdf, elements=elements)
@@ -462,7 +475,7 @@ class Venta:
             pdf.add_page()
             elements2 = elements[:7]
             y1y2 = 70.0
-            for i in range(32):
+            for i in range(34):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
 
@@ -475,7 +488,7 @@ class Venta:
             pdf.add_page()
             elements3 = elements[:7]
             y1y2 = 70.0
-            for i in range(32, nproductos):
+            for i in range(34, nproductos):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
             temp3 = FlexTemplate(pdf, elements=elements3)
@@ -488,6 +501,6 @@ class Venta:
             temp3.render()
             temp4.render()
 
-            pdf.output("./recibos/" + str(self.id)  + ".pdf")
+            pdf.output("./recibos/" + str(self.id) + ".pdf")
         else:
             raise Exception('Esta venta tiene demasiados productos.')
