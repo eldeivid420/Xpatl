@@ -201,7 +201,7 @@ class Venta:
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
         self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
-
+        self.tipo = params.get('tipo', None)
         diferentes = get('''SELECT producto FROM producto_venta WHERE venta = %s GROUP BY producto''', (self.id,), True)
         for i in range(len(diferentes)):
             sku = diferentes[i][0]
