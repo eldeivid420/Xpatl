@@ -171,6 +171,10 @@ class Venta:
                  (self.vendedor, self.comision), False)
         self.obtener_subid(True)
 
+        existe = get('''SELECT producto FROM producto_venta WHERE id = %s''', (self.id,),True)
+        if not existe:
+            raise Exception('Ocurrió un error inesperado, por favor vuelva a crear el pedido')
+
     @classmethod
     def exist(cls, id):
 
@@ -189,6 +193,7 @@ class Venta:
         return exist
 
     def load(self, params):
+
         self.id = params['id']
         if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
@@ -205,14 +210,27 @@ class Venta:
         self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
         self.tipo = params.get('tipo', None)
         diferentes = get('''SELECT producto FROM producto_venta WHERE venta = %s GROUP BY producto''', (self.id,), True)
+
         for i in range(len(diferentes)):
             sku = diferentes[i][0]
-            nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
-            cantidad = \
-                get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
-                    False)[0]
-            self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
-                                            'total_producto': cantidad * precio})
+
+            # si no es proveedor, se regresa el precio especial
+            if not self.proveedor:
+                nombre, precio = get('''SELECT nombre, precio_esp FROM producto WHERE sku = %s ''', (sku,), False)
+
+                cantidad = \
+                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
+                        False)[0]
+                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
+                                                'total_producto': cantidad * precio})
+            else:
+                nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
+
+                cantidad = \
+                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
+                        False)[0]
+                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
+                                                'total_producto': cantidad * precio})
 
     @classmethod
     def cancelar_venta(cls, params):
@@ -241,12 +259,16 @@ class Venta:
     def calcular_subtotal(self):
 
         suma = 0
+
         for producto in self.productos:
+
             if self.proveedor and self.descuento:
                 precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+
                 suma += precio * producto['cantidad']
             else:
                 precio = get('''SELECT precio_esp FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+
                 suma += precio * producto['cantidad']
 
         return round(suma, 2)
@@ -333,6 +355,7 @@ class Venta:
         if not registros:
             raise Exception('No hay pagos pendientes')
 
+        # Si es proveedor, entonces asignamos su nombre a la variable comprador
         for i in range(len(registros)):
             if registros[i][3]:
                 comprador = registros[i][3]
@@ -340,6 +363,7 @@ class Venta:
             else:
                 proveedor = False
                 comprador = registros[i][2]
+
             venta = Venta({'id': registros[i][0]})
 
             productos = []
