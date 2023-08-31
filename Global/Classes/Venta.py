@@ -132,7 +132,7 @@ class Venta:
                                      False)
             if disponible < producto['cantidad']:
                 productos_agotados = []
-                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1''', (), True)
+                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1 and nombre = %s''', (nombre,), True)
                 for i in range(len(registros_agotados)):
                     productos_agotados.append(registros_agotados[i][0])
                 info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
