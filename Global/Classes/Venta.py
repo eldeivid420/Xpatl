@@ -127,16 +127,21 @@ class Venta:
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
 
+        productos_agotados = []
+        productos_insuficientes = []
+
         for producto in self.productos:
-            disponible, nombre = get('''SELECT disponibles, nombre FROM producto WHERE sku = %s''', (producto['sku'],),
+            disponible, nombre, sku = get('''SELECT disponibles, nombre, sku FROM producto WHERE sku = %s''', (producto['sku'],),
                                      False)
-            if disponible < producto['cantidad']:
-                productos_agotados = []
-                registros_agotados = get('''SELECT nombre, sku FROM producto WHERE disponibles < 1 and nombre = %s''', (nombre,), True)
-                for i in range(len(registros_agotados)):
-                    productos_agotados.append({'nombre': registros_agotados[i][0], 'sku': registros_agotados[i][1]})
-                info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
-                raise Exception(json.dumps(info))
+            #print(f'NOMBRE {nombre}  DISP: {disponible}')
+            if disponible == 0:
+                productos_agotados.append(sku)
+            elif disponible < producto['cantidad']:
+                productos_insuficientes.append({'sku': sku, 'disponibles': disponible})
+
+        if len(productos_agotados) != 0 or len(productos_insuficientes) != 0:
+            info = {'productos_insuficientes': productos_insuficientes, 'productos_agotados': productos_agotados}
+            raise Exception(json.dumps(info))
 
         # Verificamos si es una venta para un proveedor
         if self.proveedor and self.descuento:
