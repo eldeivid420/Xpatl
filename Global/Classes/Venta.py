@@ -154,6 +154,10 @@ class Venta:
                 , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision, self.proveedor_notas)
                 , True
             )[0]
+        # Verificamos que la venta madre se haya generado adecuadamente
+        existe = get('''SELECT * FROM venta WHERE id = %s''', (self.id,), True)
+        if len(existe) == 0:
+            raise Exception('Ocurrió un error inesperado, por favor vuelva a crear el pedido')
 
         for producto in self.productos:
             for i in range(producto['cantidad']):
@@ -171,9 +175,7 @@ class Venta:
                  (self.vendedor, self.comision), False)
         self.obtener_subid(True)
 
-        existe = get('''SELECT producto FROM producto_venta WHERE id = %s''', (self.id,),True)
-        if not existe:
-            raise Exception('Ocurrió un error inesperado, por favor vuelva a crear el pedido')
+
 
     @classmethod
     def exist(cls, id):

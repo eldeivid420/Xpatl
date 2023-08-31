@@ -39,14 +39,14 @@ def crear_venta():
             'descuento': request.json.get('descuento'),
             'productos': request.json.get('productos')
         }
-        try:
-            venta = Venta(params, False)
-        except Exception as e:
-            diccionario = json.loads(str(e))
-            return {'error': diccionario}, 400
+        venta = Venta(params, False)
         return f'Venta registrada con el id {venta.sub_id}', 200
     except Exception as e:
-        return {'error': str(e)}, 400
+        if str(e) != 'Ocurrió un error inesperado, por favor vuelva a crear el pedido':
+            diccionario = json.loads(str(e))
+            return {'error': diccionario}, 400
+        else:
+            return {'error': str(e)}, 400
 
 
 def buscar_venta():
