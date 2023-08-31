@@ -132,9 +132,9 @@ class Venta:
                                      False)
             if disponible < producto['cantidad']:
                 productos_agotados = []
-                registros_agotados = get('''SELECT nombre FROM producto WHERE disponibles < 1 and nombre = %s''', (nombre,), True)
+                registros_agotados = get('''SELECT nombre, sku FROM producto WHERE disponibles < 1 and nombre = %s''', (nombre,), True)
                 for i in range(len(registros_agotados)):
-                    productos_agotados.append(registros_agotados[i][0])
+                    productos_agotados.append({'nombre': registros_agotados[i][0], 'sku': registros_agotados[i][1]})
                 info = [{'producto': nombre, 'disponibles': disponible}, {'agotados': productos_agotados}]
                 raise Exception(json.dumps(info))
 
