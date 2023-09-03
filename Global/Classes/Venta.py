@@ -385,6 +385,39 @@ class Venta:
 
         return pedidos
 
+    @classmethod
+    def entregador_pedidos(cls):
+        pedidos = []
+        registros = get(
+            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'pagado' order by id""",
+            (),
+            True)
+        if not registros:
+            raise Exception('No hay pedidos pendientes de entregar')
+
+        # Si es proveedor, entonces asignamos su nombre a la variable comprador
+        for i in range(len(registros)):
+            if registros[i][3]:
+                comprador = registros[i][3]
+                proveedor = True
+            else:
+                proveedor = False
+                comprador = registros[i][2]
+
+            venta = Venta({'id': registros[i][0]})
+
+            productos = []
+            for j in range(len(venta.detalles_productos)):
+                productos.append({'nombre': venta.detalles_productos[j]['nombre'],
+                                  'cantidad': venta.detalles_productos[j]['cantidad'],
+                                  'total_producto': venta.detalles_productos[j]['total_producto']})
+            pedidos.append(
+                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor,
+                 'subtotal': registros[i][4],
+                 'descuento': registros[i][5], 'total': registros[i][6], 'productos': productos})
+
+        return pedidos
+
     def generar_pdf(self):
 
         nproductos = len(self.detalles_productos)

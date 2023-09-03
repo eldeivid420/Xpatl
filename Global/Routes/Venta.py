@@ -43,7 +43,9 @@ def cobrador_pedidos():
     return v.cobrador_pedidos()
 
 
-
+@GLOBAL_VENTA_BLUEPRINT.route('/entregador-pedidos', methods=['GET'])
+def entregador_pedidos():
+    return v.entregador_pedidos()
 
 
 
