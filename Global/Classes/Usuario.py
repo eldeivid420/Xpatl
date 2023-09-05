@@ -51,7 +51,7 @@ class Usuario:
             raise Exception('Contraseña incorrecta')
         if exist[5] != self.rol:
             # Revisa que el rol seleccionado sea igual al que pertenece el usuario
-            raise Exception('El usuario no es de este tipo de rol')
+            raise Exception('El usuario no pertenece a esta área')
         token = os.environ.get('JWT_TOKEN')
         web_token = jwt.encode({
         "username": self.username
