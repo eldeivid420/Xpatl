@@ -389,7 +389,7 @@ class Venta:
     def entregador_pedidos(cls):
         pedidos = []
         registros = get(
-            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'pagado' order by id""",
+            """SELECT id,sub_id,comprador,proveedor FROM venta WHERE estatus = 'pagado' order by id""",
             (),
             True)
         if not registros:
@@ -409,12 +409,10 @@ class Venta:
             productos = []
             for j in range(len(venta.detalles_productos)):
                 productos.append({'nombre': venta.detalles_productos[j]['nombre'],
-                                  'cantidad': venta.detalles_productos[j]['cantidad'],
-                                  'total_producto': venta.detalles_productos[j]['total_producto']})
+                                  'sku': venta.detalles_productos[j]['sku'],
+                                  'cantidad': venta.detalles_productos[j]['cantidad']})
             pedidos.append(
-                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor,
-                 'subtotal': registros[i][4],
-                 'descuento': registros[i][5], 'total': registros[i][6], 'productos': productos})
+                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor, 'productos': productos})
 
         return pedidos
 
