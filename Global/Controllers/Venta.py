@@ -151,7 +151,6 @@ def cobrador_pedidos():
     except Exception as e:
         return {'error': str(e)}, 400
 
-
 def entregador_pedidos():
     try:
         return Venta.entregador_pedidos()
