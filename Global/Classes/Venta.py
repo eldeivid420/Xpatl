@@ -624,7 +624,7 @@ class Venta:
             pdf.add_page()
             elements2 = elements[:7]
             y1y2 = 70.0
-            for i in range(34):
+            for i in range(17, 34):
                 escribir(i, productos, y1y2, elements2)
                 y1y2 += 10.0
 
