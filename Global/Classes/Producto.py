@@ -217,8 +217,8 @@ class Producto:
                 'precio': todos[i][2],
                 'precio_esp': todos[i][3],
                 'disponibles': todos[i][4],
-                'sku': todos[i][5],
-                'estatus': todos[i][6]})
+                'sku': todos[i][6],
+                'estatus': todos[i][7]})
 
         return lista
 

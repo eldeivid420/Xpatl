@@ -444,10 +444,11 @@ class Venta:
 
         if pagos == 'normal' and reciente:
             registros = get(
-                '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
+                '''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='creado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in (
+	SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY') FROM 
                 public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
                 TO_CHAR(b.fecha, 'DD/MM/YYYY')) GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
-                TO_CHAR(ve.fecha, 'DD/MM/YYYY') DESC''',
+                TO_CHAR(ve.fecha, 'DD/MM/YYYY') DESC))  GROUP BY producto''',
                 (), True)
             if not registros:
                 raise Exception('No hay registros en la base de datos')
@@ -667,4 +668,36 @@ class Venta:
             raise Exception('Esta venta tiene demasiados productos.')
 
 
+    @classmethod
+    def reporte(cls, params):
+        ventas = get('''SELECT * FROM producto WHERE estatus = True''',())
+        ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='creado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in 
+																(select TO_CHAR(fecha, 'DD/MM/YYYY') from venta order by id desc limit 1)
+																				  )  GROUP BY producto''',())
+        productos = {}
+        for venta in ventas_producto:
+            productos[venta[1]] = venta[0]
+        import pandas as pd
+        info = {
+            "codigo": [],
+            "nombre": [],
+            "precio al publico": [],
+            "precio a distribuidor": [],
+            "inventario inicial": [],
+            "numero de ventas": [],
+            "inventario restante":[]
+        }
 
+        for venta in ventas:
+            info['codigo'].append(venta[6])
+            info['nombre'].append(venta[1])
+            info['precio al publico'].append(venta[2])
+            info['precio a distribuidor'].append(venta[3])
+            info['inventario inicial'].append(venta[5])
+            info['numero de ventas'].append(productos.get(venta[6], 0))
+            #info['numero de ventas'].append(ventas[0])
+            info['inventario restante'].append(venta[4])
+
+        df = pd.DataFrame(info)
+        df.to_excel(params['path'],index=False)
+        return 'Se ha guardado el reporte en ' + params['path']

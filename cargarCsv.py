@@ -46,7 +46,17 @@ def cargar_datos():
         exit()
 
 def generar_reporte():
-    pass
+    url = 'http://127.0.0.1:8080/venta/reporte'
+    from tkinter.filedialog import asksaveasfile
+    file_path = asksaveasfile(initialfile='Reporte.xlsx',
+                              defaultextension=".xlsx", filetypes=[("All Files", "*.*"), ("Text Documents", "*.txt")])
+
+    if file_path.name == '':
+        exit()
+    myobj = {
+        "path": file_path.name
+    }
+    x = requests.post(url, json=myobj)
 
 root.title('Sistema de Natural')
 title = tk.Label(root, text="Escoge una opción del menú",font=("Arial", 25))

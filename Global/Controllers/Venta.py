@@ -182,3 +182,12 @@ def detalles_pedido():
         return Venta.detalles_pedido(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+def reporte():
+    try:
+        params = {
+            "path": request.json.get('path')
+        }
+        return Venta.reporte(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
