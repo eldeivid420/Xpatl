@@ -159,6 +159,15 @@ def entregador_pedidos():
 
 
 def fechas_evento():
+    """
+    Parameters:
+    * reciente: true -> de más reciente a menos reciente; false -> de menos reciente a más reciente
+    * pagos: 'normal' -> todos los pagos; 'pendiente' -> sólo los pagos pendientes; 'pagado' -> sólo pagos completados
+    Returns:
+
+    Una lista de diccionarios con la información
+
+    """
     try:
         params = {'reciente': request.json.get('reciente'),
                   'pagos': request.json.get('pagos')}
