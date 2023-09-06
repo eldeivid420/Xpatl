@@ -57,6 +57,7 @@ def generar_reporte():
         "path": file_path.name
     }
     x = requests.post(url, json=myobj)
+    
 
 root.title('Sistema de Natural')
 title = tk.Label(root, text="Escoge una opción del menú",font=("Arial", 25))

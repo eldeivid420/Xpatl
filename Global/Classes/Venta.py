@@ -699,5 +699,8 @@ class Venta:
             info['inventario restante'].append(venta[4])
 
         df = pd.DataFrame(info)
-        df.to_excel(params['path'],index=False)
+        if params['path'][-5:] == '.xlsx':
+            df.to_excel(params['path'],index=False)
+        else:
+            df.to_excel(params['path']+'.xlsx', index=False)
         return 'Se ha guardado el reporte en ' + params['path']
