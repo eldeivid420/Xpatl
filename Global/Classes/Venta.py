@@ -590,10 +590,10 @@ class Venta:
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
             temp1["fecha"] = self.fecha
-            temp1["subid"] = str(f'#{self.sub_id}')
+            temp1["subid_valor"] = str(f'#{self.sub_id}')
             temp1.render()
             pdf.add_page()
-            elements2 = elements[:7]
+            elements2 = elements[:9]
             y1y2 = 70.0
             for i in range(17, nproductos):
                 escribir(i, productos, y1y2, elements2)
@@ -603,8 +603,8 @@ class Venta:
             temp3 = FlexTemplate(pdf, elements=subtemplate)
             temp2["title"] = "RESUMEN DE TU COMPRA"
             temp2["company_logo"] = "Global/Utils/logo.png"
-            temp2["fecha"] = temp1["fecha"]
-            temp2["subid"] = temp1["subid"]
+            temp2["fecha"] = self.fecha
+            temp2["subid_valor"] = str(f'#{self.sub_id}')
             subtemplate_override(temp3)
             temp2.render()
             temp3.render()
@@ -619,10 +619,10 @@ class Venta:
             temp1["title"] = "RESUMEN DE TU COMPRA"
             temp1["company_logo"] = "Global/Utils/logo.png"
             temp1["fecha"] = self.fecha
-            temp1["subid"] = str(f'#{self.sub_id}')
+            temp1["subid_valor"] = str(f'#{self.sub_id}')
             temp1.render()
             pdf.add_page()
-            elements2 = elements[:7]
+            elements2 = elements[:9]
             y1y2 = 70.0
             for i in range(17, 34):
                 escribir(i, productos, y1y2, elements2)
@@ -631,21 +631,22 @@ class Venta:
             temp2 = FlexTemplate(pdf, elements=elements2)
             temp2["title"] = "RESUMEN DE TU COMPRA"
             temp2["company_logo"] = "Global/Utils/logo.png"
-            temp2["fecha"] = temp1["fecha"]
-            temp2["subid"] = temp1["subid"]
+            temp2["fecha"] = self.fecha
+            temp2["subid_valor"] = str(f'#{self.sub_id}')
             temp2.render()
             pdf.add_page()
-            elements3 = elements[:7]
+            elements3 = elements[:9]
             y1y2 = 70.0
             for i in range(34, nproductos):
-                escribir(i, productos, y1y2, elements2)
+                escribir(i, productos, y1y2, elements3)
                 y1y2 += 10.0
+
             temp3 = FlexTemplate(pdf, elements=elements3)
             temp4 = FlexTemplate(pdf, elements=subtemplate)
             temp3["title"] = "RESUMEN DE TU COMPRA"
             temp3["company_logo"] = "Global/Utils/logo.png"
-            temp3["fecha"] = temp1["fecha"]
-            temp3["subid"] = temp1["subid"]
+            temp3["fecha"] = self.fecha
+            temp3["subid_valor"] = str(f'#{self.sub_id}')
             subtemplate_override(temp4)
             temp3.render()
             temp4.render()
