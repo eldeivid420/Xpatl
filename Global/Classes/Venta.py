@@ -507,6 +507,9 @@ class Venta:
 
         def escribir(i, productos, y1y2, lista):
 
+            if len(productos[i]["nombre"]) > 25:
+                productos[i]["nombre"] = productos[i]["nombre"][:25]
+
             lista.append(
                 {'name': f'producto{i}', 'type': 'T', 'x1': 20.0, 'y1': y1y2, 'x2': 95.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 10, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
