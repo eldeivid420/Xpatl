@@ -333,24 +333,18 @@ class Venta:
 
     @classmethod
     def registgros_dia(cls, params):
-        registros = get('''SELECT * FROM venta WHERE TO_CHAR(fecha, 'DD/MM/YYYY') = %s''', (params['fecha'],), True)
+        ventas = []
+        registros = get('''SELECT id, total, tipo, comprador, proveedor, vendedor FROM venta WHERE TO_CHAR(fecha, 
+        'DD/MM/YYYY') = %s''', (params['fecha'],), True)
         if not registros:
             raise Exception('No hay ventas registradas para la fecha seleccionada')
-        ventas = []
-
         for i in range(len(registros)):
-            if registros[i][6]:
-                comprador = registros[i][6]
-                proveedor = True
-            else:
-                proveedor = False
-                comprador = registros[i][5]
-            ventas.append(
-                {'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2], 'tipo': registros[i][3],
-                 'estatus': registros[i][4], 'comprador': comprador, 'proveedor': proveedor,
-                 'proveedor_notas': registros[i][7],
-                 'descuento': registros[i][8], 'subtotal': registros[i][9], 'total': registros[i][10],
-                 'comision': registros[i][11], 'fecha': registros[i][12].strftime("%d/%m/%Y")})
+            proveedor = registros[i][4]
+            comprador = registros[i][3]
+            if proveedor:
+                comprador = proveedor
+
+            ventas.append({'id': registros[i][0], 'total': registros[i][1], 'tipo': registros[i][2], 'comprador': comprador, 'vendedor': registros[i][5]})
         return ventas
 
     @classmethod
@@ -384,6 +378,32 @@ class Venta:
                  'descuento': registros[i][5], 'total': registros[i][6], 'productos': productos})
 
         return pedidos
+
+    @classmethod
+    def detalles_pedido(cls, params):
+        id = params['id']
+        registros = get("""SELECT id FROM venta WHERE id = %s""", (id,), True)
+
+        if not registros:
+            raise Exception('No hay venta con el id proporcionado')
+
+        venta = Venta({'id': id})
+
+        nombre = get('''SELECT nombre FROM usuario WHERE username = %s''', (venta.vendedor,), False)[0]
+
+        productos = []
+        for j in range(len(venta.detalles_productos)):
+            productos.append({'nombre': venta.detalles_productos[j]['nombre'],
+                              'sku': venta.detalles_productos[j]['sku'],
+                              'precio': venta.detalles_productos[j]['precio'],
+                              'cantidad': venta.detalles_productos[j]['cantidad'],
+                              'total_producto': venta.detalles_productos[j]['total_producto']})
+        detalles = (
+            {'id': venta.id, 'comprador': venta.comprador, 'vendedor': nombre,
+             'username': venta.vendedor, 'proveedor': venta.proveedor, 'notas': venta.proveedor_notas,
+             'subtotal': venta.subtotal, 'descuento': venta.descuento, 'total': venta.total, 'productos': productos})
+        return detalles
+
 
     @classmethod
     def entregador_pedidos(cls):
@@ -490,15 +510,6 @@ class Venta:
             raise Exception('Ingresa una opción de filtrado válida')
 
         return fechas
-
-
-
-
-        # filtramos por tipo de pagos
-
-
-        return fechas
-
 
     def generar_pdf(self):
 
@@ -654,3 +665,6 @@ class Venta:
             pdf.output("./recibos/" + str(self.id) + ".pdf")
         else:
             raise Exception('Esta venta tiene demasiados productos.')
+
+
+

@@ -174,3 +174,11 @@ def fechas_evento():
         return Venta.fechas_evento(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def detalles_pedido():
+    try:
+        params = {'id': request.json.get('id')}
+        return Venta.detalles_pedido(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
