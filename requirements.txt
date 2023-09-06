@@ -9,3 +9,4 @@ pypiwin32
 win32print
 pandas
 requests
+openpyxl

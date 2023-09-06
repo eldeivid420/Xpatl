@@ -77,3 +77,25 @@ def filtrar_productos():
         return Producto.filtrar_productos(params)
     except Exception as e:
         return {"error": str(e)}
+
+def drop_all():
+    try:
+        Producto.drop_all()
+        return 'Done'
+    except Exception as e:
+        return {"error": str(e)}
+
+def cargar_productos():
+    try:
+        params = {
+            'nombre': request.json.get('nombre'),
+            'precio': request.json.get('precio'),
+            'precio_esp': request.json.get('precio_esp'),
+            'disponibles': request.json.get('disponibles'),
+            'sku': request.json.get('sku'),
+            'override': True
+        }
+        producto = Producto(params, False)
+        return f'Producto registrado con el id: {producto.id}'
+    except Exception as e:
+        return {'error': str(e)}, 400

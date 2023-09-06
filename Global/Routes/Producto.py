@@ -35,3 +35,11 @@ def obtener_productos():
 @GLOBAL_PRODUCTO_BLUEPRINT.route('/filtrar', methods=['POST'])
 def filtrar_productos():
     return p.filtrar_productos()
+
+@GLOBAL_PRODUCTO_BLUEPRINT.route('/drop-all', methods=['POST'])
+def borrar_todos():
+    return p.drop_all()
+
+@GLOBAL_PRODUCTO_BLUEPRINT.route('/cargar', methods=['POST'])
+def cargar_productos():
+    return p.cargar_productos()

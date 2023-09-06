@@ -30,7 +30,8 @@ application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto'
 application.register_blueprint(GLOBAL_USUARIO_BLUEPRINT, url_prefix ='/usuario')
 application.register_blueprint(GLOBAL_COMISION_BLUEPRINT, url_prefix ='/comision')
 application.register_blueprint(GLOBAL_ADMIN_BLUEPRINT, url_prefix ='/admin')
-print('La aplicación está funcionando... \n\nNO cierre esta ventana.')
+print('\nLa aplicación está funcionando...')
+print('Ya puedes usar las tabletas.\n\nNO cierre esta ventana.')
 
 try:
     dia_anterior = get('''SELECT fecha FROM venta ORDER BY fecha DESC LIMIT 1''', (), False)[0]

@@ -16,6 +16,7 @@ class Producto:
         self.precio = None
         self.precio_esp = None
         self.disponibles = None
+        self.inicial = None
         self.sku = None
         self.estatus = None
         self.load(params) if load else self.create(params)
@@ -40,7 +41,10 @@ class Producto:
         exist = self.exist()
 
         if exist:
-            self.actualizar_producto(params)
+            if params['override']:
+                self.actualizar_producto(params, new=True)
+            else:
+                self.actualizar_producto(params)
             post('''UPDATE producto SET estatus = True WHERE sku = %s''', (self.sku,), False)
             return 'Producto actualizado correctamente'
         else:
@@ -49,10 +53,11 @@ class Producto:
                 self.precio = params['precio']
                 self.precio_esp = params['precio_esp'],
                 self.disponibles = params['disponibles']
+                self.inicial = params['disponibles']
                 self.id = post(
-                    '''INSERT INTO producto (nombre, precio, precio_esp, disponibles, sku) VALUES (%s,%s,%s,%s,
+                    '''INSERT INTO producto (nombre, precio, precio_esp, disponibles, inicial, sku) VALUES (%s,%s,%s,%s, %s,
                     %s) RETURNING id''',
-                    (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), True)[0]
+                    (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial, self.sku), True)[0]
             except Exception as e:
                 return str(e), 400
 
@@ -97,7 +102,7 @@ class Producto:
         exist = get('''SELECT * FROM producto WHERE sku = %s''', (self.sku,))
         return exist
 
-    def actualizar_producto(self, params):
+    def actualizar_producto(self, params, new = False):
 
         """
         Método que actualiza la información de un producto
@@ -112,13 +117,24 @@ class Producto:
 
         exist = self.exist()
         if exist:
-            self.nombre = params['nombre']
-            self.precio = params['precio']
-            self.precio_esp = params['precio_esp']
-            self.disponibles = params['disponibles']
-            post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
-                 (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
-            return f'Producto actualizado correctamente'
+            if not new or exist[0][7]:
+                self.nombre = params['nombre']
+                self.precio = params['precio']
+                self.precio_esp = params['precio_esp']
+                self.disponibles = params['disponibles']
+                post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
+                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
+                return f'Producto actualizado correctamente'
+            else:
+                self.nombre = params['nombre']
+                self.precio = params['precio']
+                self.precio_esp = params['precio_esp']
+                self.disponibles = params['disponibles']
+                self.inicial = params['disponibles']
+                post(
+                    '''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
+                    (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial,  self.sku), False)
+                return f'Producto actualizado correctamente'
         else:
             return f'No existe el producto'
 
@@ -158,7 +174,9 @@ class Producto:
         productos = {}
         todos = get('''SELECT * FROM producto where estatus = True''', (), True)
         for i in range(len(todos)):
-            productos[i] = todos[i]
+            new = list(todos[i])
+            new.pop(5)
+            productos[i] = new
         return productos
 
     @classmethod
@@ -205,7 +223,9 @@ class Producto:
         return lista
 
 
-
+    @classmethod
+    def drop_all(cls):
+        post('''UPDATE producto SET estatus = False''', (), True)
 
 
 
