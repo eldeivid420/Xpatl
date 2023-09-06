@@ -418,6 +418,90 @@ class Venta:
 
         return pedidos
 
+    @classmethod
+    def fechas_evento(cls, params):
+        reciente = params['reciente']
+        pagos = params['pagos']
+        fechas = []
+
+        if pagos == 'normal' and reciente:
+            registros = get(
+                '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
+                public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
+                TO_CHAR(b.fecha, 'DD/MM/YYYY')) GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
+                TO_CHAR(ve.fecha, 'DD/MM/YYYY') DESC''',
+                (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        elif pagos == 'normal' and not reciente:
+            registros = get(
+                '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
+                public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
+                TO_CHAR(b.fecha, 'DD/MM/YYYY')) GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
+                TO_CHAR(ve.fecha, 'DD/MM/YYYY') ASC''',
+                (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        elif pagos == 'pendiente' and reciente:
+            registros = get('''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
+            public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = TO_CHAR(
+            b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = false GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER 
+            BY TO_CHAR(ve.fecha, 'DD/MM/YYYY') DESC''', (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        elif pagos == 'pendiente' and not reciente:
+            registros = get('''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
+            public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = TO_CHAR(
+            b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = false GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER 
+            BY TO_CHAR(ve.fecha, 'DD/MM/YYYY') ASC''', (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        elif pagos == 'pagado' and reciente:
+            registros = get('''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado 
+            FROM public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
+            TO_CHAR( b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = true GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), 
+            b.pagado ORDER BY TO_CHAR(ve.fecha, 'DD/MM/YYYY') DESC''', (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        elif pagos == 'pagado' and not reciente:
+            registros = get('''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado 
+            FROM public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
+            TO_CHAR( b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = true GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), 
+            b.pagado ORDER BY TO_CHAR(ve.fecha, 'DD/MM/YYYY') ASC''', (), True)
+            if not registros:
+                raise Exception('No hay registros en la base de datos')
+            for i in range(len(registros)):
+                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
+                               'pagado': registros[i][3]})
+        else:
+            raise Exception('Ingresa una opción de filtrado válida')
+
+        return fechas
+
+
+
+
+        # filtramos por tipo de pagos
+
+
+        return fechas
+
+
     def generar_pdf(self):
 
         nproductos = len(self.detalles_productos)

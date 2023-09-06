@@ -47,5 +47,9 @@ def cobrador_pedidos():
 def entregador_pedidos():
     return v.entregador_pedidos()
 
+@GLOBAL_VENTA_BLUEPRINT.route('/fechas-evento', methods=['GET'])
+def fechas_evento():
+    return v.fechas_evento()
+
 
 

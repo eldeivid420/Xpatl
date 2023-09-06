@@ -156,3 +156,12 @@ def entregador_pedidos():
         return Venta.entregador_pedidos()
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def fechas_evento():
+    try:
+        params = {'reciente': request.json.get('reciente'),
+                  'pagos': request.json.get('pagos')}
+        return Venta.fechas_evento(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
