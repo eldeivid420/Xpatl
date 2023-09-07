@@ -63,9 +63,10 @@ def editar_producto():
             'estatus': request.json.get('estatus')
         }
         producto = Producto(params)
-        return producto.actualizar_producto(params)
+        msg = producto.actualizar_producto(params)
+        return msg, 200
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e)}, 400
 
 
 def filtrar_productos():

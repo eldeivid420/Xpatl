@@ -122,12 +122,14 @@ class Producto:
                 self.precio = params['precio']
                 self.precio_esp = params['precio_esp']
                 self.disponibles = params['disponibles']
-                self.inicial, act_disponibles = get('''SELECT inicial, disponibles FROM producto WHERE sku = %s VALUES (%s)''', (self.sku,))
+                self.inicial, act_disponibles = get('''SELECT inicial, disponibles FROM producto WHERE sku = %s''', (self.sku,), fetchAll=False)
+                if self.disponibles < act_disponibles:
+                    raise Exception('No puedes quitar existencias desde aquí. Para hacerlo, carga de nuevo el Excel.')
                 diferencia = abs(self.disponibles - act_disponibles)
                 self.inicial += diferencia
 
                 post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
-                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku, self.inicial), False)
+                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial, self.sku), False)
                 return f'Producto actualizado correctamente'
             else:
                 self.nombre = params['nombre']
@@ -140,7 +142,7 @@ class Producto:
                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial,  self.sku), False)
                 return f'Producto actualizado correctamente'
         else:
-            return f'No existe el producto'
+            raise Exception('No existe el producto')
 
     @classmethod
     def eliminar_producto(cls, params):

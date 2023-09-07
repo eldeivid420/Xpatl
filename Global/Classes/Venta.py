@@ -673,7 +673,7 @@ class Venta:
         ventas = get('''SELECT * FROM producto WHERE estatus = True''',())
         ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='pagado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in 
 																(select TO_CHAR(fecha, 'DD/MM/YYYY') from venta order by id desc limit 1)
-																				  )  GROUP BY producto''',())
+																				  )  GROUP BY producto ''',())
         productos = {}
         for venta in ventas_producto:
             productos[venta[1]] = venta[0]
@@ -699,6 +699,7 @@ class Venta:
             info['inventario restante'].append(venta[4])
 
         df = pd.DataFrame(info)
+        df.sort_values(by=['codigo'])
         if params['path'][-5:] == '.xlsx':
             df.to_excel(params['path'],index=False)
         else:
