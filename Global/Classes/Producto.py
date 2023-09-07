@@ -122,8 +122,12 @@ class Producto:
                 self.precio = params['precio']
                 self.precio_esp = params['precio_esp']
                 self.disponibles = params['disponibles']
-                post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
-                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
+                self.inicial, act_disponibles = get('''SELECT inicial, disponibles FROM producto WHERE sku = %s VALUES (%s)''', (self.sku,))
+                diferencia = abs(self.disponibles - act_disponibles)
+                self.inicial += diferencia
+
+                post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
+                     (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku, self.inicial), False)
                 return f'Producto actualizado correctamente'
             else:
                 self.nombre = params['nombre']
