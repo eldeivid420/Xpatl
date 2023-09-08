@@ -191,3 +191,13 @@ def reporte():
         return Venta.reporte(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def comisiones_dia():
+    try:
+        params = {
+            'fecha': request.json.get('fecha')
+        }
+        return Venta.comisiones_dia(params)
+    except Exception as e:
+        return {'error': str(e)}, 400

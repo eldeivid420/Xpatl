@@ -32,3 +32,13 @@ def iniciar_sesion():
         return usuario.web_token, 200
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def obtener_usuarios():
+    try:
+        params = {
+            'filtro': request.json.get('filtro')
+        }
+        return Usuario.obtener_usuarios(params)
+    except Exception as e:
+        return {'error': str(e)}, 400

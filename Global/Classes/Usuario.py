@@ -62,3 +62,34 @@ class Usuario:
         self.web_token = web_token
         return self
         #return str(e), 400
+
+    @classmethod
+    def obtener_usuarios(cls, params):
+        filtro = params['filtro']
+        usuarios = []
+
+        if filtro == 'admin':
+            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'admin'  and activo = true''',
+                            (filtro,), True)
+        elif filtro == 'vendedor':
+            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'vendedor'  and activo = true''',
+                            (filtro,), True)
+        elif filtro == 'cobrador':
+            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'cobrador'  and activo = true''',
+                            (filtro,), True)
+        elif filtro == 'entregador':
+            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'entregador'  and activo = true''',
+                            (filtro,), True)
+        elif not filtro:
+            registros = get('''SELECT username, nombre, rol FROM usuario WHERE activo = true''',
+                            (filtro,), True)
+        else:
+            raise Exception('Selecciona un filtro válido')
+
+        if not registros:
+            raise Exception('No se encontraron usuarios')
+
+        for i in range(len(registros)):
+            usuarios.append({'usuario': registros[i][0], 'nombre': registros[i][1], 'area': registros[i][2]})
+
+        return usuarios

@@ -335,7 +335,7 @@ class Venta:
     def registgros_dia(cls, params):
         ventas = []
         registros = get('''SELECT id, total, tipo, comprador, proveedor, vendedor FROM venta WHERE TO_CHAR(fecha, 
-        'DD/MM/YYYY') = %s''', (params['fecha'],), True)
+        'DD/MM/YYYY') = %s AND (estatus = 'entregado' OR estatus = 'pagado')  ''', (params['fecha'],), True)
         if not registros:
             raise Exception('No hay ventas registradas para la fecha seleccionada')
         for i in range(len(registros)):
@@ -346,6 +346,19 @@ class Venta:
 
             ventas.append({'id': registros[i][0], 'total': registros[i][1], 'tipo': registros[i][2], 'comprador': comprador, 'vendedor': registros[i][5]})
         return ventas
+
+    @classmethod
+    def comisiones_dia(cls, params):
+        fecha = params['fecha']
+        comisiones = []
+        registros = get('''SELECT a.vendedor, sum(b.total), sum(b.comision), a.pagado FROM comisiones as a INNER JOIN 
+        venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s and TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s GROUP BY 
+        a.vendedor, a.pagado''', (fecha, fecha), True)
+
+        for i in range(len(registros)):
+            comisiones.append({'vendedor': registros[i][0], 'total_ventas': registros[i][1], 'comision': registros[i][2], 'pagado': registros[i][3]})
+
+        return comisiones
 
     @classmethod
     def cobrador_pedidos(cls):
@@ -382,7 +395,7 @@ class Venta:
     @classmethod
     def detalles_pedido(cls, params):
         id = params['id']
-        registros = get("""SELECT id FROM venta WHERE id = %s""", (id,), True)
+        registros = get("""SELECT id FROM venta WHERE id = %s AND (estatus = 'pagado' OR estatus = 'entregado') """, (id,), True)
 
         if not registros:
             raise Exception('No hay venta con el id proporcionado')
@@ -435,6 +448,7 @@ class Venta:
                 {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor, 'productos': productos})
 
         return pedidos
+
 
     @classmethod
     def fechas_evento(cls, params):
@@ -705,3 +719,4 @@ class Venta:
         else:
             df.to_excel(params['path']+'.xlsx', index=False)
         return 'Se ha guardado el reporte en ' + params['path']
+

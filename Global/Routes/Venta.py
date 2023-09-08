@@ -55,6 +55,10 @@ def fechas_evento():
 def detalles_pedido():
     return v.detalles_pedido()
 
+@GLOBAL_VENTA_BLUEPRINT.route('/comisiones-dia', methods=['GET'])
+def comisiones_dia():
+    return v.comisiones_dia()
+
 @GLOBAL_VENTA_BLUEPRINT.route('/reporte', methods=['POST'])
 def reporte():
     return v.reporte()
