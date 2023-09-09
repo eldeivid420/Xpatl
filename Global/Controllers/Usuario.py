@@ -42,3 +42,28 @@ def obtener_usuarios():
         return Usuario.obtener_usuarios(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def editar_usuario():
+    """
+    Parameters:
+    * username: username del usuario que se desea editar
+    * nombre(opcional): nuevo nombre
+    * pass(opcional): password nuevo
+    * activo(opcional): true -> activar usuario; false -> desactivar usuario
+    * rol(opcional):  admin, vendedor, entregador o cobrador
+
+    Returns:
+
+    """
+    try:
+        params = {
+            'username': request.json.get('username'),
+            'nombre': request.json.get('nombre'),
+            'pass': request.json.get('pass'),
+            'activo': request.json.get('activo'),
+            'rol': request.json.get('rol')
+        }
+        return Usuario.editar_usuario(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
