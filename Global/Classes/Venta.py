@@ -96,7 +96,7 @@ class Venta:
         self.id = None
         self.vendedor = None
         self.sub_id = None
-        self.tipo = None
+        self.factura = None
         self.estatus = None
         self.comprador = None
         self.proveedor = None
@@ -108,6 +108,7 @@ class Venta:
         self.productos = None
         self.detalles_productos = []
         self.fecha = None
+        self.metodos = None
         self.load(params) if load else self.create(params)
 
     def create(self, params):
@@ -204,7 +205,7 @@ class Venta:
         self.id = params['id']
         if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
-        self.id, self.vendedor, self.sub_id, self.tipo, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha = get(
+        self.id, self.vendedor, self.sub_id, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha, self.factura= get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
         if self.proveedor:
             self.comprador = self.proveedor
@@ -215,7 +216,21 @@ class Venta:
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
         self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
-        self.tipo = params.get('tipo', None)
+        if self.estatus == 'pagado':
+            metodos = get('''select distinct jsonb_agg(jsonb_build_object(
+            'method', m.nombre,
+            'amount', p.cantidad
+            )) res FROM venta as v
+            INNER JOIN paymentmethod_venta as p
+            ON v.id = p.venta
+            INNER JOIN paymentmethod as m
+            ON m.id = p.method
+            WHERE venta = %s
+            GROUP BY v.id, m.nombre,p.id''', (self.id,))
+            self.metodos = []
+            for metodo in metodos:
+                self.metodos.append(metodo[0][0])
+
         diferentes = get('''SELECT producto FROM producto_venta WHERE venta = %s GROUP BY producto''', (self.id,), True)
 
         for i in range(len(diferentes)):
@@ -296,19 +311,31 @@ class Venta:
 
     @classmethod
     def pagar_venta(cls, params):
-        tipos = ['efectivo', 'debito', 'credito', 'credito proveedor']
+        metodos = cls.getMethods()
         id = params['id']
-        tipo = params['tipo']
-        pagado = get('''SELECT estatus FROM venta WHERE id = %s''', (id,), False)[0]
+        # metodos de pago q usa el usuario
+        metodos_pago = params['metodos']
+        pagado, total = get('''SELECT estatus, total FROM venta WHERE id = %s''', (id,), False)
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
         elif pagado == 'pagado':
             raise Exception('La venta ya había sido pagada')
-        elif tipo not in tipos:
-            raise Exception('Ingrese una forma de pago válida')
         elif pagado == 'cancelado':
             raise Exception('La venta ya había sido cancelada')
-        post('''UPDATE venta SET tipo = %s, estatus = 'pagado' WHERE id = %s''', (tipo, id), False)
+        amount = 0
+        for metodo in metodos_pago:
+            amount += metodo['cantidad']
+            if metodo['id'] not in metodos:
+                raise Exception('Métodos de pago inválidos')
+        if amount < total:
+            raise Exception('Falta dinero.')
+        if amount > total:
+            raise Exception('Se está cobrando de más al cliente.')
+        for metodo in metodos_pago:
+            if metodo['id'] in metodos:
+                post('''INSERT INTO paymentmethod_venta(venta, method,cantidad) VALUES(%s, %s, %s)''',
+                     (id,metodo['id'], metodo['cantidad']), False)
+        post('''UPDATE venta SET estatus = 'pagado' WHERE id = %s''', (id,), False)
 
     @classmethod
     def entregar_venta(cls, params):
@@ -530,7 +557,7 @@ class Venta:
 
         nproductos = len(self.detalles_productos)
         productos = self.detalles_productos
-
+        metodos = self.metodos
         def escribir(i, productos, y1y2, lista):
 
             if len(productos[i]["nombre"]) > 25:
@@ -720,3 +747,14 @@ class Venta:
             df.to_excel(params['path']+'.xlsx', index=False)
         return 'Se ha guardado el reporte en ' + params['path']
 
+
+    @classmethod
+    def getMethods(cls):
+        metodos = get('''SELECT * FROM paymentmethod''', ())
+        methods = {}
+        for method in metodos:
+            methods[method[0]]= {
+                "id": method[0],
+                "nombre": method[1]
+            }
+        return methods

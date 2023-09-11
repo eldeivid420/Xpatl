@@ -88,13 +88,12 @@ def pagar_venta():
     try:
         params = {
             'id': request.json.get('id'),
-            'tipo': request.json.get('tipo')
+            'metodos': request.json.get('metodos')
         }
-
+        Venta.pagar_venta(params)
         venta = Venta(params)
         venta.generar_pdf()
         print_pdf(params)
-        Venta.pagar_venta(params)
         return f'Pago realizado exitosamente'
     except Exception as e:
         return {'error': str(e)}, 400
@@ -199,5 +198,11 @@ def comisiones_dia():
             'fecha': request.json.get('fecha')
         }
         return Venta.comisiones_dia(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+def metodos_pago():
+    try:
+        return Venta.getMethods(), 200
     except Exception as e:
         return {'error': str(e)}, 400

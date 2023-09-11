@@ -63,5 +63,7 @@ def comisiones_dia():
 def reporte():
     return v.reporte()
 
-
+@GLOBAL_VENTA_BLUEPRINT.route('/metodos-pago', methods=['GET'])
+def metodos_pago():
+    return v.metodos_pago()
 
