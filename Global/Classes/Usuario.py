@@ -93,3 +93,21 @@ class Usuario:
             usuarios.append({'usuario': registros[i][0], 'nombre': registros[i][1], 'area': registros[i][2]})
 
         return usuarios
+
+    @classmethod
+    def editar_usuario(cls, params):
+        username = params['username']
+        exist = get('''SELECT id FROM usuario WHERE username = %s''', (username,), False)
+        if not exist:
+            raise Exception("El nombre de usuario no está registrado")
+        if params['nombre']:
+            post('''UPDATE usuario SET nombre = %s WHERE username = %s''', (params['nombre'], username), False)
+        if params['pass']:
+            h = hashlib.sha256(params['pass'].encode('utf-8')).hexdigest()
+            post('''UPDATE usuario SET pass = %s WHERE username = %s''', (h, username), False)
+        if params['activo']:
+            post('''UPDATE usuario SET  activo = %s WHERE username = %s''', (params['activo'], username), False)
+        if params['rol']:
+            post('''UPDATE usuario SET rol = %s WHERE username = %s''', (params['rol'], username), False)
+
+        return f'Usuario actualizado existosamente'
