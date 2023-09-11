@@ -42,6 +42,7 @@ CREATE TABLE public.paymentmethod_venta
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
     venta INT NOT NULL,
     method INT NOT NULL,
+	cantidad FLOAT NOT NULL,
     CONSTRAINT pf_pmv PRIMARY KEY(id),
     CONSTRAINT fk_venta FOREIGN KEY(venta) REFERENCES public.venta(id),
     CONSTRAINT fk_pm FOREIGN KEY(method) REFERENCES public.paymentmethod(id)
