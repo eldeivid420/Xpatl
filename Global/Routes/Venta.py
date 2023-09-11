@@ -30,6 +30,7 @@ def entregar_venta():
 def buscar_venta():
     return v.buscar_venta()
 
+#TODO se está usando?
 @GLOBAL_VENTA_BLUEPRINT.route('/fechas-venta', methods=['GET'])
 def fechas_venta():
     return v.fechas_venta()
