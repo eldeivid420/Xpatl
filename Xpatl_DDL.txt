@@ -83,4 +83,8 @@ CREATE TABLE public.comisiones
     CONSTRAINT pk_comision PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
 );
-
+INSERT INTO paymentmethod(nombre) VALUES('Efectivo');
+INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de crédito');
+INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de débito');
+INSERT INTO paymentmethod(nombre) VALUES('Transferencia');
+INSERT INTO paymentmethod(nombre) VALUES('Crédito proveedor');
