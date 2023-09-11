@@ -685,7 +685,7 @@ class Venta:
     @classmethod
     def reporte(cls, params):
         ventas = get('''SELECT * FROM producto WHERE estatus = True''',())
-        ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='pagado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in 
+        ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='entregado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in 
 																(select TO_CHAR(fecha, 'DD/MM/YYYY') from venta order by id desc limit 1)
 																				  )  GROUP BY producto ''',())
         productos = {}
