@@ -1,3 +1,5 @@
+import json
+
 import requests
 import pandas as pd
 import tkinter as tk
@@ -24,8 +26,8 @@ def uploadInventario():
         print(f'Cargando producto {df["Clave"][ind]}. \n{i} de {max}')
         myobj = {
                 'nombre': df['Nombre'][ind],
-                'precio': float(df['Precio_distribuidor'][ind]),
-                'precio_esp': float(df['Precio'][ind]),
+                'precio_lista': float(df['Precio_lista'][ind]),
+                'precio_descuento': float(df['Precio_descuento'][ind]),
                 'disponibles': int(df['Existencia'][ind]),
                 'sku': df['Clave'][ind]
         }
@@ -59,6 +61,27 @@ def generar_reporte():
     x = requests.post(url, json=myobj)
     exit()
 
+def subir_distribuidores():
+    file_path = filedialog.askopenfilename()
+    if file_path == '':
+        exit()
+    df = pd.read_excel(file_path)
+    url = 'http://127.0.0.1:8080/distribuidor/drop-all'
+    y = requests.post(url)
+    url = 'http://127.0.0.1:8080/distribuidor/crear'
+    print(df.shape)
+    max = df.shape[0]
+    i = 1
+    for ind in df.index:
+        print(f'Registrando al distribuidor {df["Nombre"][ind]} con el {df["Descuento"][ind]}%. \n{i} de {max}')
+        myobj = {
+            "nombre": df['Nombre'][ind],
+            "descuento": float(df['Descuento'][ind])
+        }
+        #myobj = json.dumps(myobj)
+        x = requests.post(url, json=myobj)
+        i += 1
+        print(x.text)
 
 root.title('Sistema de Natural')
 title = tk.Label(root, text="Escoge una opción del menú",font=("Arial", 25))
@@ -70,6 +93,9 @@ canvas1.create_window(350, 150, window=button_inventario)
 button_reporte = tk.Button(root, text='Generar reporte de ventas', command=generar_reporte, bg='brown', fg='white')
 canvas1.create_window(350, 250, window=button_reporte)
 
+button_distribuidores = tk.Button(root, text='Subir distribuidores', command=subir_distribuidores, bg='brown',
+                                  fg='white')
+canvas1.create_window(350, 350, window=button_distribuidores)
 root.mainloop()
 root = tk.Tk()
 root.withdraw()

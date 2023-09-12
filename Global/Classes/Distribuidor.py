@@ -13,6 +13,7 @@ class Distribuidor:
         self.nombre = None
         self.descuento = None
         self.load(params) if load else self.create(params)
+
     def load(self, params):
         self.id = params['id']
         self.id, self.nombre, self.descuento = get('''SELECT * FROM distribuidores WHERE id=%s'''
@@ -21,10 +22,21 @@ class Distribuidor:
     def create(self, params):
         self.nombre = params['nombre']
         self.descuento = params['descuento']
-        self.id, self.nombre, self.descuento = post(
-            '''INSERT INTO distribuidores(nombre, descuento) VALUES(%s, %s)''',
+        if self.exist():
+            self.id = post(
+                '''UPDATE distribuidores SET descuento = %s, activo = %s WHERE nombre = %s returning id''',
+                (self.descuento, True, self.nombre), True)
+        else:
+            self.id = post(
+            '''INSERT INTO distribuidores(nombre, descuento) VALUES(%s, %s) returning id''',
             (self.nombre, self.descuento),True)
 
+    def exist(self):
+        exists = get('''SELECT * FROM distribuidores WHERE nombre = %s''', (self.nombre,), False)
+        if exists:
+            return True
+        else:
+            return False
 
     @classmethod
     def getAll(cls):
@@ -39,3 +51,8 @@ class Distribuidor:
                 }
             )
         return distribuidores
+
+    @classmethod
+    def deleteAll(cls):
+        post('''UPDATE distribuidores set activo=False''', ())
+        return 'Borrados'

@@ -9,3 +9,10 @@ def obtener_todos():
     return d.obtenerTodos()
 
 
+@GLOBAL_DISTRIBUIDOR_BLUEPRINT.route('/crear', methods=['POST'])
+def crear():
+    return d.subirDistribuidor()
+
+@GLOBAL_DISTRIBUIDOR_BLUEPRINT.route('/drop-all', methods=['POST'])
+def borrar():
+    return d.borrarTodos()
