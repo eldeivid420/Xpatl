@@ -13,8 +13,8 @@ class Producto:
     def __init__(self, params, load=True):
         self.id = None
         self.nombre = None
-        self.precio = None
-        self.precio_esp = None
+        self.precio_lista = None
+        self.precio_descuento = None
         self.disponibles = None
         self.inicial = None
         self.sku = None
@@ -50,14 +50,14 @@ class Producto:
         else:
             try:
                 self.nombre = params['nombre']
-                self.precio = params['precio']
-                self.precio_esp = params['precio_esp'],
+                self.precio_lista = params['precio']
+                self.precio_descuento = params['precio_esp'],
                 self.disponibles = params['disponibles']
                 self.inicial = params['disponibles']
                 self.id = post(
-                    '''INSERT INTO producto (nombre, precio, precio_esp, disponibles, inicial, sku) VALUES (%s,%s,%s,%s, %s,
+                    '''INSERT INTO producto (nombre, precio_lista, precio_descuento, disponibles, inicial, sku) VALUES (%s,%s,%s,%s, %s,
                     %s) RETURNING id''',
-                    (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial, self.sku), True)[0]
+                    (self.nombre, self.precio_lista, self.precio_descuento, self.disponibles, self.inicial, self.sku), True)[0]
             except Exception as e:
                 return str(e), 400
 
@@ -77,8 +77,8 @@ class Producto:
         self.sku = params['sku']
         if self.exist():
             try:
-                self.id, self.nombre, self.precio, self.precio_esp, self.disponibles, self.estatus = get(
-                    '''SELECT id, nombre, precio, precio_esp, disponibles, estatus FROM producto WHERE sku = %s''',
+                self.id, self.nombre, self.precio_lista, self.precio_descuento, self.disponibles, self.estatus = get(
+                    '''SELECT id, nombre, precio_lista, precio_descuento, disponibles, estatus FROM producto WHERE sku = %s''',
                     (self.sku,), False
                 )
             except Exception as e:
@@ -119,31 +119,31 @@ class Producto:
         if exist:
             if not new or exist[0][7]:
                 self.nombre = params['nombre']
-                self.precio = params['precio']
-                self.precio_esp = params['precio_esp']
+                self.precio_lista = params['precio']
+                self.precio_descuento = params['precio_esp']
                 self.disponibles = params['disponibles']
                 self.inicial, act_disponibles = get('''SELECT inicial, disponibles FROM producto WHERE sku = %s''', (self.sku,), fetchAll=False)
                 if self.disponibles < act_disponibles:
                     post(
-                        '''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s WHERE sku = %s''',
-                        (self.nombre, self.precio, self.precio_esp, self.disponibles, self.sku), False)
+                        '''UPDATE producto SET nombre = %s, precio_lista = %s, precio_descuento = %s, disponibles = %s WHERE sku = %s''',
+                        (self.nombre, self.precio_lista, self.precio_descuento, self.disponibles, self.sku), False)
                     #raise Exception('No puedes quitar existencias desde aquí. Para hacerlo, carga de nuevo el Excel.')
                 else:
                     diferencia = abs(self.disponibles - act_disponibles)
                     self.inicial += diferencia
 
-                    post('''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
-                         (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial, self.sku), False)
+                    post('''UPDATE producto SET nombre = %s, precio_lista = %s, precio_descuento = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
+                         (self.nombre, self.precio_lista, self.precio_descuento, self.disponibles, self.inicial, self.sku), False)
                 return f'Producto actualizado correctamente'
             else:
                 self.nombre = params['nombre']
-                self.precio = params['precio']
-                self.precio_esp = params['precio_esp']
+                self.precio_lista = params['precio']
+                self.precio_descuento = params['precio_esp']
                 self.disponibles = params['disponibles']
                 self.inicial = params['disponibles']
                 post(
-                    '''UPDATE producto SET nombre = %s, precio = %s, precio_esp = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
-                    (self.nombre, self.precio, self.precio_esp, self.disponibles, self.inicial,  self.sku), False)
+                    '''UPDATE producto SET nombre = %s, precio_lista = %s, precio_descuento = %s, disponibles = %s , inicial = %s WHERE sku = %s''',
+                    (self.nombre, self.precio_lista, self.precio_descuento, self.disponibles, self.inicial,  self.sku), False)
                 return f'Producto actualizado correctamente'
         else:
             raise Exception('No existe el producto')
@@ -209,13 +209,13 @@ class Producto:
             todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre desc''', (), True)
 
         elif params['orden'] == 'precio' and params['invertido'] == True:
-            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio desc''', (), True)
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio_lista desc''', (), True)
 
         elif params['orden'] == 'alfabetico':
             todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre''', (), True)
 
         elif params['orden'] == 'precio':
-            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio''', (), True)
+            todos = get('''SELECT * FROM producto where estatus = True ORDER BY precio_lista''', (), True)
         if (todos == None or len(todos)<=0):
             raise Exception('No hay productos')
         #for i in range(len(todos)):

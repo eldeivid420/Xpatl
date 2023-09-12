@@ -250,25 +250,25 @@ class Venta:
         for i in range(len(diferentes)):
             sku = diferentes[i][0]
 
-            # si no es proveedor, se regresa el precio especial
+            # si no es proveedor, se regresa el precio con descuento
             if not self.proveedor:
-                nombre, precio = get('''SELECT nombre, precio_esp FROM producto WHERE sku = %s ''', (sku,), False)
+                nombre, precio_descuento = get('''SELECT nombre, precio_descuento FROM producto WHERE sku = %s ''', (sku,), False)
 
                 cantidad = \
                     get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''',
                         (sku, self.id),
                         False)[0]
-                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
-                                                'total_producto': cantidad * precio})
+                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio_descuento, 'cantidad': cantidad,
+                                                'total_producto': cantidad * precio_descuento})
             else:
-                nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
+                nombre, precio_lista = get('''SELECT nombre, precio_lista FROM producto WHERE sku = %s ''', (sku,), False)
 
                 cantidad = \
                     get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''',
                         (sku, self.id),
                         False)[0]
-                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
-                                                'total_producto': cantidad * precio})
+                self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio_lista, 'cantidad': cantidad,
+                                                'total_producto': cantidad * precio_lista})
 
     @classmethod
     def cancelar_venta(cls, params):
@@ -303,13 +303,13 @@ class Venta:
         for producto in self.productos:
 
             if self.proveedor and self.descuento:
-                precio = get('''SELECT precio FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+                precio_lista = get('''SELECT precio_lista FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
 
-                suma += precio * producto['cantidad']
+                suma += precio_lista * producto['cantidad']
             else:
-                precio = get('''SELECT precio_esp FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+                precio_descuento = get('''SELECT precio_descuento FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
 
-                suma += precio * producto['cantidad']
+                suma += precio_descuento * producto['cantidad']
 
         return round(suma, 2)
 
@@ -585,16 +585,22 @@ class Venta:
         def subtemplate_override(f):
 
             # subtotal2 es cuando no hay descuento
-            if self.descuento:
+
+            '''if self.descuento:
                 f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
                 f["subtotal"] = 'SUBTOTAL:'
                 f["monto_subtotal"] = str(f'${round(self.subtotal, 2)}')
             else:
-                f["descuento"] = ""
+                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
                 f["subtotal2"] = 'SUBTOTAL:'
-                f["monto_subtotal2"] = str(f'${round(self.subtotal, 2)}')
+                f["monto_subtotal2"] = str(f'${round(self.subtotal, 2)}')'''
+
+            f["subtotal"] = 'SUBTOTAL:'
+            f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
+            f["monto_subtotal"] = str(f'${round(self.subtotal, 2)}')
 
             f["monto_total"] = str(f'${round(self.total, 2)}')
+
             if self.proveedor:
                 f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
                 f["distribuidor_nombre"] = self.comprador
