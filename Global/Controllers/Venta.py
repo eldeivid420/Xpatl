@@ -71,7 +71,7 @@ def buscar_venta():
             "fecha": venta.fecha,
             "factura": venta.factura
         }
-        return json.dumps(detalles)
+        return detalles
     except Exception as e:
         return {'error': str(e)}, 400
 

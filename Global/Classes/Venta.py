@@ -579,7 +579,7 @@ class Venta:
             lista.append(
                 {'name': f'precio{i}', 'type': 'T', 'x1': 95.0, 'y1': y1y2, 'x2': 120.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'${productos[i]["precio"]}'), 'priority': 2, 'multiline': False})
+                 'text': str('${:.2f}'.format(productos[i]["precio"])), 'priority': 2, 'multiline': False})
             lista.append(
                 {'name': f'cantidad{i}', 'type': 'T', 'x1': 144.0, 'y1': y1y2, 'x2': 165.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
@@ -587,7 +587,7 @@ class Venta:
             lista.append(
                 {'name': f'total{i}', 'type': 'T', 'x1': 175.0, 'y1': y1y2, 'x2': 200.0, 'y2': y1y2,
                  'font': 'helvetica', 'size': 11, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
-                 'text': str(f'${round(productos[i]["total_producto"], 2)}'), 'priority': 2, 'multiline': False})
+                 'text': str('${:.2f}'.format(productos[i]["total_producto"])), 'priority': 2, 'multiline': False})
 
         def subtemplate_override(f):
 
@@ -603,10 +603,10 @@ class Venta:
                 f["monto_subtotal2"] = str(f'${round(self.subtotal, 2)}')'''
 
             f["subtotal"] = 'SUBTOTAL:'
-            f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
-            f["monto_subtotal"] = str(f'${round(self.subtotal, 2)}')
+            f["monto_descuento"] = str('${:.2f}'.format(self.descuento))
+            f["monto_subtotal"] = str('${:.2f}'.format(self.subtotal))
 
-            f["monto_total"] = str(f'${round(self.total, 2)}')
+            f["monto_total"] = str('${:.2f}'.format(self.total))
 
             if self.proveedor:
                 f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
@@ -619,19 +619,19 @@ class Venta:
             f["id_valor"] = str(f'#{self.id}')
 
             if len(self.metodos) == 1:
-                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+                f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
             elif len(self.metodos) == 2:
-                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
-                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
+                f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
+                f["metodo_texto2"] = '{}: ${:.2f}'.format(self.metodos[1]["method"], self.metodos[1]["amount"])
             elif len(self.metodos) == 3:
-                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
-                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
-                f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
+                f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
+                f["metodo_texto2"] = '{}: ${:.2f}'.format(self.metodos[1]["method"], self.metodos[1]["amount"])
+                f["metodo_texto3"] = '{}: ${:.2f}'.format(self.metodos[2]["method"], self.metodos[2]["amount"])
             elif len(self.metodos) == 3:
-                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
-                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
-                f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
-                f["metodo_texto4"] = f'{self.metodos[3]["method"]}: ${self.metodos[3]["amount"]}'
+                f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
+                f["metodo_texto2"] = '{}: ${:.2f}'.format(self.metodos[1]["method"], self.metodos[1]["amount"])
+                f["metodo_texto3"] ='{}: ${:.2f}'.format(self.metodos[2]["method"], self.metodos[2]["amount"])
+                f["metodo_texto4"] = '{}: ${:.2f}'.format(self.metodos[3]["method"], self.metodos[3]["amount"])
 
         pdf = FPDF(format='letter')
         y1y2 = 70.0

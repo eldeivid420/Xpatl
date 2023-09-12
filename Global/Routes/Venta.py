@@ -52,7 +52,7 @@ def entregador_pedidos():
 def fechas_evento():
     return v.fechas_evento()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/admin/detalles-pedido', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/detalles-pedido', methods=['POST'])
 def detalles_pedido():
     return v.detalles_pedido()
 
