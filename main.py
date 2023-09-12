@@ -24,12 +24,14 @@ from Global.Routes.Producto import GLOBAL_PRODUCTO_BLUEPRINT
 from Global.Routes.Usuario import GLOBAL_USUARIO_BLUEPRINT
 from Global.Routes.Comision import GLOBAL_COMISION_BLUEPRINT
 from Global.Routes.Admin import GLOBAL_ADMIN_BLUEPRINT
+from Global.Routes.Distribuidor import GLOBAL_DISTRIBUIDOR_BLUEPRINT
 
 application.register_blueprint(GLOBAL_VENTA_BLUEPRINT, url_prefix='/venta')
 application.register_blueprint(GLOBAL_PRODUCTO_BLUEPRINT, url_prefix='/producto')
 application.register_blueprint(GLOBAL_USUARIO_BLUEPRINT, url_prefix ='/usuario')
 application.register_blueprint(GLOBAL_COMISION_BLUEPRINT, url_prefix ='/comision')
 application.register_blueprint(GLOBAL_ADMIN_BLUEPRINT, url_prefix ='/admin')
+application.register_blueprint(GLOBAL_DISTRIBUIDOR_BLUEPRINT, url_prefix='/distribuidor')
 print('\nLa aplicación está funcionando...')
 print('Ya puedes usar las tabletas.\n\nNO cierre esta ventana.')
 
