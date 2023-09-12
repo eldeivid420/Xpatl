@@ -3,6 +3,7 @@ import json
 from Global.Utils.db import post, get
 import datetime
 from fpdf import FPDF, FlexTemplate
+from Global.Classes.Distribuidor import Distribuidor
 
 # TODO: Documentar
 primera_venta = 1
@@ -132,17 +133,17 @@ class Venta:
         self.comprador = params['comprador']
         self.proveedor = params['proveedor']
         self.proveedor_notas = params['proveedor_notas']
-        self.descuento = params['descuento']
+        self.descuento = None
         self.productos = params['productos']
         self.subtotal = self.calcular_subtotal()
         self.total = self.calcular_total()
         self.comision = (self.subtotal * 0.8) * 0.1
+        self.factura = params['factura']
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
 
         productos_agotados = []
         productos_insuficientes = []
-
         for producto in self.productos:
             disponible, nombre, sku = get('''SELECT disponibles, nombre, sku FROM producto WHERE sku = %s''',
                                           (producto['sku'],),
@@ -158,20 +159,20 @@ class Venta:
             raise Exception(json.dumps(info))
 
         # Verificamos si es una venta para un proveedor
-        if self.proveedor and self.descuento:
+        if self.proveedor:
             self.comision = 0
             self.id = post(
-                '''INSERT INTO venta(vendedor,sub_id,comprador,proveedor,proveedor_notas,descuento,subtotal,total,comision) 
-                VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id'''
+                '''INSERT INTO venta(vendedor,sub_id,comprador,proveedor,proveedor_notas,descuento,subtotal,total,comision,factura) 
+                VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id'''
                 , (self.vendedor, self.sub_id, self.comprador, self.proveedor, self.proveedor_notas,
-                   self.descuento, self.subtotal, self.total, self.comision), True)[0]
+                   self.descuento, self.subtotal, self.total, self.comision, self.factura), True)[0]
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING 
+                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas, factura) VALUES(%s,%s,%s,%s,%s,%s,%s, %s) RETURNING 
                 id'''
                 , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision,
-                   self.proveedor_notas)
+                   self.proveedor_notas, self.factura)
                 , True
             )[0]
         # Verificamos que la venta madre se haya generado adecuadamente
@@ -302,7 +303,7 @@ class Venta:
 
         for producto in self.productos:
 
-            if self.proveedor and self.descuento:
+            if self.proveedor:
                 precio_lista = get('''SELECT precio_lista FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
 
                 suma += precio_lista * producto['cantidad']
@@ -315,11 +316,17 @@ class Venta:
 
     def calcular_total(self):
         if self.proveedor:
+            # Sacamos la cantidad de descuento que le corresponde a ese proveedor
+            distribuidor = Distribuidor({"id": self.proveedor})
+            self.descuento = distribuidor.descuento
             self.descuento = round(self.subtotal * (self.descuento / 100), 2)
             total = self.subtotal - self.descuento
             return total
         else:
-            return self.subtotal
+            self.total = self.subtotal
+            self.subtotal = round(self.total / 0.8, 2)
+            self.descuento = round(self.subtotal - self.total, 2)
+            return self.total
 
     def obtener_subid(self, add=False):
         global primera_venta

@@ -34,6 +34,7 @@ def post(query, params, returns = False):
             return cursor.fetchone()
     except Exception as e:
         print(e)
+        raise Exception(str(e))
         return e
 
 

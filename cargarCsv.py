@@ -26,8 +26,8 @@ def uploadInventario():
         print(f'Cargando producto {df["Clave"][ind]}. \n{i} de {max}')
         myobj = {
                 'nombre': df['Nombre'][ind],
-                'precio_lista': float(df['Precio_lista'][ind]),
-                'precio_descuento': float(df['Precio_descuento'][ind]),
+                'precio': float(df['Precio_lista'][ind]),
+                'precio_esp': float(df['Precio_descuento'][ind]),
                 'disponibles': int(df['Existencia'][ind]),
                 'sku': df['Clave'][ind]
         }

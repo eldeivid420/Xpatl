@@ -16,9 +16,13 @@ class Distribuidor:
 
     def load(self, params):
         self.id = params['id']
-        self.id, self.nombre, self.descuento = get('''SELECT * FROM distribuidores WHERE id=%s'''
+        if self.exist(use_id=True):
+            self.id, self.nombre, self.descuento, self.activo = get('''SELECT * FROM distribuidores WHERE id=%s'''
                                                    ,(self.id,),False)
-
+            if not self.activo:
+                raise Exception('Este proveedor no está activo')
+        else:
+            raise Exception('No existe este distribuidor')
     def create(self, params):
         self.nombre = params['nombre']
         self.descuento = params['descuento']
@@ -31,8 +35,11 @@ class Distribuidor:
             '''INSERT INTO distribuidores(nombre, descuento) VALUES(%s, %s) returning id''',
             (self.nombre, self.descuento),True)
 
-    def exist(self):
-        exists = get('''SELECT * FROM distribuidores WHERE nombre = %s''', (self.nombre,), False)
+    def exist(self, use_id = False):
+        if use_id:
+            exists = get('''SELECT * FROM distribuidores WHERE id = %s''', (self.id,), False)
+        else:
+          exists = get('''SELECT * FROM distribuidores WHERE nombre = %s''', (self.nombre,), False)
         if exists:
             return True
         else:
@@ -40,12 +47,12 @@ class Distribuidor:
 
     @classmethod
     def getAll(cls):
-        dists = get('''SELECT * FROM distribuidores''', (), False)
+        dists = get('''SELECT * FROM distribuidores WHERE activo = True''', (), True)
         distribuidores = []
         for dist in dists:
             distribuidores.append(
                 {
-                    'dropdown': dist[1] + ' - ' + dist[2],
+                    'dropdown': dist[1] + ' - {:.2f}%'.format(dist[2]),
                     'id': dist[0],
                     'descuento': dist[2]/100
                 }
