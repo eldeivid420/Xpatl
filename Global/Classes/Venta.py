@@ -224,6 +224,8 @@ class Venta:
             self.proveedor = True
         else:
             self.proveedor = False
+            self.subtotal = round(self.total / 0.8, 2)
+            self.descuento = self.subtotal - self.total
 
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
