@@ -62,8 +62,8 @@ CREATE TABLE public.producto
 (
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
     nombre VARCHAR NOT NULL,
-    precio float NOT NULL,
-    precio_esp float NOT NULL,
+    precio_lista float NOT NULL,
+    precio_descuento float NOT NULL,
     disponibles INT NOT NULL,
     inicial INT NOT NULL,
     sku varchar NOT NULL UNIQUE,
