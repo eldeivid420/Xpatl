@@ -54,7 +54,8 @@ class Distribuidor:
                 {
                     'dropdown': dist[1] + ' - {:.2f}%'.format(dist[2]),
                     'id': dist[0],
-                    'descuento': dist[2]/100
+                    'descuento': dist[2]/100,
+                    'nombre': dist[1]
                 }
             )
         return distribuidores
