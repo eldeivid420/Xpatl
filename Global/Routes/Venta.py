@@ -35,7 +35,7 @@ def buscar_venta():
 def fechas_venta():
     return v.fechas_venta()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/dia', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/dia', methods=['POST'])
 def registros_dia():
     return v.registros_dia()
 

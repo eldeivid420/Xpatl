@@ -297,8 +297,9 @@ class Venta:
 
     def calcular_total(self):
         if self.proveedor:
-            total = self.subtotal * (self.descuento / 100)
-            return round(total, 2)
+            self.descuento = round(self.subtotal * (self.descuento / 100), 2)
+            total = self.subtotal - self.descuento
+            return total
         else:
             return self.subtotal
 
