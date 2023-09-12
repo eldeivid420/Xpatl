@@ -11,6 +11,14 @@ CREATE TABLE public.usuario
    CONSTRAINT pk_usuario PRIMARY KEY(username)
 );
 
+CREATE TABLE public.distribuidores
+(
+    id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
+    nombre VARCHAR NOT NULL,
+    descuento float NOT NULL,
+	CONSTRAINT pk_distribuidor PRIMARY KEY(id)
+);
+
 CREATE TABLE public.venta
 (
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -18,7 +26,7 @@ CREATE TABLE public.venta
     sub_id INT NOT NULL,
     estatus estatus DEFAULT 'creado',
     comprador varchar(50),
-    proveedor varchar(50),
+    proveedor int DEFAULT NULL,
     proveedor_notas varchar,
     descuento float,
     subtotal float,
@@ -27,7 +35,8 @@ CREATE TABLE public.venta
     fecha TIMESTAMP NOT NULL DEFAULT NOW(),
     factura bool DEFAULT False ,
     CONSTRAINT pk_compra PRIMARY KEY(id),
-    CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
+    CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username),
+	CONSTRAINT fk_proveedor FOREIGN KEY(proveedor) REFERENCES public.distribuidores(id)
 );
 CREATE TABLE public.paymentmethod
 (
@@ -84,6 +93,9 @@ CREATE TABLE public.comisiones
     CONSTRAINT pk_comision PRIMARY KEY(id),
     CONSTRAINT fk_usuario FOREIGN KEY(vendedor) REFERENCES public.usuario(username)
 );
+
+
+
 INSERT INTO paymentmethod(nombre) VALUES('Efectivo');
 INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de crédito');
 INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de débito');
