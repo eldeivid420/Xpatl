@@ -82,6 +82,7 @@ def subir_distribuidores():
         x = requests.post(url, json=myobj)
         i += 1
         print(x.text)
+    root.destroy()
 
 root.title('Sistema de Natural')
 title = tk.Label(root, text="Escoge una opción del menú",font=("Arial", 25))
