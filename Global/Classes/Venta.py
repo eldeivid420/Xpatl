@@ -464,7 +464,8 @@ class Venta:
         detalles = (
             {'id': venta.id, 'comprador': venta.comprador, 'vendedor': nombre,
              'username': venta.vendedor, 'proveedor': venta.proveedor, 'notas': venta.proveedor_notas,
-             'subtotal': venta.subtotal, 'descuento': venta.descuento, 'total': venta.total, 'productos': productos})
+             'subtotal': venta.subtotal, 'descuento': venta.descuento, 'total': venta.total, 'productos': productos,
+             'metodos_pago': venta.metodos, 'factura': venta.factura})
         return detalles
 
     @classmethod

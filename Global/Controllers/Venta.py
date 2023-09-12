@@ -58,7 +58,7 @@ def buscar_venta():
         detalles = {
             "id": venta.id,
             "vendedor": venta.vendedor,
-            "tipo": venta.tipo,
+            "metodos_pago": venta.metodos,
             "estatus": venta.estatus,
             "comprador": venta.comprador,
             "proveedor": venta.proveedor,
@@ -67,7 +67,8 @@ def buscar_venta():
             "subtotal": venta.subtotal,
             "total": venta.total,
             "productos": venta.detalles_productos,
-            "fecha": venta.fecha
+            "fecha": venta.fecha,
+            "factura": venta.factura
         }
         return json.dumps(detalles)
     except Exception as e:
