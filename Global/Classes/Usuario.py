@@ -39,7 +39,7 @@ class Usuario:
     def load(self, params):
 
         # verificamos si existe el usuario
-        self.username = params['username']
+        self.username = params['username'].rstrip()
         self.rol = params['rol']
         exist = get('''SELECT * FROM usuario WHERE username = %s''', (self.username,), False)
         if exist == None:

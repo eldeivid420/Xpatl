@@ -7,7 +7,8 @@
     <list default="true" id="70b12a39-bfb3-45b2-9766-3bd8d67705db" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Classes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Classes/Usuario.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Usuario.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Routes/Distribuidor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Routes/Distribuidor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +50,7 @@
       <recent name="C:\Users\Razer\Documents\GitHub\Xpatl\Global\Utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.main (1)">
     <configuration name="cargarCsv (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Xpatl" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -157,9 +158,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.cargarCsv" />
-        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.cargarCsv (1)" />
         <item itemvalue="Python.run (1)" />
       </list>
