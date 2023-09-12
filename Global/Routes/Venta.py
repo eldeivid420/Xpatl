@@ -26,16 +26,16 @@ def entregar_venta():
     return v.entregar_venta()
 
 
-@GLOBAL_VENTA_BLUEPRINT.route('/buscar', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/buscar', methods=['GET'])
 def buscar_venta():
     return v.buscar_venta()
 
 #TODO se está usando?
-@GLOBAL_VENTA_BLUEPRINT.route('/fechas-venta', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/fechas-venta', methods=['GET'])
 def fechas_venta():
     return v.fechas_venta()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/dia', methods=['POST'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/dia', methods=['POST'])
 def registros_dia():
     return v.registros_dia()
 
@@ -48,15 +48,15 @@ def cobrador_pedidos():
 def entregador_pedidos():
     return v.entregador_pedidos()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/fechas-evento', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/fechas-evento', methods=['GET'])
 def fechas_evento():
     return v.fechas_evento()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/detalles-pedido', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/detalles-pedido', methods=['GET'])
 def detalles_pedido():
     return v.detalles_pedido()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/comisiones-dia', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/comisiones-dia', methods=['GET'])
 def comisiones_dia():
     return v.comisiones_dia()
 

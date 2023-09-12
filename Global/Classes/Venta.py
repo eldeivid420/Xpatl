@@ -221,7 +221,7 @@ class Venta:
         self.id, self.vendedor, self.sub_id, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha, self.factura = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
         if self.proveedor:
-            self.comprador = self.proveedor
+            self.comprador = get('''SELECT nombre FROM distribuidores WHERE id = %s''',(self.proveedor,),False)[0]
             self.proveedor = True
         else:
             self.proveedor = False
@@ -616,24 +616,22 @@ class Venta:
                 f["distribuidor"] = f'NOMBRE DEL CLIENTE:'
                 f["distribuidor_nombre2"] = self.comprador
 
-
             f["id_valor"] = str(f'#{self.id}')
 
-            print(self.metodos)
-
-            #print(f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}')
-            f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
-            f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
-            f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
-            f["metodo_texto4"] = f'{self.metodos[3]["method"]}: ${self.metodos[3]["amount"]}'
-            """if self.tipo == 'credito':
-                tipo = 'Tarjeta de crédito'
-            elif self.tipo == 'debito':
-                tipo = 'Tarjeta de débito'
-            elif self.tipo == 'credito proveedor':
-                tipo = 'A crédito de distribuidor'
-            else:
-                tipo = 'Efectivo'"""
+            if len(self.metodos) == 1:
+                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+            elif len(self.metodos) == 2:
+                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
+            elif len(self.metodos) == 3:
+                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
+                f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
+            elif len(self.metodos) == 3:
+                f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+                f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
+                f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
+                f["metodo_texto4"] = f'{self.metodos[3]["method"]}: ${self.metodos[3]["amount"]}'
 
         pdf = FPDF(format='letter')
         y1y2 = 70.0
