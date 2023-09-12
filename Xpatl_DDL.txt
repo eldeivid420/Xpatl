@@ -16,6 +16,7 @@ CREATE TABLE public.distribuidores
     id INT GENERATED ALWAYS AS IDENTITY NOT NULL,
     nombre VARCHAR NOT NULL,
     descuento float NOT NULL,
+	activo bool DEFAULT True,
 	CONSTRAINT pk_distribuidor PRIMARY KEY(id)
 );
 
