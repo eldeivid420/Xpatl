@@ -4,7 +4,6 @@ from Global.Utils.db import post, get
 import datetime
 from fpdf import FPDF, FlexTemplate
 
-
 # TODO: Documentar
 primera_venta = 1
 
@@ -44,7 +43,10 @@ subtemplate = [{'name': 'distribuidor', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x
                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
                {'name': 'distribuidor_nombre', 'type': 'T', 'x1': 85.0, 'y1': 230.0, 'x2': 180.0, 'y2': 225.0,
-                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L','text': '',
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': '',
+                'priority': 2, 'multiline': True},
+               {'name': 'distribuidor_nombre2', 'type': 'T', 'x1': 71.0, 'y1': 230.0, 'x2': 180.0, 'y2': 225.0,
+                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L', 'text': '',
                 'priority': 2, 'multiline': True},
 
                {'name': 'subtotal', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
@@ -54,10 +56,10 @@ subtemplate = [{'name': 'distribuidor', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
-               {'name': 'subtotal2', 'type': 'T', 'x1': 20.0, 'y1': 245.0, 'x2': 65.0, 'y2': 245.0, 'font': 'helvetica',
+               {'name': 'subtotal2', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x2': 65.0, 'y2': 240.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': '', 'priority': 2,
                 'multiline': False},
-               {'name': 'monto_subtotal2', 'type': 'T', 'x1': 65.0, 'y1': 244.0, 'x2': 105.0, 'y2': 244.0,
+               {'name': 'monto_subtotal2', 'type': 'T', 'x1': 65.0, 'y1': 240.0, 'x2': 105.0, 'y2': 240.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
@@ -75,18 +77,28 @@ subtemplate = [{'name': 'distribuidor', 'type': 'T', 'x1': 20.0, 'y1': 240.0, 'x
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
-               {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 130.0, 'y2': 245.0,
+               {'name': 'id', 'type': 'T', 'x1': 100.0, 'y1': 240.0, 'x2': 130.0, 'y2': 240.0,
                 'font': 'helvetica', 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': 'FOLIO:', 'priority': 2, 'multiline': False},
-               {'name': 'id_valor', 'type': 'T', 'x1': 115.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0,
+               {'name': 'id_valor', 'type': 'T', 'x1': 115.0, 'y1': 240.0, 'x2': 150.0, 'y2': 240.0,
                 'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False},
 
-               {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0, 'font': 'helvetica',
+               {'name': 'metodo', 'type': 'T', 'x1': 100.0, 'y1': 245.0, 'x2': 150.0, 'y2': 245.0, 'font': 'helvetica',
                 'size': 12, 'bold': 1, 'italic': 0, 'underline': 0, 'align': 'L', 'text': 'MÉTODO DE PAGO:',
                 'priority': 2, 'multiline': False},
-               {'name': 'metodo_texto', 'type': 'T', 'x1': 143.0, 'y1': 255.0, 'x2': 220.0, 'y2': 255.0,
-                'font': 'helvetica', 'size': 12, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+
+               {'name': 'metodo_texto', 'type': 'T', 'x1': 100.0, 'y1': 250.0, 'x2': 150.0, 'y2': 250.0,
+                'font': 'helvetica', 'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'metodo_texto2', 'type': 'T', 'x1': 150.0, 'y1': 250.0, 'x2': 200.0, 'y2': 250.0,
+                'font': 'helvetica', 'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'metodo_texto3', 'type': 'T', 'x1': 100.0, 'y1': 255.0, 'x2': 150.0, 'y2': 255.0,
+                'font': 'helvetica', 'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
+                'text': '', 'priority': 2, 'multiline': False},
+               {'name': 'metodo_texto4', 'type': 'T', 'x1': 150.0, 'y1': 255.0, 'x2': 200.0, 'y2': 255.0,
+                'font': 'helvetica', 'size': 8, 'bold': 0, 'italic': 0, 'underline': 0, 'align': 'L',
                 'text': '', 'priority': 2, 'multiline': False}]
 
 
@@ -132,9 +144,10 @@ class Venta:
         productos_insuficientes = []
 
         for producto in self.productos:
-            disponible, nombre, sku = get('''SELECT disponibles, nombre, sku FROM producto WHERE sku = %s''', (producto['sku'],),
-                                     False)
-            #print(f'NOMBRE {nombre}  DISP: {disponible}')
+            disponible, nombre, sku = get('''SELECT disponibles, nombre, sku FROM producto WHERE sku = %s''',
+                                          (producto['sku'],),
+                                          False)
+            # print(f'NOMBRE {nombre}  DISP: {disponible}')
             if disponible == 0:
                 productos_agotados.append(sku)
             elif disponible < producto['cantidad']:
@@ -157,7 +170,8 @@ class Venta:
             self.id = post(
                 '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING 
                 id'''
-                , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision, self.proveedor_notas)
+                , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision,
+                   self.proveedor_notas)
                 , True
             )[0]
         # Verificamos que la venta madre se haya generado adecuadamente
@@ -181,8 +195,6 @@ class Venta:
                  (self.vendedor, self.comision), False)
         self.obtener_subid(True)
 
-
-
     @classmethod
     def exist(cls, id):
 
@@ -205,7 +217,7 @@ class Venta:
         self.id = params['id']
         if not self.exist(self.id):
             raise Exception('No hay venta con el id proporcionado')
-        self.id, self.vendedor, self.sub_id, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha, self.factura= get(
+        self.id, self.vendedor, self.sub_id, self.estatus, self.comprador, self.proveedor, self.proveedor_notas, self.descuento, self.subtotal, self.total, self.comision, self.fecha, self.factura = get(
             '''SELECT * FROM venta WHERE id = %s''', (self.id,), False)
         if self.proveedor:
             self.comprador = self.proveedor
@@ -241,7 +253,8 @@ class Venta:
                 nombre, precio = get('''SELECT nombre, precio_esp FROM producto WHERE sku = %s ''', (sku,), False)
 
                 cantidad = \
-                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
+                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''',
+                        (sku, self.id),
                         False)[0]
                 self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
                                                 'total_producto': cantidad * precio})
@@ -249,7 +262,8 @@ class Venta:
                 nombre, precio = get('''SELECT nombre, precio FROM producto WHERE sku = %s ''', (sku,), False)
 
                 cantidad = \
-                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''', (sku, self.id),
+                    get('''SELECT COUNT(producto) FROM producto_venta WHERE producto = %s and venta = %s''',
+                        (sku, self.id),
                         False)[0]
                 self.detalles_productos.append({'nombre': nombre, 'sku': sku, 'precio': precio, 'cantidad': cantidad,
                                                 'total_producto': cantidad * precio})
@@ -259,7 +273,7 @@ class Venta:
         id = params['id']
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
-        pagado = get('''SELECT estatus FROM venta WHERE id = %s''',(id,), False)[0]
+        pagado = get('''SELECT estatus FROM venta WHERE id = %s''', (id,), False)[0]
         if pagado == 'pagado':
             raise Exception('La venta ya había sido pagada')
         elif pagado == 'cancelado':
@@ -267,10 +281,12 @@ class Venta:
         post('''UPDATE venta SET estatus = 'cancelado' WHERE id = %s''', (id,), False)
 
         # Agregamos los productos cancelados a los disponibles
-        registros = get('''SELECT producto, COUNT(producto) FROM producto_venta WHERE venta = %s GROUP BY (producto)''', (id,), True)
+        registros = get('''SELECT producto, COUNT(producto) FROM producto_venta WHERE venta = %s GROUP BY (producto)''',
+                        (id,), True)
         for i in range(len(registros)):
-            post('''DELETE FROM producto_venta WHERE producto = %s AND venta = %s ''',(registros[i][0], id), False)
-            post('''UPDATE producto SET disponibles = disponibles+%s WHERE sku = %s''', (registros[i][1], registros[i][0]), False)
+            post('''DELETE FROM producto_venta WHERE producto = %s AND venta = %s ''', (registros[i][0], id), False)
+            post('''UPDATE producto SET disponibles = disponibles+%s WHERE sku = %s''',
+                 (registros[i][1], registros[i][0]), False)
 
         # Restamos la comision generada por la venta cancelada
         registros = get('''SELECT comision, vendedor FROM venta WHERE id = %s''', (id,), False)
@@ -335,7 +351,7 @@ class Venta:
         for metodo in metodos_pago:
             if metodo['id'] in metodos:
                 post('''INSERT INTO paymentmethod_venta(venta, method,cantidad) VALUES(%s, %s, %s)''',
-                     (id,metodo['id'], metodo['cantidad']), False)
+                     (id, metodo['id'], metodo['cantidad']), False)
         post('''UPDATE venta SET estatus = 'pagado' WHERE id = %s''', (id,), False)
 
     @classmethod
@@ -372,7 +388,9 @@ class Venta:
             if proveedor:
                 comprador = proveedor
 
-            ventas.append({'id': registros[i][0], 'total': registros[i][1], 'tipo': registros[i][2], 'comprador': comprador, 'vendedor': registros[i][5]})
+            ventas.append(
+                {'id': registros[i][0], 'total': registros[i][1], 'tipo': registros[i][2], 'comprador': comprador,
+                 'vendedor': registros[i][5]})
         return ventas
 
     @classmethod
@@ -384,7 +402,9 @@ class Venta:
         a.vendedor, a.pagado''', (fecha, fecha), True)
 
         for i in range(len(registros)):
-            comisiones.append({'vendedor': registros[i][0], 'total_ventas': registros[i][1], 'comision': registros[i][2], 'pagado': registros[i][3]})
+            comisiones.append(
+                {'vendedor': registros[i][0], 'total_ventas': registros[i][1], 'comision': registros[i][2],
+                 'pagado': registros[i][3]})
 
         return comisiones
 
@@ -392,7 +412,8 @@ class Venta:
     def cobrador_pedidos(cls):
         pedidos = []
         registros = get(
-            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado' order by id""", (),
+            """SELECT id,sub_id,comprador,proveedor,subtotal,descuento,total FROM venta WHERE estatus = 'creado' order by id""",
+            (),
             True)
         if not registros:
             raise Exception('No hay pagos pendientes')
@@ -423,7 +444,8 @@ class Venta:
     @classmethod
     def detalles_pedido(cls, params):
         id = params['id']
-        registros = get("""SELECT id FROM venta WHERE id = %s AND (estatus = 'pagado' OR estatus = 'entregado') """, (id,), True)
+        registros = get("""SELECT id FROM venta WHERE id = %s AND (estatus = 'pagado' OR estatus = 'entregado') """,
+                        (id,), True)
 
         if not registros:
             raise Exception('No hay venta con el id proporcionado')
@@ -444,7 +466,6 @@ class Venta:
              'username': venta.vendedor, 'proveedor': venta.proveedor, 'notas': venta.proveedor_notas,
              'subtotal': venta.subtotal, 'descuento': venta.descuento, 'total': venta.total, 'productos': productos})
         return detalles
-
 
     @classmethod
     def entregador_pedidos(cls):
@@ -473,10 +494,10 @@ class Venta:
                                   'sku': venta.detalles_productos[j]['sku'],
                                   'cantidad': venta.detalles_productos[j]['cantidad']})
             pedidos.append(
-                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor, 'productos': productos})
+                {'id': registros[i][0], 'sub_id': registros[i][1], 'comprador': comprador, 'proveedor': proveedor,
+                 'productos': productos})
 
         return pedidos
-
 
     @classmethod
     def fechas_evento(cls, params):
@@ -490,7 +511,7 @@ class Venta:
                 TO_CHAR(b.fecha, 'DD/MM/YYYY')) GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
                 TO_CHAR(ve.fecha, 'DD/MM/YYYY') ''' + ORDER_BY
             registros = get(QUERY,
-                (), True)
+                            (), True)
 
             if not registros:
                 raise Exception('No hay registros en la base de datos')
@@ -529,6 +550,7 @@ class Venta:
         nproductos = len(self.detalles_productos)
         productos = self.detalles_productos
         metodos = self.metodos
+
         def escribir(i, productos, y1y2, lista):
 
             if len(productos[i]["nombre"]) > 25:
@@ -559,7 +581,7 @@ class Venta:
 
         def subtemplate_override(f):
 
-
+            # subtotal2 es cuando no hay descuento
             if self.descuento:
                 f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
                 f["subtotal"] = 'SUBTOTAL:'
@@ -573,16 +595,29 @@ class Venta:
             if self.proveedor:
                 f["distribuidor"] = f'NOMBRE DEL DISTRIBUIDOR:'
                 f["distribuidor_nombre"] = self.comprador
+
+            else:
+                f["distribuidor"] = f'NOMBRE DEL CLIENTE:'
+                f["distribuidor_nombre2"] = self.comprador
+
+
             f["id_valor"] = str(f'#{self.id}')
-            if self.tipo == 'credito':
+
+            print(self.metodos)
+
+            #print(f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}')
+            f["metodo_texto"] = f'{self.metodos[0]["method"]}: ${self.metodos[0]["amount"]}'
+            f["metodo_texto2"] = f'{self.metodos[1]["method"]}: ${self.metodos[1]["amount"]}'
+            f["metodo_texto3"] = f'{self.metodos[2]["method"]}: ${self.metodos[2]["amount"]}'
+            f["metodo_texto4"] = f'{self.metodos[3]["method"]}: ${self.metodos[3]["amount"]}'
+            """if self.tipo == 'credito':
                 tipo = 'Tarjeta de crédito'
             elif self.tipo == 'debito':
                 tipo = 'Tarjeta de débito'
             elif self.tipo == 'credito proveedor':
                 tipo = 'A crédito de distribuidor'
             else:
-                tipo = 'Efectivo'
-            f["metodo_texto"] = tipo
+                tipo = 'Efectivo'"""
 
         pdf = FPDF(format='letter')
         y1y2 = 70.0
@@ -679,13 +714,12 @@ class Venta:
         else:
             raise Exception('Esta venta tiene demasiados productos.')
 
-
     @classmethod
     def reporte(cls, params):
-        ventas = get('''SELECT * FROM producto WHERE estatus = True''',())
-        ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id from venta WHERE estatus='entregado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in 
-																(select TO_CHAR(fecha, 'DD/MM/YYYY') from venta order by id desc limit 1)
-																				  )  GROUP BY producto ''',())
+        ventas = get('''SELECT * FROM producto WHERE estatus = True''', ())
+        ventas_producto = get('''select COUNT(*), producto from producto_venta as pv WHERE pv.venta in (SELECT id 
+        from venta WHERE estatus='entregado' AND TO_CHAR(fecha, 'DD/MM/YYYY') in (select TO_CHAR(fecha, 'DD/MM/YYYY') 
+        from venta order by id desc limit 1) )  GROUP BY producto ''', ())
         productos = {}
         for venta in ventas_producto:
             productos[venta[1]] = venta[0]
@@ -697,7 +731,7 @@ class Venta:
             "precio a distribuidor": [],
             "inventario inicial": [],
             "numero de ventas": [],
-            "inventario restante":[]
+            "inventario restante": []
         }
 
         for venta in ventas:
@@ -707,24 +741,23 @@ class Venta:
             info['precio a distribuidor'].append(venta[3])
             info['inventario inicial'].append(venta[5])
             info['numero de ventas'].append(productos.get(venta[6], 0))
-            #info['numero de ventas'].append(ventas[0])
+            # info['numero de ventas'].append(ventas[0])
             info['inventario restante'].append(venta[4])
 
         df = pd.DataFrame(info)
         df.sort_values(by=['codigo'])
         if params['path'][-5:] == '.xlsx':
-            df.to_excel(params['path'],index=False)
+            df.to_excel(params['path'], index=False)
         else:
-            df.to_excel(params['path']+'.xlsx', index=False)
+            df.to_excel(params['path'] + '.xlsx', index=False)
         return 'Se ha guardado el reporte en ' + params['path']
-
 
     @classmethod
     def getMethods(cls):
         metodos = get('''SELECT * FROM paymentmethod''', ())
         methods = {}
         for method in metodos:
-            methods[method[0]]= {
+            methods[method[0]] = {
                 "id": method[0],
                 "nombre": method[1]
             }
