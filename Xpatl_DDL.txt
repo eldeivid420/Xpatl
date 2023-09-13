@@ -7,8 +7,14 @@ CREATE TABLE public.usuario
    nombre varchar NOT NULL,
    pass VARCHAR NOT NULL,
    activo BOOL NOT NULL,
-   rol rol NOT NULL,
    CONSTRAINT pk_usuario PRIMARY KEY(username)
+);
+
+CREATE TABLE public.usuario_permisos(
+	username VARCHAR(45) NOT NULL,
+	rol rol NOT NULL,
+	CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES public.usuario(username),
+	CONSTRAINT pk_permisos PRIMARY KEY(username, rol)
 );
 
 CREATE TABLE public.distribuidores
@@ -102,3 +108,4 @@ INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de crédito');
 INSERT INTO paymentmethod(nombre) VALUES('Tarjeta de débito');
 INSERT INTO paymentmethod(nombre) VALUES('Transferencia');
 INSERT INTO paymentmethod(nombre) VALUES('Crédito proveedor');
+
