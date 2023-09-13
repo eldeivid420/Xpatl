@@ -46,8 +46,9 @@ class Distribuidor:
             return False
 
     @classmethod
-    def getAll(cls):
-        dists = get('''SELECT * FROM distribuidores WHERE activo = True''', (), True)
+    def getAll(cls, params):
+        activo = params['activo']
+        dists = get('''SELECT * FROM distribuidores WHERE activo = %s''', (activo,), True)
         distribuidores = []
         for dist in dists:
             distribuidores.append(

@@ -15,7 +15,15 @@ def subirDistribuidor():
 
 def obtenerTodos():
     try:
-        return Distribuidor.getAll()
+        if request.method == 'GET':
+            params = {
+                'activo': True
+            }
+        else:
+            params = {
+                'activo': request.json.get('activo', True)
+            }
+        return Distribuidor.getAll(params)
     except Exception as e:
         return {'error': str(e)}, 400
 
