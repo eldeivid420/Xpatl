@@ -12,7 +12,7 @@ class Usuario:
         self.nombre = None
         self.password = None
         self.estatus = None
-        self.rol = None
+        self.roles = None
         self.load(params) if load else self.create(params)
 
     def create(self, params):
@@ -27,12 +27,17 @@ class Usuario:
                 self.password = h
                 self.nombre = params['nombre']
                 self.estatus = True
-                self.rol = params['rol']
+                self.roles = params['roles']
                 self.id = post(
-                    '''INSERT INTO usuario (username, pass, activo, rol, nombre) values (%s,%s,%s,%s, %s) returning id''',
-                    (self.username, self.password, self.estatus, self.rol, self.nombre), True
+                    '''INSERT INTO usuario (username, pass, activo, nombre) values (%s,%s,%s,%s) returning id''',
+                    (self.username, self.password, self.estatus, self.nombre), True
                 )
                 self.id = self.id[0]
+                for rol in self.roles:
+                    post(
+                        '''INSERT INTO usuario_permisos (username, rol) values (%s,%s)''',
+                        (self.username, rol)
+                    )
             except Exception as e:
                 raise Exception(e)
 
@@ -40,8 +45,11 @@ class Usuario:
 
         # verificamos si existe el usuario
         self.username = params['username'].rstrip()
-        self.rol = params['rol']
+        rol = params['rol']
         exist = get('''SELECT * FROM usuario WHERE username = %s''', (self.username,), False)
+        roles = get('''SELECT rol FROM usuario_permisos WHERE username = %s''', (self.username,), True)
+        self.roles = []
+        [self.roles.append(rol[0]) for rol in roles]
         if exist == None:
             # Checa que el usuario exista
             raise Exception('El usuario no existe')
@@ -49,7 +57,7 @@ class Usuario:
         if exist[3] != h:
             # Checa que los hashes de las contraseñas sean iguales
             raise Exception('Contraseña incorrecta')
-        if exist[5] != self.rol:
+        if rol not in self.roles:
             # Revisa que el rol seleccionado sea igual al que pertenece el usuario
             raise Exception('El usuario no pertenece a esta área')
         token = os.environ.get('JWT_TOKEN')
@@ -107,7 +115,13 @@ class Usuario:
             post('''UPDATE usuario SET pass = %s WHERE username = %s''', (h, username), False)
         if params['activo']:
             post('''UPDATE usuario SET  activo = %s WHERE username = %s''', (params['activo'], username), False)
-        if params['rol']:
-            post('''UPDATE usuario SET rol = %s WHERE username = %s''', (params['rol'], username), False)
+        if params['roles']:
+            post('''DELETE FROM usuario_permisos WHERE username = %s''', (username,), False)
+            for rol in params['roles']:
+                post(
+                    '''INSERT INTO usuario_permisos (username, rol) values (%s,%s)''',
+                    (username, rol)
+                )
+            #post('''UPDATE usuario SET rol = %s WHERE username = %s''', (params['rol'], username), False)
 
         return f'Usuario actualizado existosamente'

@@ -11,7 +11,7 @@ def registrar_usuario():
             'nombre': request.json.get('nombre'),
             'pass': request.json.get('pass'),
             'activo': request.json.get('activo'),
-            'rol': request.json.get('rol')
+            'roles': request.json.get('roles')
         }
         usuario = Usuario(params, False)
         return f'El usuario: {usuario.username} para {usuario.nombre} fue registrado', 200
@@ -62,7 +62,7 @@ def editar_usuario():
             'nombre': request.json.get('nombre'),
             'pass': request.json.get('pass'),
             'activo': request.json.get('activo'),
-            'rol': request.json.get('rol')
+            'roles': request.json.get('roles')
         }
         return Usuario.editar_usuario(params)
     except Exception as e:
