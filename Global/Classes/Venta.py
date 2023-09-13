@@ -385,22 +385,45 @@ class Venta:
         return fechas
 
     @classmethod
-    def registgros_dia(cls, params):
+    def registros_dia(cls, params):
         ventas = []
-        registros = get('''SELECT id, total, tipo, comprador, proveedor, vendedor FROM venta WHERE TO_CHAR(fecha, 
+        top3 = []
+        total_debito = 0
+        total_distribuidor = 0
+        total_credito = 0
+        total_transferencia = 0
+        total_efectivo = 0
+        registros = get('''SELECT id FROM venta WHERE TO_CHAR(fecha, 
         'DD/MM/YYYY') = %s AND (estatus = 'entregado' OR estatus = 'pagado')  ''', (params['fecha'],), True)
         if not registros:
             raise Exception('No hay ventas registradas para la fecha seleccionada')
+
         for i in range(len(registros)):
-            proveedor = registros[i][4]
-            comprador = registros[i][3]
-            if proveedor:
-                comprador = proveedor
+            venta = Venta({'id': registros[i][0]})
 
             ventas.append(
-                {'id': registros[i][0], 'total': registros[i][1], 'tipo': registros[i][2], 'comprador': comprador,
-                 'vendedor': registros[i][5]})
-        return ventas
+                {'id': venta.id, 'total': venta.total, 'comprador': venta.comprador,
+                 'vendedor': venta.vendedor, 'metodos_pago': venta.metodos})
+
+            for j in range(len(venta.metodos)):
+                if venta.metodos[j]["method"] == 'Crédito proveedor':
+                    total_distribuidor += venta.metodos[j]["amount"]
+                if venta.metodos[j]["method"] == 'Transferencia':
+                    total_transferencia += venta.metodos[j]["amount"]
+                if venta.metodos[j]["method"] == 'Efectivo':
+                    total_efectivo += venta.metodos[j]["amount"]
+                if venta.metodos[j]["method"] == 'Tarjeta de crédito':
+                    total_credito += venta.metodos[j]["amount"]
+                if venta.metodos[j]["method"] == 'Tarjeta de débito':
+                    total_debito += venta.metodos[j]["amount"]
+
+        registros = get('''SELECT producto, count(producto) FROM producto_venta WHERE venta IN (SELECT ID FROM venta WHERE TO_CHAR(fecha, 
+        'DD/MM/YYYY') = %s AND (estatus = 'entregado' OR estatus = 'pagado')) GROUP BY producto ORDER BY COUNT(producto) DESC LIMIT 3''', (params['fecha'],),True)
+        for i in range(len(registros)):
+            top3.append({'producto': registros[i][0], 'cantidad': registros[i][1]})
+        return {'ventas': ventas, 'numero_ventas': len(registros), 'total_debito': total_debito,
+                'total_credito': total_credito, 'total_distribuidor': total_distribuidor,
+                'total_transferencia': total_transferencia, 'top3': top3}
 
     @classmethod
     def comisiones_dia(cls, params):
@@ -591,17 +614,6 @@ class Venta:
 
         def subtemplate_override(f):
 
-            # subtotal2 es cuando no hay descuento
-
-            '''if self.descuento:
-                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
-                f["subtotal"] = 'SUBTOTAL:'
-                f["monto_subtotal"] = str(f'${round(self.subtotal, 2)}')
-            else:
-                f["monto_descuento"] = str(f'${round(float(self.subtotal * (self.descuento / 100.00)), 2)}')
-                f["subtotal2"] = 'SUBTOTAL:'
-                f["monto_subtotal2"] = str(f'${round(self.subtotal, 2)}')'''
-
             f["subtotal"] = 'SUBTOTAL:'
             f["monto_descuento"] = str('${:.2f}'.format(self.descuento))
             f["monto_subtotal"] = str('${:.2f}'.format(self.subtotal))
@@ -776,3 +788,32 @@ class Venta:
                 "nombre": method[1]
             }
         return methods
+
+    @classmethod
+    def facturas_pendientes(cls):
+        ventas = []
+        registros = get('''SELECT * FROM venta WHERE factura = true''',(),True)
+        if not registros:
+            raise Exception('No hay facturas pendientes')
+        for i in range(len(registros)):
+            ventas.append({'id': registros[i][0], 'vendedor': registros[i][1], 'sub_id': registros[i][2],
+                           'estatus': registros[i][3], 'comprador': registros[i][4], 'proveedor': registros[i][5],
+                           'notas': registros[i][6], 'descuento': registros[i][7], 'subtotal': registros[i][8],
+                           'total': registros[i][9], 'comision': registros[i][10],
+                           'fecha': registros[i][11].strftime("%d/%m/%Y %H:%M:%S"), 'factura': registros[i][12]})
+
+        return ventas
+
+    @classmethod
+    def facturas_facturar(cls, params):
+        exist = get('''SELECT factura FROM venta where id = %s''', (params['id'],), False)
+
+        if not exist:
+            raise Exception('No hay ventas con el id proporcionado')
+        elif not exist[0]:
+            raise Exception('No se requiere factura para esta venta')
+
+        post('''UPDATE venta SET factura = false WHERE id = %s''', (params['id'],), False)
+
+        return f'El estado de la factura se cambió exitosamente'
+

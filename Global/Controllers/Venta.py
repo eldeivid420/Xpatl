@@ -141,7 +141,7 @@ def registros_dia():
         params = {
             'fecha': request.json.get('fecha')
         }
-        return Venta.registgros_dia(params)
+        return Venta.registros_dia(params)
     except Exception as e:
         return {'error': str(e)}, 400
 
@@ -206,5 +206,20 @@ def comisiones_dia():
 def metodos_pago():
     try:
         return Venta.getMethods(), 200
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+
+def facturas_pendientes():
+    try:
+        return Venta.facturas_pendientes()
+    except Exception as e:
+        return {'error': str(e)}, 400
+
+
+def facturas_facturar():
+    try:
+        params = {'id': request.json.get('id')}
+        return Venta.facturas_facturar(params)
     except Exception as e:
         return {'error': str(e)}, 400

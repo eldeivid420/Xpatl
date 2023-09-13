@@ -60,6 +60,21 @@ def detalles_pedido():
 def comisiones_dia():
     return v.comisiones_dia()
 
+
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/facturas/pendientes', methods=['GET'])
+def facturas_pendientes():
+    return v.facturas_pendientes()
+
+
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/facturas/facturar', methods=['POST'])
+def facturas_facturar():
+    return v.facturas_facturar()
+
+
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/editar-proveedor', methods=['POST'])
+def editar_proveedor():
+    return v.editar_proveedor()
+
 @GLOBAL_VENTA_BLUEPRINT.route('/reporte', methods=['POST'])
 def reporte():
     return v.reporte()
