@@ -73,32 +73,19 @@ class Usuario:
 
     @classmethod
     def obtener_usuarios(cls, params):
-        filtro = params['filtro']
+        filtro = params['activos']
         usuarios = []
-
-        if filtro == 'admin':
-            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'admin'  and activo = true''',
+        registros = get('''SELECT username, nombre FROM usuario WHERE activo = %s''',
                             (filtro,), True)
-        elif filtro == 'vendedor':
-            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'vendedor'  and activo = true''',
-                            (filtro,), True)
-        elif filtro == 'cobrador':
-            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'cobrador'  and activo = true''',
-                            (filtro,), True)
-        elif filtro == 'entregador':
-            registros = get('''SELECT username, nombre, rol FROM usuario WHERE rol = 'entregador'  and activo = true''',
-                            (filtro,), True)
-        elif not filtro:
-            registros = get('''SELECT username, nombre, rol FROM usuario WHERE activo = true''',
-                            (filtro,), True)
-        else:
-            raise Exception('Selecciona un filtro válido')
-
         if not registros:
             raise Exception('No se encontraron usuarios')
 
         for i in range(len(registros)):
-            usuarios.append({'usuario': registros[i][0], 'nombre': registros[i][1], 'area': registros[i][2]})
+            roles = get('''SELECT rol FROM usuario_permisos WHERE username = %s''', (registros[i][0],), True)
+            roles_list = []
+            [roles_list.append(rol[0]) for rol in roles]
+            roles_list = ', '.join(roles_list)
+            usuarios.append({'usuario': registros[i][0], 'nombre': registros[i][1], 'area': roles_list})
 
         return usuarios
 
@@ -113,7 +100,7 @@ class Usuario:
         if params['pass']:
             h = hashlib.sha256(params['pass'].encode('utf-8')).hexdigest()
             post('''UPDATE usuario SET pass = %s WHERE username = %s''', (h, username), False)
-        if params['activo']:
+        if params['activo'] == True or params['activo'] == False:
             post('''UPDATE usuario SET  activo = %s WHERE username = %s''', (params['activo'], username), False)
         if params['roles']:
             post('''DELETE FROM usuario_permisos WHERE username = %s''', (username,), False)

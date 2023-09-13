@@ -15,7 +15,7 @@ def editar_usuario():
     return u.editar_usuario()
 
 
-@GLOBAL_ADMIN_BLUEPRINT.route('/obtener-usuarios', methods=['GET'])
+@GLOBAL_ADMIN_BLUEPRINT.route('/obtener-usuarios', methods=['POST'])
 def obtener_usuarios():
     return u.obtener_usuarios()
 

@@ -37,7 +37,7 @@ def iniciar_sesion():
 def obtener_usuarios():
     try:
         params = {
-            'filtro': request.json.get('filtro')
+            'activos': request.json.get('activos')
         }
         return Usuario.obtener_usuarios(params)
     except Exception as e:
