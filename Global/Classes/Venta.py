@@ -452,9 +452,10 @@ class Venta:
 
         # Si es proveedor, entonces asignamos su nombre a la variable comprador
         for i in range(len(registros)):
-            if registros[i][3]:
+            if type(registros[i][3]) == int:
                 comprador = registros[i][3]
                 proveedor = True
+                comprador = get("""SELECT nombre FROM distribuidores WHERE id = %s""", (comprador,), False)[0]
             else:
                 proveedor = False
                 comprador = registros[i][2]
@@ -512,9 +513,10 @@ class Venta:
 
         # Si es proveedor, entonces asignamos su nombre a la variable comprador
         for i in range(len(registros)):
-            if registros[i][3]:
+            if type(registros[i][3]) == int:
                 comprador = registros[i][3]
                 proveedor = True
+                comprador = get("""SELECT nombre FROM distribuidores WHERE id = %s""", (comprador,), False)[0]
             else:
                 proveedor = False
                 comprador = registros[i][2]
