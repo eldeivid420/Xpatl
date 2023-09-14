@@ -5,13 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70b12a39-bfb3-45b2-9766-3bd8d67705db" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/Xpatl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Xpatl.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Classes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Venta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Controllers/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Controllers/Venta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Routes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Routes/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Classes/Producto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Producto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Controllers/Producto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Controllers/Producto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cargarCsv.py" beforeDir="false" afterPath="$PROJECT_DIR$/cargarCsv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productos_ejemplo.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/productos_ejemplo.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,8 +161,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.cargarCsv (3)" />
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.cargarCsv (2)" />
         <item itemvalue="Python.cargarCsv" />

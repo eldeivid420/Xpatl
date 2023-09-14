@@ -39,7 +39,6 @@ class Producto:
 
         self.sku = params['sku']
         exist = self.exist()
-
         if exist:
             if params['override']:
                 self.actualizar_producto(params, new=True)

@@ -27,8 +27,8 @@ def uploadInventario():
         myobj = {
                 'nombre': df['Nombre'][ind],
                 'precio': float(df['Precio_lista'][ind]),
-                'precio_esp': float(df['Precio_descuento'][ind]),
                 'disponibles': int(df['Existencia'][ind]),
+                'descuento': df['Descuento'][ind] / (100),
                 'sku': df['Clave'][ind]
         }
         x = requests.post(url, json = myobj)

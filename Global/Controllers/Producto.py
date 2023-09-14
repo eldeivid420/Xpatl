@@ -1,7 +1,7 @@
 from flask import request
 from Global.Classes.Producto import Producto
 import json
-
+import math
 
 def agregar_producto():
     try:
@@ -90,8 +90,8 @@ def cargar_productos():
     try:
         params = {
             'nombre': request.json.get('nombre'),
-            'precio': request.json.get('precio'),
-            'precio_esp': request.json.get('precio_esp'),
+            'precio': math.ceil(request.json.get('precio')),
+            'precio_esp': math.ceil(request.json.get('precio') * (1 - request.json.get('descuento'))),
             'disponibles': request.json.get('disponibles'),
             'sku': request.json.get('sku'),
             'override': True
