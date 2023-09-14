@@ -231,7 +231,7 @@ class Venta:
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
         self.fecha = self.fecha.strftime("%d/%m/%Y %H:%M:%S")
-        if self.estatus == 'pagado':
+        if self.estatus == 'pagado' or self.estatus == 'entregado':
             metodos = get('''select distinct jsonb_agg(jsonb_build_object(
             'method', m.nombre,
             'amount', p.cantidad
@@ -247,7 +247,6 @@ class Venta:
                 self.metodos.append(metodo[0][0])
 
         diferentes = get('''SELECT producto FROM producto_venta WHERE venta = %s GROUP BY producto''', (self.id,), True)
-
         for i in range(len(diferentes)):
             sku = diferentes[i][0]
 
