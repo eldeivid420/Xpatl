@@ -423,7 +423,7 @@ class Venta:
             top3.append({'producto': registros[i][0], 'cantidad': registros[i][1]})
         return {'ventas': ventas, 'numero_ventas': len(registros), 'total_debito': total_debito,
                 'total_credito': total_credito, 'total_distribuidor': total_distribuidor,
-                'total_transferencia': total_transferencia, 'top3': top3}
+                'total_transferencia': total_transferencia, 'total_efectivo': total_efectivo, 'top3': top3}
 
     @classmethod
     def comisiones_dia(cls, params):
