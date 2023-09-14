@@ -422,7 +422,7 @@ class Venta:
             top3.append({'producto': registros[i][0], 'cantidad': registros[i][1]})
         return {'ventas': ventas, 'numero_ventas': len(registros), 'total_debito': total_debito,
                 'total_credito': total_credito, 'total_distribuidor': total_distribuidor,
-                'total_transferencia': total_transferencia, 'top3': top3}
+                'total_transferencia': total_transferencia, 'total_efectivo': total_efectivo, 'top3': top3}
 
     @classmethod
     def comisiones_dia(cls, params):
@@ -817,4 +817,22 @@ class Venta:
         post('''UPDATE venta SET factura = false WHERE id = %s''', (params['id'],), False)
 
         return f'El estado de la factura se cambió exitosamente'
+
+    @classmethod
+    def editar_proveedor(cls, params):
+        exist = get('''SELECT id FROM distribuidores WHERE id = %s''',(params['id'],), False)
+        if not exist:
+            raise Exception('No hay proveedor registrado con ese id')
+
+        if params["nombre"]:
+            post('''UPDATE distribuidores SET nombre = %s WHERE id = %s''',(params["nombre"],params["id"]), False)
+        if params["descuento"]:
+            post('''UPDATE distribuidores SET descuento = %s WHERE id = %s''', (params["descuento"], params["id"]), False)
+
+        if params["activo"] == False:
+            post('''UPDATE distribuidores SET activo = false WHERE id = %s''', (params["id"],),False)
+        elif params["activo"] == True:
+            post('''UPDATE distribuidores SET activo = true WHERE id = %s''', (params["id"],), False)
+
+        return f'El proveedor se editó correctamente'
 

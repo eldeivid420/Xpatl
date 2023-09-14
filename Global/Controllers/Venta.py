@@ -223,3 +223,14 @@ def facturas_facturar():
         return Venta.facturas_facturar(params)
     except Exception as e:
         return {'error': str(e)}, 400
+
+
+def editar_proveedor():
+    try:
+        params = {'id': request.json.get('id'),
+                  'nombre': request.json.get('nombre'),
+                  'descuento': request.json.get('descuento'),
+                  'activo': request.json.get('activo')}
+        return Venta.editar_proveedor(params)
+    except Exception as e:
+        return {'error': str(e)}, 400
