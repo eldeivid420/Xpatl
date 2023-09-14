@@ -48,7 +48,7 @@ class Distribuidor:
     @classmethod
     def getAll(cls, params):
         activo = params['activo']
-        dists = get('''SELECT * FROM distribuidores WHERE activo = %s''', (activo,), True)
+        dists = get('''SELECT * FROM distribuidores WHERE activo = %s ORDER BY nombre''', (activo,), True)
         distribuidores = []
         for dist in dists:
             distribuidores.append(
