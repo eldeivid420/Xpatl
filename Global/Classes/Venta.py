@@ -434,13 +434,18 @@ class Venta:
     def comisiones_dia(cls, params):
         fecha = params['fecha']
         comisiones = []
-        registros = get('''SELECT a.vendedor, sum(b.total), sum(b.comision), a.pagado FROM comisiones as a INNER JOIN 
+        
+        """registros = get('''SELECT a.vendedor, sum(b.total), sum(b.comision), a.pagado FROM comisiones as a INNER JOIN 
         venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s and TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s GROUP BY 
-        a.vendedor, a.pagado''', (fecha, fecha), True)
+        a.vendedor, a.pagado''', (fecha, fecha), True)"""
 
+        registros = get('''select DISTINCT a.vendedor, a.monto, sum (b.total),a.pagado from comisiones a
+INNER JOIN venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s
+AND TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s AND a.vendedor = b.vendedor
+GROUP BY a.vendedor, a.pagado, a.monto''', (fecha, fecha), True)
         for i in range(len(registros)):
             comisiones.append(
-                {'vendedor': registros[i][0], 'total_ventas': registros[i][1], 'comision': registros[i][2],
+                {'vendedor': registros[i][0], 'total_ventas': registros[i][2], 'comision': round(registros[i][1], 2),
                  'pagado': registros[i][3]})
 
         return comisiones
