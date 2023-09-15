@@ -135,9 +135,9 @@ class Venta:
         self.proveedor_notas = params['proveedor_notas']
         self.descuento = None
         self.productos = params['productos']
-        self.subtotal = self.calcular_subtotal()
-        self.total = self.calcular_total()
-        self.comision = (self.subtotal * 0.8) * 0.1
+        self.subtotal, self.descuento, self.total = self.calcular_subtotal()
+        #self.total = self.calcular_total()
+        self.comision = round((self.total * 0.8) * 0.1, 2)
         self.factura = params['factura']
         if len(self.productos) == 0:
             raise Exception('No puedes generar una venta vacía')
@@ -169,10 +169,10 @@ class Venta:
         # Si no es proveedor, entonces dejamos los campos proveedor y descuento como Null
         else:
             self.id = post(
-                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas, factura) VALUES(%s,%s,%s,%s,%s,%s,%s, %s) RETURNING 
+                '''INSERT INTO venta(vendedor,comprador, sub_id,subtotal,total,comision,proveedor_notas, factura, descuento) VALUES(%s,%s,%s,%s,%s,%s,%s, %s, %s) RETURNING 
                 id'''
                 , (self.vendedor, self.comprador, self.sub_id, self.subtotal, self.total, self.comision,
-                   self.proveedor_notas, self.factura)
+                   self.proveedor_notas, self.factura, self.descuento)
                 , True
             )[0]
         # Verificamos que la venta madre se haya generado adecuadamente
@@ -190,7 +190,7 @@ class Venta:
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
         existe_registro = post(('''UPDATE comisiones SET monto = monto+%s WHERE vendedor = %s and TO_CHAR(fecha,
-               'DD/MM/YYYY') = %s RETURNING id'''), (self.comision, self.vendedor, hoy), True)
+               'DD/MM/YYYY') = %s RETURNING id'''), (round(self.comision,2), self.vendedor, hoy), True)
         if not existe_registro:
             post('''insert into comisiones(vendedor,monto,pagado) values (%s,%s,false)''',
                  (self.vendedor, self.comision), False)
@@ -225,8 +225,7 @@ class Venta:
             self.proveedor = True
         else:
             self.proveedor = False
-            self.subtotal = round(self.total / 0.8, 2)
-            self.descuento = self.subtotal - self.total
+
 
         self.productos = get('''SELECT producto FROM producto_venta WHERE venta = %s''', (self.id,), True)
 
@@ -291,25 +290,32 @@ class Venta:
                  (registros[i][1], registros[i][0]), False)
 
         # Restamos la comision generada por la venta cancelada
+        hoy = datetime.datetime.now()
+        hoy = hoy.strftime("%d/%m/%Y")
         registros = get('''SELECT comision, vendedor FROM venta WHERE id = %s''', (id,), False)
-        post('''UPDATE comisiones SET monto = monto-%s WHERE vendedor = %s''', (registros[0], registros[1]), False)
+        post('''UPDATE comisiones SET monto = monto-%s WHERE vendedor = %s and TO_CHAR(fecha,'DD/MM/YYYY') = %s''',
+             (registros[0], registros[1], hoy), False)
 
         return f'Venta cancelada exitosamente'
 
     def calcular_subtotal(self):
 
-        suma = 0
-
+        suma_lista = 0
+        suma_descuento = 0
         for producto in self.productos:
-
-            if self.proveedor:
-                precio_lista = get('''SELECT precio_lista FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
-
-                suma += precio_lista * producto['cantidad']
-            else:
+            precio_lista = get('''SELECT precio_lista FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+            suma_lista += precio_lista * producto['cantidad']
+            if not self.proveedor:
                 precio_descuento = get('''SELECT precio_descuento FROM producto WHERE sku = %s''', (producto['sku'],), False)[0]
+                suma_descuento += precio_descuento * producto['cantidad']
 
-                suma += precio_descuento * producto['cantidad']
+        if self.proveedor:
+            self.subtotal = suma_lista
+            total = self.calcular_total()
+            return suma_lista, self.descuento, total
+        else:
+            descuento = suma_lista - suma_descuento
+            return suma_lista, descuento, suma_descuento
 
         return round(suma, 2)
 
@@ -322,8 +328,8 @@ class Venta:
             total = self.subtotal - self.descuento
             return total
         else:
-            self.total = self.subtotal
-            self.subtotal = round(self.total / 0.8, 2)
+            #self.total = self.subtotal
+            #self.subtotal = round(self.total / 0.8, 2)
             self.descuento = round(self.subtotal - self.total, 2)
             return self.total
 
@@ -640,7 +646,7 @@ class Venta:
                 f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
                 f["metodo_texto2"] = '{}: ${:.2f}'.format(self.metodos[1]["method"], self.metodos[1]["amount"])
                 f["metodo_texto3"] = '{}: ${:.2f}'.format(self.metodos[2]["method"], self.metodos[2]["amount"])
-            elif len(self.metodos) == 3:
+            elif len(self.metodos) == 4:
                 f["metodo_texto"] = '{}: ${:.2f}'.format(self.metodos[0]["method"], self.metodos[0]["amount"])
                 f["metodo_texto2"] = '{}: ${:.2f}'.format(self.metodos[1]["method"], self.metodos[1]["amount"])
                 f["metodo_texto3"] ='{}: ${:.2f}'.format(self.metodos[2]["method"], self.metodos[2]["amount"])
