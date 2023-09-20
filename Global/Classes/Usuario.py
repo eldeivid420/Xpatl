@@ -83,7 +83,17 @@ class Usuario:
         for i in range(len(registros)):
             roles = get('''SELECT rol FROM usuario_permisos WHERE username = %s''', (registros[i][0],), True)
             roles_list = []
-            [roles_list.append(rol[0]) for rol in roles]
+            for rol in roles:
+                rolecito = None
+                if rol[0] == 'admin':
+                    rolecito = 'adm'
+                elif rol[0] == 'vendedor':
+                    rolecito = 'vts'
+                elif rol[0] == 'cobrador':
+                    rolecito = 'cob'
+                elif rol[0] == 'entregador':
+                    rolecito = 'ent'
+                roles_list.append(rolecito)
             roles_list = ', '.join(roles_list)
             usuarios.append({'usuario': registros[i][0], 'nombre': registros[i][1], 'area': roles_list})
 
