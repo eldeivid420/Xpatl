@@ -16,3 +16,7 @@ def buscar_comisiones():
 def registros_dia():
     return c.registros_dia()
 
+@GLOBAL_COMISION_BLUEPRINT.route('/comision-usuario-hoy', methods=['GET'])
+def comision_usuario_hoy():
+    return c.comision_usuario_hoy()
+

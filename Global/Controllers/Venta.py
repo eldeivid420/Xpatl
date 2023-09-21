@@ -234,11 +234,3 @@ def editar_proveedor():
         return Venta.editar_proveedor(params), 200
     except Exception as e:
         return {'error': str(e)}, 400
-
-
-def comision_usuario_hoy():
-    try:
-        params = {'username': request.json.get('username')}
-        return Venta.comision_usuario_hoy(params), 200
-    except Exception as e:
-        return {'error': str(e)}, 400

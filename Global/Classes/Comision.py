@@ -69,3 +69,18 @@ class Comision:
                 {'id': registros[i][0], 'vendedor': registros[i][1], 'monto': registros[i][2],
                  'pagado': registros[i][3], 'fecha': registros[i][4].strftime("%d/%m/%Y"), 'pagado_en': registros[i][5]})
         return comisiones
+
+
+    @classmethod
+    def comision_usuario_hoy(cls, params):
+        hoy = datetime.datetime.now()
+        hoy = hoy.strftime("%d/%m/%Y")
+        exist = get('''SELECT id FROM usuario WHERE username = %s''',(params['username'],),False)
+        if not exist:
+            raise Exception('El usuario no existe')
+        comision = get('''SELECT monto FROM comisiones WHERE vendedor = %s AND TO_CHAR(fecha,
+                      'DD/MM/YYYY') = %s''', (params['username'], hoy), False)
+        if not comision:
+            return {'monto': 0}
+        else:
+            return {'monto': comision[0]}

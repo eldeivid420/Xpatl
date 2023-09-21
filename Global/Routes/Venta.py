@@ -75,10 +75,6 @@ def facturas_facturar():
 def editar_proveedor():
     return v.editar_proveedor()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/admin/comision-usuario-hoy', methods=['GET'])
-def comision_usuario_hoy():
-    return v.comision_usuario_hoy()
-
 @GLOBAL_VENTA_BLUEPRINT.route('/reporte', methods=['POST'])
 def reporte():
     return v.reporte()
