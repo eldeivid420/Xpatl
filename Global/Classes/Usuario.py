@@ -46,7 +46,7 @@ class Usuario:
         # verificamos si existe el usuario
         self.username = params['username'].rstrip()
         rol = params['rol']
-        exist = get('''SELECT * FROM usuario WHERE username = %s''', (self.username,), False)
+        exist = get('''SELECT * FROM usuario WHERE username = %s AND activo=True''', (self.username,), False)
         roles = get('''SELECT rol FROM usuario_permisos WHERE username = %s''', (self.username,), True)
         self.roles = []
         [self.roles.append(rol[0]) for rol in roles]
@@ -60,6 +60,7 @@ class Usuario:
         if rol not in self.roles:
             # Revisa que el rol seleccionado sea igual al que pertenece el usuario
             raise Exception('El usuario no pertenece a esta área')
+
         token = os.environ.get('JWT_TOKEN')
         web_token = jwt.encode({
         "username": self.username
