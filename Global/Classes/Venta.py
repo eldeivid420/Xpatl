@@ -848,3 +848,17 @@ GROUP BY a.vendedor, a.pagado, a.monto''', (fecha, fecha), True)
 
         return f'El proveedor se editó correctamente'
 
+    @classmethod
+    def comision_usuario_hoy(cls, params):
+        hoy = datetime.datetime.now()
+        hoy = hoy.strftime("%d/%m/%Y")
+        exist = get('''SELECT id FROM usuario WHERE username = %s''',(params['username'],),False)
+        if not exist:
+            raise Exception('El usuario no existe')
+        comision = get('''SELECT monto FROM comisiones WHERE vendedor = %s AND TO_CHAR(fecha,
+                      'DD/MM/YYYY') = %s''', (params['username'], hoy), False)
+        if not comision:
+            return {'monto': 0}
+        else:
+            return {'monto': comision[0]}
+
