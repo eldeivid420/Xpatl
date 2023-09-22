@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70b12a39-bfb3-45b2-9766-3bd8d67705db" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Global/Classes/Usuario.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Usuario.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Classes/Producto.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Producto.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,10 +157,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.cargarCsv" />
         <item itemvalue="Python.cargarCsv (3)" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.cargarCsv (2)" />
-        <item itemvalue="Python.cargarCsv" />
       </list>
     </recent_temporary>
   </component>
@@ -226,22 +226,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Usuario.py</url>
-          <line>59</line>
-          <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Global/Classes/Usuario.py</url>
-          <line>85</line>
+          <line>86</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Usuario.py</url>
-          <line>76</line>
+          <line>77</line>
           <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Usuario.py</url>
-          <line>102</line>
+          <line>113</line>
           <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -256,12 +251,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>418</line>
+          <line>424</line>
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>406</line>
+          <line>412</line>
           <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -271,7 +266,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>478</line>
+          <line>490</line>
           <option name="timeStamp" value="80" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -286,17 +281,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>316</line>
+          <line>322</line>
           <option name="timeStamp" value="84" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>443</line>
+          <line>455</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
-          <line>435</line>
+          <line>447</line>
           <option name="timeStamp" value="86" />
         </line-breakpoint>
       </breakpoints>
