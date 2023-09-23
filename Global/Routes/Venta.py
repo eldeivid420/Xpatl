@@ -26,7 +26,7 @@ def entregar_venta():
     return v.entregar_venta()
 
 
-@GLOBAL_VENTA_BLUEPRINT.route('/admin/buscar', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/buscar', methods=['POST'])
 def buscar_venta():
     return v.buscar_venta()
 
@@ -48,7 +48,7 @@ def cobrador_pedidos():
 def entregador_pedidos():
     return v.entregador_pedidos()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/admin/fechas-evento', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/fechas-evento', methods=['POST'])
 def fechas_evento():
     return v.fechas_evento()
 
@@ -56,7 +56,7 @@ def fechas_evento():
 def detalles_pedido():
     return v.detalles_pedido()
 
-@GLOBAL_VENTA_BLUEPRINT.route('/admin/comisiones-dia', methods=['GET'])
+@GLOBAL_VENTA_BLUEPRINT.route('/admin/comisiones-dia', methods=['POST'])
 def comisiones_dia():
     return v.comisiones_dia()
 
