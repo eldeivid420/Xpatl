@@ -848,3 +848,5 @@ GROUP BY a.vendedor, a.pagado, a.monto''', (fecha, fecha), True)
 
         return f'El proveedor se editó correctamente'
 
+
+

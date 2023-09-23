@@ -181,7 +181,7 @@ class Producto:
         """
 
         productos = {}
-        todos = get('''SELECT * FROM producto where estatus = True''', (), True)
+        todos = get('''SELECT * FROM producto where estatus = True ORDER BY nombre asc''', (), True)
         for i in range(len(todos)):
             new = list(todos[i])
             new.pop(5)

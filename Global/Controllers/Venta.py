@@ -231,6 +231,6 @@ def editar_proveedor():
                   'nombre': request.json.get('nombre'),
                   'descuento': request.json.get('descuento'),
                   'activo': request.json.get('activo')}
-        return Venta.editar_proveedor(params)
+        return Venta.editar_proveedor(params), 200
     except Exception as e:
         return {'error': str(e)}, 400

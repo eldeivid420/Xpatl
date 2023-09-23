@@ -17,7 +17,7 @@ class Usuario:
 
     def create(self, params):
         # verificamos si existe el usuario
-        self.username = params['username']
+        self.username = params['username'].rstrip()
         exist = get('''SELECT * FROM usuario WHERE username = %s''', (self.username,), False)
         if exist:
             raise Exception('El usuario ya existe')
