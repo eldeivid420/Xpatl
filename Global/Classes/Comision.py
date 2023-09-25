@@ -84,3 +84,13 @@ class Comision:
             return {'monto': 0}
         else:
             return {'monto': comision[0]}
+
+    @classmethod
+    def pagar_comision(cls, params):
+        exist = get('''SELECT pagado_en FROM comisiones WHERE id = %s''',(params['id'],),False)
+        if not exist:
+            raise Exception('El no hay ventas con el id proporcionado')
+        if exist[0]:
+            raise Exception(f'La comisión ya había sido pagada el día {exist[0].strftime("%d/%m/%Y")}')
+        post('''UPDATE comisiones SET pagado = true, pagado_en = NOW()''',(),False)
+        return  f'Comisión pagada exitosamente'

@@ -10,12 +10,16 @@ def buscar_comisiones_fecha():
             'fecha': request.json.get('fecha')
         }
         comisiones = Comision.buscar_comisiones_fecha(params)
-        return json.dumps(comisiones)
+        return json.dumps(comisiones), 200
     except Exception as e:
-        return {'error': str(e)}
+        return {'error': str(e)}, 400
 
 def pagar_comision():
-    pass
+    try:
+        params = {'id': request.json.get('id')}
+        return Comision.pagar_comision(params), 200
+    except Exception as e:
+        return {'error': str(e)}, 400
 
 
 def buscar_comisiones():

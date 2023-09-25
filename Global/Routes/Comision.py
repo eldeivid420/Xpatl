@@ -20,3 +20,8 @@ def registros_dia():
 def comision_usuario_hoy():
     return c.comision_usuario_hoy()
 
+@GLOBAL_COMISION_BLUEPRINT.route('/pagar-comision', methods=['POST'])
+def pagar_comision():
+    return c.pagar_comision()
+
+
