@@ -20,7 +20,7 @@ class Comision:
         if not existe:
             raise Exception('No existe ninguna comisión con ese id')
         self.vendedor, self.monto, self.pagado, self.pagado_en = get('''SELECT vendedor, monto, pagado, pagado_en FROM 
-        comisiones WHERE id = %s''', (self.id, ), False)
+        comisiones WHERE id = %s''', (self.id,), False)
 
     @classmethod
     def buscar_comisiones_fecha(cls, params):
@@ -38,7 +38,8 @@ class Comision:
             FROM comisiones WHERE vendedor = %s and TO_CHAR(fecha,'DD/MM/YYYY') = %s''', (vendedor, fecha), False)
             if pagado_en:
                 pagado_en.strftime("%d/%m/%Y")
-            comisiones.append({'id': id, 'monto': monto, 'fecha': fecha.strftime("%d/%m/%Y"),'pagado': pagado, 'pagado_en': pagado_en})
+            comisiones.append({'id': id, 'monto': monto, 'fecha': fecha.strftime("%d/%m/%Y"), 'pagado': pagado,
+                               'pagado_en': pagado_en})
         return comisiones
 
     @classmethod
@@ -55,27 +56,29 @@ class Comision:
             FROM comisiones WHERE vendedor = %s''', (vendedor,), False)
             if pagado_en:
                 pagado_en.strftime("%d/%m/%Y")
-            comisiones.append({'id': id, 'monto': monto, 'fecha': fecha.strftime("%d/%m/%Y"), 'pagado': pagado, 'pagado_en': pagado_en})
+            comisiones.append({'id': id, 'monto': monto, 'fecha': fecha.strftime("%d/%m/%Y"), 'pagado': pagado,
+                               'pagado_en': pagado_en})
         return comisiones
 
     @classmethod
     def registros_dia(cls, params):
-        registros = get('''SELECT * FROM comisiones WHERE TO_CHAR(fecha, 'DD/MM/YYYY') = %s''', (params['fecha'],), True)
+        registros = get('''SELECT * FROM comisiones WHERE TO_CHAR(fecha, 'DD/MM/YYYY') = %s''', (params['fecha'],),
+                        True)
         if not registros:
             raise Exception('No hay ventas registradas para la fecha seleccionada')
         comisiones = []
         for i in range(len(registros)):
             comisiones.append(
                 {'id': registros[i][0], 'vendedor': registros[i][1], 'monto': registros[i][2],
-                 'pagado': registros[i][3], 'fecha': registros[i][4].strftime("%d/%m/%Y"), 'pagado_en': registros[i][5]})
+                 'pagado': registros[i][3], 'fecha': registros[i][4].strftime("%d/%m/%Y"),
+                 'pagado_en': registros[i][5]})
         return comisiones
-
 
     @classmethod
     def comision_usuario_hoy(cls, params):
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
-        exist = get('''SELECT id FROM usuario WHERE username = %s''',(params['username'],),False)
+        exist = get('''SELECT id FROM usuario WHERE username = %s''', (params['username'],), False)
         if not exist:
             raise Exception('El usuario no existe')
         comision = get('''SELECT monto FROM comisiones WHERE vendedor = %s AND TO_CHAR(fecha,
@@ -87,10 +90,13 @@ class Comision:
 
     @classmethod
     def pagar_comision(cls, params):
-        exist = get('''SELECT pagado_en FROM comisiones WHERE id = %s''',(params['id'],),False)
-        if not exist:
+        exist = get('''SELECT pagado, pagado_en FROM comisiones WHERE id = %s''', (params['id'],), False)
+        if exist is None:
             raise Exception('El no hay comisiones con el id proporcionado')
+
         if exist[0]:
-            raise Exception(f'La comisión ya había sido pagada el día {exist[0].strftime("%d/%m/%Y")}')
-        post('''UPDATE comisiones SET pagado = true, pagado_en = NOW()''',(),False)
-        return  f'Comisión pagada exitosamente'
+            post('''UPDATE comisiones SET pagado = false, pagado_en = NULL''', (), False)
+        if not exist[0]:
+            post('''UPDATE comisiones SET pagado = true, pagado_en = NOW()''', (), False)
+
+        return f'Comisión actualizada exitosamente'
