@@ -95,8 +95,8 @@ class Comision:
             raise Exception('El no hay comisiones con el id proporcionado')
 
         if exist[0]:
-            post('''UPDATE comisiones SET pagado = false, pagado_en = NULL''', (), False)
+            post('''UPDATE comisiones SET pagado = false, pagado_en = NULL WHERE id = %s''', (params['id'],), False)
         if not exist[0]:
-            post('''UPDATE comisiones SET pagado = true, pagado_en = NOW()''', (), False)
+            post('''UPDATE comisiones SET pagado = true, pagado_en = NOW() WHERE id = %s''', (params['id'],), False)
 
         return f'Comisión actualizada exitosamente'
