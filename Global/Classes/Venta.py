@@ -440,8 +440,8 @@ class Venta:
         a.vendedor, a.pagado''', (fecha, fecha), True)"""
 
         registros = get('''select DISTINCT a.vendedor, a.monto, sum (b.total),a.pagado, c.nombre from comisiones a
-INNER JOIN venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = '15/09/2023'
-AND TO_CHAR(b.fecha, 'DD/MM/YYYY') = '15/09/2023' AND a.vendedor = b.vendedor
+INNER JOIN venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s
+AND TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s AND a.vendedor = b.vendedor
 INNER JOIN usuario as c ON a.vendedor = c.username
 WHERE  b.estatus = 'entregado'
 GROUP BY a.vendedor, a.pagado, a.monto, c.nombre''', (fecha, fecha), True)
