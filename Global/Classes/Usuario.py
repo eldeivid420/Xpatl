@@ -57,6 +57,8 @@ class Usuario:
         if exist[3] != h:
             # Checa que los hashes de las contraseñas sean iguales
             raise Exception('Contraseña incorrecta')
+        if not exist[4]:
+            raise Exception('El usuario fue desactivado.')
         if rol not in self.roles:
             # Revisa que el rol seleccionado sea igual al que pertenece el usuario
             raise Exception('El usuario no pertenece a esta área')
