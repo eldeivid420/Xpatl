@@ -552,41 +552,40 @@ GROUP BY a.vendedor, a.pagado, a.monto, c.nombre''', (fecha, fecha), True)
         pagos = params['pagos']
         fechas = []
         ORDER_BY = 'DESC' if reciente else 'ASC'
-        if pagos == 'normal':
-            QUERY = '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
-                public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
-                TO_CHAR(b.fecha, 'DD/MM/YYYY')) WHERE (ve.estatus = 'entregado' or ve.estatus = 'pagado')GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
-                TO_CHAR(ve.fecha, 'DD/MM/YYYY') ''' + ORDER_BY
-            registros = get(QUERY,
-                            (), True)
+        ventas = get('''SELECT TO_CHAR(fecha, 'DD/MM/YYYY'), sum(total), count(fecha) FROM 
+            venta WHERE (estatus = 'entregado' or estatus = 'pagado')GROUP BY TO_CHAR(fecha, 'DD/MM/YYYY') ORDER BY 
+            TO_CHAR(fecha, 'DD/MM/YYYY')'''+ORDER_BY, (), True)
+        if not ventas:
+            raise Exception('No hay registros en la base de datos')
 
-            if not registros:
-                raise Exception('No hay registros en la base de datos')
-            for i in range(len(registros)):
-                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
-                               'pagado': registros[i][3]})
+
+        if pagos == 'normal':
+            for i in range(len(ventas)):
+                comisiones_pendientes = get('''SELECT pagado FROM comisiones WHERE pagado = false AND TO_CHAR(fecha, 'DD/MM/YYYY') = %s''',(ventas[i][0],),False)
+                if comisiones_pendientes:
+                    fechas.append({'fecha': ventas[i][0],'total': ventas[i][1], 'ventas': ventas[i][2], 'pagado': False})
+                else:
+                    fechas.append(
+                        {'fecha': ventas[i][0], 'total': ventas[i][1], 'ventas': ventas[i][2], 'pagado': True})
+
         elif pagos == 'pendiente':
-            QUERY = '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
-            public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = TO_CHAR(
-            b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = false GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER 
-            BY TO_CHAR(ve.fecha, 'DD/MM/YYYY')  ''' + ORDER_BY
-            registros = get(QUERY, (), True)
-            if not registros:
+            for i in range(len(ventas)):
+                comisiones_pendientes = get('''SELECT pagado FROM comisiones WHERE pagado = false AND TO_CHAR(fecha, 'DD/MM/YYYY') = %s''',(ventas[i][0],),False)
+                if comisiones_pendientes:
+                    fechas.append({'fecha': ventas[i][0],'total': ventas[i][1], 'ventas': ventas[i][2], 'pagado': False})
+            if len(fechas) == 0:
                 raise Exception('No hay registros en la base de datos')
-            for i in range(len(registros)):
-                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
-                               'pagado': registros[i][3]})
+
         elif pagos == 'pagado':
-            QUERY = '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado 
-            FROM public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
-            TO_CHAR( b.fecha, 'DD/MM/YYYY')) WHERE b.pagado = true GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), 
-            b.pagado ORDER BY TO_CHAR(ve.fecha, 'DD/MM/YYYY') ''' + ORDER_BY
-            registros = get(QUERY, (), True)
-            if not registros:
+            for i in range(len(ventas)):
+                comisiones_pendientes = get(
+                    '''SELECT pagado FROM comisiones WHERE pagado = false AND TO_CHAR(fecha, 'DD/MM/YYYY') = %s''',
+                    (ventas[i][0],), False)
+                if not comisiones_pendientes:
+                    fechas.append(
+                        {'fecha': ventas[i][0], 'total': ventas[i][1], 'ventas': ventas[i][2], 'pagado': True})
+            if len(fechas) == 0:
                 raise Exception('No hay registros en la base de datos')
-            for i in range(len(registros)):
-                fechas.append({'fecha': registros[i][0], 'total': registros[i][1], 'ventas': registros[i][2],
-                               'pagado': registros[i][3]})
         else:
             raise Exception('Ingresa una opción de filtrado válida')
 
