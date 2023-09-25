@@ -421,12 +421,12 @@ class Venta:
                     total_credito += venta.metodos[j]["amount"]
                 if venta.metodos[j]["method"] == 'Tarjeta de débito':
                     total_debito += venta.metodos[j]["amount"]
-
+        total_ventas = len(registros)
         registros = get('''SELECT producto, count(producto) FROM producto_venta WHERE venta IN (SELECT ID FROM venta WHERE TO_CHAR(fecha, 
         'DD/MM/YYYY') = %s AND (estatus = 'entregado' OR estatus = 'pagado')) GROUP BY producto ORDER BY COUNT(producto) DESC LIMIT 3''', (params['fecha'],),True)
         for i in range(len(registros)):
             top3.append({'producto': registros[i][0], 'cantidad': registros[i][1]})
-        return {'ventas': ventas, 'numero_ventas': len(registros), 'total_debito': total_debito,
+        return {'ventas': ventas, 'numero_ventas': total_ventas, 'total_debito': total_debito,
                 'total_credito': total_credito, 'total_distribuidor': total_distribuidor,
                 'total_transferencia': total_transferencia, 'total_efectivo': total_efectivo, 'top3': top3}
 
@@ -555,7 +555,7 @@ GROUP BY a.vendedor, a.pagado, a.monto, c.nombre''', (fecha, fecha), True)
         if pagos == 'normal':
             QUERY = '''SELECT TO_CHAR(ve.fecha, 'DD/MM/YYYY'), sum(ve.total), count(ve.fecha), b.pagado FROM 
                 public.venta AS ve INNER JOIN public.comisiones AS b ON (TO_CHAR(ve.fecha, 'DD/MM/YYYY') = 
-                TO_CHAR(b.fecha, 'DD/MM/YYYY')) GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
+                TO_CHAR(b.fecha, 'DD/MM/YYYY')) WHERE (ve.estatus = 'entregado' or ve.estatus = 'pagado')GROUP BY TO_CHAR(ve.fecha, 'DD/MM/YYYY'), b.pagado ORDER BY 
                 TO_CHAR(ve.fecha, 'DD/MM/YYYY') ''' + ORDER_BY
             registros = get(QUERY,
                             (), True)
