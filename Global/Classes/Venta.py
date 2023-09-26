@@ -439,16 +439,16 @@ class Venta:
         venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s and TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s GROUP BY 
         a.vendedor, a.pagado''', (fecha, fecha), True)"""
 
-        registros = get('''select DISTINCT a.vendedor, a.monto, sum (b.total),a.pagado, c.nombre from comisiones a
+        registros = get('''select DISTINCT a.vendedor, a.monto, sum (b.total),a.pagado, c.nombre, a.id  from comisiones a
 INNER JOIN venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s
 AND TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s AND a.vendedor = b.vendedor
 INNER JOIN usuario as c ON a.vendedor = c.username
 WHERE  b.estatus = 'entregado'
-GROUP BY a.vendedor, a.pagado, a.monto, c.nombre''', (fecha, fecha), True)
+GROUP BY a.vendedor, a.pagado, a.monto, c.nombre, a.id''', (fecha, fecha), True)
         for i in range(len(registros)):
             comisiones.append(
                 {'vendedor': registros[i][0], 'total_ventas': registros[i][2], 'comision': round(registros[i][1], 2),
-                 'pagado': registros[i][3], 'nombre': registros[i][4]})
+                 'pagado': registros[i][3], 'nombre': registros[i][4], 'id': registros[i][5]})
 
         return comisiones
 

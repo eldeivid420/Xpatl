@@ -114,7 +114,7 @@ def entregar_venta():
         detalles = {
             "productos": info
         }
-        return json.dumps(detalles)
+        return detalles
     except Exception as e:
         return {'error': str(e)}, 400
 
