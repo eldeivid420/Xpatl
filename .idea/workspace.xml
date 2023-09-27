@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70b12a39-bfb3-45b2-9766-3bd8d67705db" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Xpatl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Xpatl.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Global/Classes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Classes/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Controllers/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Controllers/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Global/Routes/Venta.py" beforeDir="false" afterPath="$PROJECT_DIR$/Global/Routes/Venta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cargarCsv.py" beforeDir="false" afterPath="$PROJECT_DIR$/cargarCsv.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +51,7 @@
       <recent name="C:\Users\Razer\Documents\GitHub\Xpatl\Global\Utils" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main (1)">
+  <component name="RunManager" selected="Python.cargarCsv (3)">
     <configuration name="cargarCsv (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Xpatl" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -158,8 +159,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.cargarCsv (3)" />
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.cargarCsv" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.cargarCsv (2)" />
@@ -285,6 +286,11 @@
           <url>file://$PROJECT_DIR$/Global/Classes/Venta.py</url>
           <line>322</line>
           <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cargarCsv.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="85" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

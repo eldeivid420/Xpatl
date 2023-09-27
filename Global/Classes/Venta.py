@@ -849,4 +849,36 @@ GROUP BY a.vendedor, a.pagado, a.monto, c.nombre, a.id''', (fecha, fecha), True)
         return f'El proveedor se editó correctamente'
 
 
+    @classmethod
+    def ventas_todas(cls):
+        ventas_resumenes = get('''SELECT * FROM venta order by id desc''', ())
+        ventas_info = []
+        for venta in ventas_resumenes:
+            productos_lista = get('''SELECT pv.producto, count(pv.producto), p.nombre, p.precio_lista, p.precio_descuento from producto_venta pv INNER JOIN producto p ON pv.producto = p.sku where venta = %s group by producto, p.nombre, p.precio_lista, p.precio_descuento''', (venta[0],))
+            productos= []
+            for producto in productos_lista:
+                productos.append({
+                    "codigo": producto[0],
+                    "nombre": producto[2],
+                    "cantidad": producto[1],
+                    "precio_lista": producto[3],
+                    "precio_descuento": producto[4],
+                })
+
+            ventas_info.append({
+                "folio": venta[0],
+                "vendedor": venta[1],
+                "venta_del_dia": venta[2],
+                "estatus": venta[3],
+                "comprador": venta[4],
+                "notas": venta[6],
+                "subtotal": venta[8],
+                "descuento": venta[7],
+                "total": venta[9],
+                "comision_generada": venta[10],
+                "fecha_y_hora": venta[11],
+                "solicita_factura": venta[12],
+                "productos": productos
+            })
+        return ventas_info
 

@@ -83,3 +83,6 @@ def reporte():
 def metodos_pago():
     return v.metodos_pago()
 
+@GLOBAL_VENTA_BLUEPRINT.route('/reporte_ventas_todas', methods=['GET'])
+def ventas_todas():
+    return v.ventas_todas()

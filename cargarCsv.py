@@ -80,9 +80,49 @@ def subir_distribuidores():
         }
         #myobj = json.dumps(myobj)
         x = requests.post(url, json=myobj)
+
         i += 1
         print(x.text)
     root.destroy()
+
+
+def ventas_todas():
+    url = 'http://127.0.0.1:8080/venta/reporte_ventas_todas'
+    from tkinter.filedialog import asksaveasfile
+    file_path = asksaveasfile(initialfile='Reporte.xlsx',
+                              defaultextension=".xlsx", filetypes=[("All Files", "*.*"), ("Text Documents", "*.txt")])
+
+    if file_path.name == '':
+        exit()
+    myobj = {
+        "path": file_path.name
+    }
+    x = requests.get(url, json=myobj)
+    ventas = x.json()
+    print(x.json())
+    #for venta in ventas:
+    df = pd.DataFrame.from_dict(ventas)
+    #print(df)
+    df.to_excel(file_path.name)
+    for venta in ventas:
+        df_info = pd.DataFrame(columns=["codigo", "nombre", "cantidad","precio", "precio_descuento"])
+        for producto in venta['productos']:
+            new_df = pd.Series({
+                "codigo": producto['codigo'],
+                "nombre": producto['nombre'],
+                "cantidad": producto['cantidad'],
+                "precio": producto['precio_lista'],
+                "precio_descuento": producto['precio_descuento']
+            })
+            print(df_info.shape)
+            print(new_df.shape)
+            df_info.loc[len(df_info)] = new_df
+
+        df_info.to_excel('./reporte_por_pedido'+str(venta['folio'])+'.xlsx')
+
+    exit()
+
+
 
 root.title('Sistema de Natural')
 title = tk.Label(root, text="Escoge una opción del menú",font=("Arial", 25))
@@ -97,6 +137,11 @@ canvas1.create_window(350, 250, window=button_reporte)
 button_distribuidores = tk.Button(root, text='Subir distribuidores', command=subir_distribuidores, bg='brown',
                                   fg='white')
 canvas1.create_window(350, 350, window=button_distribuidores)
+
+button_ventas_todas = tk.Button(root, text='Reporte todas las ventas', command=ventas_todas, bg='brown',
+                                  fg='white')
+canvas1.create_window(350, 450, window=button_ventas_todas)
+
 root.mainloop()
 root = tk.Tk()
 root.withdraw()
