@@ -443,7 +443,7 @@ class Venta:
 INNER JOIN venta as b ON TO_CHAR(a.fecha, 'DD/MM/YYYY') = %s
 AND TO_CHAR(b.fecha, 'DD/MM/YYYY') = %s AND a.vendedor = b.vendedor
 INNER JOIN usuario as c ON a.vendedor = c.username
-WHERE  b.estatus = 'entregado' or b.estatus='paado'                                                                                                                                                                                                                                                                    
+WHERE  b.estatus = 'entregado' or b.estatus='pagado'                                                                                                                                                                                                                                                                    
 GROUP BY a.vendedor, a.pagado, a.monto, c.nombre, a.id''', (fecha, fecha), True)
         for i in range(len(registros)):
             comisiones.append(
