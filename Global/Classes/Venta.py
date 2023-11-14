@@ -190,7 +190,7 @@ class Venta:
         hoy = datetime.datetime.now()
         hoy = hoy.strftime("%d/%m/%Y")
         existe_registro = post(('''UPDATE comisiones SET monto = monto+%s WHERE vendedor = %s and TO_CHAR(fecha,
-               'DD/MM/YYYY') = %s RETURNING id'''), (round(self.comision,2), self.vendedor, hoy), True)
+                           'DD/MM/YYYY') = %s RETURNING id'''), (round(self.comision,2), self.vendedor, hoy), True)
         if not existe_registro:
             post('''insert into comisiones(vendedor,monto,pagado) values (%s,%s,false)''',
                  (self.vendedor, self.comision), False)
@@ -349,10 +349,10 @@ class Venta:
         pagado, total = get('''SELECT estatus, total FROM venta WHERE id = %s''', (id,), False)
         if not cls.exist(id):
             raise Exception('No hay venta con el id proporcionado')
-        elif pagado == 'pagado':
+        """elif pagado == 'pagado':
             raise Exception('La venta ya había sido pagada')
         elif pagado == 'cancelado':
-            raise Exception('La venta ya había sido cancelada')
+            raise Exception('La venta ya había sido cancelada')"""
         amount = 0
         for metodo in metodos_pago:
             amount += metodo['cantidad']
